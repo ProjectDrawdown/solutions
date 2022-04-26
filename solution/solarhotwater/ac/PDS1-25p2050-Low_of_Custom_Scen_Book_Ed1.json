@@ -117,48 +117,6 @@
     "source_until_2014": "ALL SOURCES",
     "ref_source_post_2014": "IEA 4DS (2016), Residential & Commercial Water Heating",
     "pds_source_post_2014": "Drawdown TAM: PDS1 - post-Low-Flow",
-    "pds_base_adoption": [
-        [
-            "World",
-            335.463
-        ],
-        [
-            "OECD90",
-            56.493
-        ],
-        [
-            "Eastern Europe",
-            2.374
-        ],
-        [
-            "Asia (Sans Japan)",
-            240.305
-        ],
-        [
-            "Middle East and Africa",
-            9.948
-        ],
-        [
-            "Latin America",
-            9.113
-        ],
-        [
-            "China",
-            231.838
-        ],
-        [
-            "India",
-            6.4350000000000005
-        ],
-        [
-            "EU",
-            23.777
-        ],
-        [
-            "USA",
-            17.233
-        ]
-    ],
     "soln_pds_adoption_basis": "Fully Customized PDS",
     "soln_pds_adoption_regional_data": false,
     "pds_adoption_final_percentage": [

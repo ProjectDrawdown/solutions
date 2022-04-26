@@ -1,0 +1,11 @@
+Old notes no longer relevant; nothing interesting happened.
+Denton's Notes:
+Walkable Cities
+In the third scenario in ScenarioRecord, "PDS2-7p2050-2.4% Annual Density Increase (Book Ed.1)", Fuel Cost Conventional in E746 and 
+the NPV in E769 use a comma as a decimal separator as it was saved by a research fellow in a region where that is the 
+standard practice. tools/solution_xls_extract.py handles this correctly and emits 55303315.086855 for the solution it is generating, 
+but when Excel loads this scenario it turns the fuel cost into $55,303,326,819,261.1 and the results are astronomical. 
+Update the fuel cost and NPV to use a period as the decimal separator.
+
+Custom REF Adoption scenario 1 has been renamed to "2018" but the ScenarioRecord still uses '2014.' Change the Custom REF 
+Adoption sheet to 2014.

@@ -1,0 +1,8 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"Based on FAO (2017), Wolf (2017), and IPCC (2019)",ManureWeighting!,OECD90,,2 - Public Sector/ Multilateral Agency,,,,,1048.5177441838678,MMT Manure,,"Daily Spread, Reduced Storage",
+"Based on FAO (2017), Wolf (2017), and IPCC (2019)",ManureWeighting!,Asia (Sans Japan),,2 - Public Sector/ Multilateral Agency,,,,,892.3139416525735,MMT Manure,,"Daily Spread, Reduced Storage",
+"Based on FAO (2017), Wolf (2017), and IPCC (2019)",ManureWeighting!,Eastern Europe,,2 - Public Sector/ Multilateral Agency,,,,,73.26975460880328,MMT Manure,,"Daily Spread, Reduced Storage",
+"Based on FAO (2017), Wolf (2017), and IPCC (2019)",ManureWeighting!,Latin America,,2 - Public Sector/ Multilateral Agency,,,,,9.6881140783111,MMT Manure,,"Daily Spread, Reduced Storage",
+"Based on FAO (2017), Wolf (2017), and IPCC (2019)",ManureWeighting!,Middle East and Africa,,2 - Public Sector/ Multilateral Agency,,,,,0.0,MMT Manure,,"Daily Spread, Reduced Storage",
+"Based on FAO (2017), Wolf (2017), and IPCC (2019)",ManureWeighting!,World,,2 - Public Sector/ Multilateral Agency,,,,,1833.3186266816294,MMT Manure,,"Daily Spread, Reduced Storage",
+Based on Wright and Inglis (2001),ManureWeighting!,OECD90,USA,2 - Public Sector/ Multilateral Agency,,,,,639.3683628791647,MMT Manure,,Daily Spread dairy cattle,

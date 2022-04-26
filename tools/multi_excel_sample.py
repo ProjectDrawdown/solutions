@@ -15,30 +15,20 @@ if not sys.warnoptions:
     warnings.simplefilter("ignore")
 
 
-def copy_xls_region(xlsfile, sheet, region, resultsheet, startrow, startcol, data_mode, format_mode):
-    """scan the xls file in the requested mode, appending the requested region to resultsheet, 
-    starting at startcol.
+def copy_xls_region(cells, outsheet, startrow, startcol, data_mode, format_mode):
+    """Copy the data from cells to outsheet, at the requested location, in the requested mode.
     data_mode: boolean for data: True copies the data in the cells, false copies the formulas
     format_mode: if True, copy cell formatting as well"""
-
-    wb = openpyxl.load_workbook(xlsfile, read_only=True, data_only=data_mode, keep_links=False)
-    if sheet not in wb.sheetnames:
-        resultsheet.cell(startrow, startcol).value = f"Sheet {sheet} not found"
-        return
-
-    wbsheet = wb[sheet]
-    cells = wbsheet[region]
-    # cells is a list-of-lists of Cell or MergedCell objects
 
     torow = startrow
     for cellrow in cells:
         torow = torow + 1
         tocol = startcol
         for cell in cellrow:
-            resultcell = resultsheet.cell(torow, tocol)
-            resultcell.value = cell.value if data_mode else copy_formula(cell.value)
+            outcell = outsheet.cell(torow, tocol)
+            outcell.value = cell.value if data_mode else copy_formula(cell.value)
             if format_mode:
-                copy_format(cell, resultcell)
+                copy_format(cell, outcell)
             tocol = tocol + 1
 
 
@@ -47,6 +37,7 @@ def copy_format(from_cell, to_cell):
     if from_cell.border: to_cell.border = from_cell.border
     if from_cell.fill: to_cell.fill = from_cell.fill
     if from_cell.number_format: to_cell.number_format = from_cell.number_format
+
 
 def copy_formula(value):
     """If the value is a formula, put a single quote in front of it to turn it into a string"""
@@ -57,22 +48,35 @@ def copy_formula(value):
     return str(value)
 
 
-def sample_regions(filelist, sheetname, region, copy_data=True, copy_formula=True):
+def find_cells(ws, textval, width, height):
+    """Locate textval within ws and return a width-by-height selection of cells starting at that point"""
+    for row in ws.iter_rows():
+        for cell in row:
+            if cell.value == textval:
+                return list(ws.iter_rows(cell.row, cell.row+height, cell.column, cell.column+width))
+    raise ValueError("Text value not found")
+
+
+def sample_regions(filelist, sheetname, region=None, copy_data=True, copy_formula=True, findtext=None, width=None, height=None):
     """For each file in the list, copy the specified sheet&region to a new Workbook.
     Returns the workbook.  
     Copies the data, formulas (as strings), or both."""
 
-    wb = openpyxl.Workbook()
-    wbsheet = wb[wb.sheetnames[0]] # get the first sheet
-    wbsheet.title = sheetname + " " + region.replace(":","-")
+    resultwb = openpyxl.Workbook()
+    resultsheet = resultwb[resultwb.sheetnames[0]] # get the first sheet
+    resultsheet.title = sheetname + " " + (region.replace(":","-") if region else findtext[:10])
 
-    # remove any "open excel" files from the filelist
+    # remove any "open excel" files from the filelist, and sort them.
     filelist = [ Path(x).resolve() for x in filelist ]
-    filelist = [ x for x in filelist if not x.name.startswith('~') ]
+    filelist = sorted( [ x for x in filelist if not x.name.startswith('~')] )
 
-    (min_col, min_row, max_col, max_row) = openpyxl.utils.cell.range_boundaries(region)
-    region_width = (max_col - min_col) + 1
-    region_height = (max_row - min_row) + 1
+    if region:
+        (min_col, min_row, max_col, max_row) = openpyxl.utils.cell.range_boundaries(region)
+        region_width = (max_col - min_col) + 1
+        region_height = (max_row - min_row) + 1
+    else:
+        region_width = width
+        region_height = height
 
     startcol = 2
     if copy_data:
@@ -80,10 +84,19 @@ def sample_regions(filelist, sheetname, region, copy_data=True, copy_formula=Tru
         startrow = 2
         for file in filelist:
             print(file.name)
-            # output file name
-            wbsheet.cell(startrow, 2).value = file.name
-            copy_xls_region(file, sheetname, region, wbsheet, startrow+1, startcol, data_mode=True, format_mode=True)
-            startrow = startrow + region_height + 4
+            # put file name in output sheet
+            resultsheet.cell(startrow, 2).value = file.name
+            src = openpyxl.load_workbook(file, read_only=True, data_only=True, keep_links = False)
+            try:
+                # get the requested cells, either by looking at the region, or finding the requested text
+                src_sheet = src[sheetname]
+                cells = src_sheet[region] if region else find_cells(src_sheet, findtext, width, height)
+                copy_xls_region(cells, resultsheet, startrow+1, startcol, data_mode=True, format_mode=True)
+            except Exception as e:
+                resultsheet.cell(startrow+1, startcol).value = str(e)
+            finally:
+                startrow = startrow + region_height + 4
+                src.close()
         
         startcol = startcol + region_width + 4
     
@@ -93,12 +106,19 @@ def sample_regions(filelist, sheetname, region, copy_data=True, copy_formula=Tru
         for file in filelist:
             print(file.name)
             if startcol == 2:  # there was no data column, so output file name now.
-                wbsheet.cell(startrow, 2).value = file.name
-            copy_xls_region(file, sheetname, region, wbsheet, startrow+1, startcol, data_mode=False, format_mode=False)
-            startrow = startrow + region_height + 4
+                resultsheet.cell(startrow, 2).value = file.name
+            src = openpyxl.load_workbook(file, read_only=True, keep_links = False)
+            try:
+                src_sheet = src[sheetname]
+                cells = src_sheet[region] if region else find_cells(src_sheet, findtext, width, height)
+                copy_xls_region(cells, resultsheet, startrow+1, startcol, data_mode=False, format_mode=False)
+            except Exception as e:
+                resultsheet.cell(startrow+1, startcol).value = str(e)            
+            finally:
+                startrow = startrow + region_height + 4
+                src.close()
 
-    return wb
-
+    return resultwb
 
 
 if __name__ == "__main__":

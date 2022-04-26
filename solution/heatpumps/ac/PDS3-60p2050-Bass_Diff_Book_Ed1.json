@@ -117,7 +117,7 @@
     "source_until_2014": "ALL SOURCES",
     "ref_source_post_2014": "Based on: IEA ETP 2016 4DS",
     "pds_source_post_2014": "Drawdown TAM: Drawdown Integrated TAM - PDS3",
-    "pds_base_adoption": [
+    "ref_base_adoption": [
         [
             "World",
             2.0

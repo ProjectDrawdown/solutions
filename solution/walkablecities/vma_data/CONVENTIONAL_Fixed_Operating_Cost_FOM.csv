@@ -1,3 +1,3 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Sum of Depreciation and Insurance Costs from tables Below,Variable 31 - Purchase/Depreciation,World,,,,,,,1.8691679933354854,US2014$/trip,,High values (1 SD above mean of each component),
-,Variable 32 - Insurance,,,,,,,,1.2506319924951095,US2014$/trip,,Low values (1 SD below mean of each component),
+Sum of Depreciation and Insurance Costs from tables Below,Variable 31 - Purchase/Depreciation,World,,,,,(calculated),,1.9576976828175,US2014$/trip,,High values (1 SD above mean of each component),
+,Variable 32 - Insurance,,,,,,,,0.9889692686509817,US2014$/trip,,Low values (1 SD below mean of each component),

@@ -1,0 +1,5 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Howland and Karszes (2014),http://publications.dyson.cornell.edu/outreach/extensionpdf/2014/Cornell-Dyson-eb1412.pdf,OECD90,USA,2 - Public Sector/ Multilateral Agency,,,264.63,$/cow,12543489.59567711,US2014$/MMT Manure,,"Dairy cow, spread equipment costs",
+Howland and Karszes (2014),http://publications.dyson.cornell.edu/outreach/extensionpdf/2014/Cornell-Dyson-eb1412.pdf,OECD90,USA,3 - Public Sector/ Multilateral Agency,,,138.8,$/cow,6579134.474095843,US2014$/MMT Manure,,"Dairy cow, spread equipment costs",
+Howland and Karszes (2014),http://publications.dyson.cornell.edu/outreach/extensionpdf/2014/Cornell-Dyson-eb1412.pdf,OECD90,USA,4 - Public Sector/ Multilateral Agency,,,442.66,$/cow,20982130.16068635,US2014$/MMT Manure,,"Dairy cow, spread equipment costs",
+,LagoonCoverExistingSystems!A1,,,,,,,,,US2014$/MMT Manure,,,

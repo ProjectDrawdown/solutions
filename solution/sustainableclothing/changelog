@@ -14,8 +14,8 @@ Set these HT flags:
     copy_pds_datapoint=True,
     copy_ref_datapoint=True,
     copy_datapoint_to_year=2014,
-    use_first_pds_datapoint_main=True,
-    use_first_ref_datapoint_main=True,
+    copy_pds_world_too=True,
+    copy_ref_world_too=True,
 
 In __init__.py, I moved the block of code that creates a CustomAdoption inside the 
 if self.ac.soln_pds_adoption_basis == 'Fully Customized PDS' condition.

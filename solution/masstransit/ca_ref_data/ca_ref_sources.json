@@ -1,14 +1,17 @@
 [
-  {
-    "name": "Custom REF Adoption - Fixed Mass Transit Pass-km Annually",
-    "include": true,
-    "description": "Taking the estimated passenger-km adoption value from 2014, we hold that constant out to 2050 which assumes that the total amount of travel on urban mass transit systems remains constant despite increasing populations. The rapid rise in populations generally happens in developing countries, and as these countries urbanise and get wealthier, there is a large trend towards increased motorization following the historical patterns of Western Nations. This then, although a pessimistic case, is not unrealistic. ",
-    "filename": "custom_ref_ad_Custom_REF_Adoption_Fixed_Mass_Transit_Passkm_Annually.csv"
-  },
-  {
-    "name": "Adoption Based on IEA 6DS",
-    "include": true,
-    "description": "This scenario uses the interpolated data from the IEA 6DS of the ETP 2016 Report with a smoothening to the current and recent adoptions (2012-2018). Since the standard Ref assumption of fixed % adoption is seen as  too optimistic considering the trends in urban mobility of greatly increasing car ownership in the developing world where large populations exist. ",
-    "filename": "custom_ref_ad_Adoption_based_on_IEA_6DS.csv"
-  }
+    {
+        "name": "Custom REF Adoption - Fixed Mass Transit Pass-km Annually",
+        "filename": "ca_ref_Custom_REF_Adoptio_09081382.csv",
+        "description": "Taking the estimated passenger-km adoption value from 2014, we hold that constant out to 2050 which assumes that the total amount of travel on urban mass transit systems remains constant despite increasing populations. The rapid rise in populations generally happens in developing countries, and as these countries urbanise and get wealthier, there is a large trend towards increased motorization following the historical patterns of Western Nations. This then, although a pessimistic case, is not unrealistic."
+    },
+    {
+        "name": "Adoption Based on IEA 6DS",
+        "filename": "ca_ref_Adoption_bon_IEA_6DS.csv",
+        "description": "This scenario uses the interpolated data from the IEA 6DS of the ETP 2016 Report with a smoothening to the current and recent adoptions (2012-2018). Since the standard Ref assumption of fixed % adoption is seen as  too optimistic considering the trends in urban mobility of greatly increasing car ownership in the developing world where large populations exist."
+    },
+    {
+        "name": "Trend using historical data",
+        "filename": "ca_ref_Trend_using_histor_ff52b44f.csv",
+        "description": "Trend using historical data"
+    }
 ]

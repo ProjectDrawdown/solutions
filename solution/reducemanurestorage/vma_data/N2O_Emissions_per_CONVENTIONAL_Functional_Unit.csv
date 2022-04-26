@@ -1,0 +1,25 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+Borhan et al. (2011a),doi:10.3155/1047-3289.61.7.786.,OECD90,USA,,,,0.00146,manure N2O (kg/hd/y),20.622837370242213,t CO2-eq/MMT Manure,,"Dairy, slurry tank",False
+Borhan et al. (2011b),doi:10.3390/atmos2030303,OECD90,USA,,,,0.01095,manure N2O (kg/hd/y),154.6712802768166,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+Borhan et al. (2011b),doi:10.3390/atmos2030303,OECD90,USA,,,,0.01825,manure N2O (kg/hd/y),257.7854671280277,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+Sneath et al.  (2006),doi:10.1016/j.agee.2005.08.020,OECD90,France,,,,0.6411356209150327,manure N2O (kg/hd/y),9056.188796164372,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+Sneath et al.  (2006),doi:10.1016/j.agee.2005.08.020,OECD90,France,,,,0.5495448179271708,manure N2O (kg/hd/y),7762.447539569459,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+Sneath et al.  (2006),doi:10.1016/j.agee.2005.08.020,OECD90,France,,,,2.4729516806722693,manure N2O (kg/hd/y),34931.01392806257,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+Sneath et al.  (2006),doi:10.1016/j.agee.2005.08.020,OECD90,France,,,,1.0074988328664802,manure N2O (kg/hd/y),14231.153822544016,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+Sneath et al.  (2006),doi:10.1016/j.agee.2005.08.020,OECD90,France,,,,0.8243172268907563,manure N2O (kg/hd/y),11643.671309354191,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+Sneath et al.  (2006),doi:10.1016/j.agee.2005.08.020,OECD90,France,,,,0.0915908029878618,manure N2O (kg/hd/y),1293.74125659491,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+Sneath et al.  (2006),doi:10.1016/j.agee.2005.08.020,OECD90,France,,,,2.198179271708683,manure N2O (kg/hd/y),31049.790158277836,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+Sneath et al.  (2006),doi:10.1016/j.agee.2005.08.020,OECD90,France,,,,4.487949346405229,manure N2O (kg/hd/y),63393.321573150606,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+Sneath et al.  (2006),doi:10.1016/j.agee.2005.08.020,OECD90,France,,,,2.839314892623717,manure N2O (kg/hd/y),40105.978954442224,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+Sneath et al.  (2006),doi:10.1016/j.agee.2005.08.020,OECD90,France,,,,0.0915908029878618,manure N2O (kg/hd/y),1293.74125659491,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+Sneath et al.  (2006),doi:10.1016/j.agee.2005.08.020,OECD90,France,,,,0.0,manure N2O (kg/hd/y),0.0,t CO2-eq/MMT Manure,,"Dairy, slurry tank",True
+Sneath et al.  (2006),doi:10.1016/j.agee.2005.08.020,OECD90,France,,,,0.12414965986394556,manure N2O (kg/hd/y),1753.6426335239976,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+Sneath et al.  (2006),doi:10.1016/j.agee.2005.08.020,OECD90,France,,,,0.0,manure N2O (kg/hd/y),0.0,t CO2-eq/MMT Manure,,"Dairy, slurry tank",True
+Sneath et al.  (2006),doi:10.1016/j.agee.2005.08.020,OECD90,France,,,,0.06207482993197278,manure N2O (kg/hd/y),876.8213167619988,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+VanderZaag et al. (2011),doi:10.1016/j.anifeedsci.2011.04.041,OECD90,Canada,,,,0.12414965986394556,manure N2O (kg/hd/y),1753.6426335239976,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+VanderZaag et al. (2011),doi:10.1016/j.anifeedsci.2011.04.042,OECD90,Canada,,,,0.6828231292517009,manure N2O (kg/hd/y),9645.03448438199,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+VanderZaag et al. (2011),doi:10.1016/j.anifeedsci.2011.04.043,OECD90,Canada,,,,0.31037414965986404,manure N2O (kg/hd/y),4384.106583809996,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+VanderZaag et al. (2011),doi:10.1016/j.anifeedsci.2011.04.044,OECD90,Canada,,,,0.12414965986394556,manure N2O (kg/hd/y),1753.6426335239976,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+VanderZaag et al. (2011),doi:10.1016/j.anifeedsci.2011.04.045,OECD90,Canada,,,,0.06207482993197278,manure N2O (kg/hd/y),876.8213167619988,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+VanderZaag et al. (2011),doi:10.1016/j.anifeedsci.2011.04.046,OECD90,Canada,,,,0.06207482993197278,manure N2O (kg/hd/y),876.8213167619988,t CO2-eq/MMT Manure,,"Dairy, slurry tank",
+VanderZaag et al. (2011),doi:10.1016/j.anifeedsci.2011.04.047,OECD90,Canada,,,,0.06207482993197278,manure N2O (kg/hd/y),876.8213167619988,t CO2-eq/MMT Manure,,"Dairy, slurry tank",

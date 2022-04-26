@@ -22,3 +22,7 @@ Local*.ipynb
 build/
 dist/
 *.egg-info/
+
+Documentation/autodocs/_html/
+
+

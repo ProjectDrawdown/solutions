@@ -1,0 +1,121 @@
+{
+  "Current Adoption": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "The definition of \"efficient aircraft\" is those Single Aisle and Small/Medium Twin Aisle aircraft produced from around 2015 that provide around 15-20% improvement over average fleet aircraft of the same class. These include only B777X, B737 MAX, B787, A320neo, A330neo and A350 XWB. The orders for these are obtained from the manufacturers along with their typical capacities. Operations to estimate the average annual work come from the combination of theoretical calculations from peer reviewed research and airline flight-hour usage data from the Airline Commerce Journal for four popular aircraft series. See \"Aircraft Passenger km estimate\" for more details.",
+    "units": "Billion passenger km",
+    "filename": "Current_Adoption.csv"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "use_weight": true,
+    "bound_correction": false,
+    "description": "We take the difference in list prices for the newer more efficient versions of existing aircraft offered by the two major aircraft production companies. The differences of these aircraft are generally newer engines (re-engining), wingtips and lightweighting, and we assume that the cost of retrofitting older aircraft with these same technologies is approximately the same. Weights are based on the projected future sales of aircraft in each category according to Boeing and Airbus market forecasts.",
+    "units": "US2014$/Aircraft",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "Billion passenger km/Aircraft",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "Billion passenger km/Aircraft",
+    "filename": "SOLUTION_Lifetime_Capacity.csv"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "use_weight": true,
+    "bound_correction": false,
+    "description": "Using the data from two key sources: an academic paper estimating aircraft usage, and a handbook for commercial planes, we estimate in two ways the average annual use of single and twin aisle aircraft. These are averaged to get the values above. They are based on the global average load factors.",
+    "units": "Billion passenger km/Aircraft/year",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv"
+  },
+  "SOLUTION Average Annual Use": {
+    "use_weight": true,
+    "bound_correction": false,
+    "description": "Using the data from two key sources: an academic paper estimating aircraft usage, and a handbook for commercial planes, we estimate in two ways the average annual use of single and twin aisle aircraft. These are averaged to get the values above. Each scenario uses different global load factors, and hence these values change.",
+    "units": "Billion passenger km/Aircraft/year",
+    "filename": "SOLUTION_Average_Annual_Use.csv"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "Liter/ Billion passenger km",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "%",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv"
+  },
+  "Average Seat Capacity - Single Aisle": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "",
+    "filename": "Average_Seat_Capacity_Single_Aisle.csv"
+  },
+  "Average Stage Length Flown of Total Operating Fleet in the world (Distances traveled from takeoff to landing)": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "",
+    "filename": "Average_Stage_Length_Flown_of_Total_Operating_F_963fbb1e.csv"
+  },
+  "Average fleet-wide working hours per day": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "",
+    "filename": "Average_fleet_wide_working_hours_per_day.csv"
+  },
+  "Average time (hrs) between consecutive flights)": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "",
+    "filename": "Average_time_hrs_between_consecutive_flights.csv"
+  },
+  "Average Cruise Speed - Single Aisle": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "",
+    "filename": "Average_Cruise_Speed_Single_Aisle.csv"
+  },
+  "Solution Load Factor": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "",
+    "filename": "Solution_Load_Factor.csv"
+  },
+  "Discount Rate - Commercial": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "In some cases in the literature it is specifically indicated that a distinct discount rate is appropriate when applied to investment decisions made at a Commercial / Industrial level. The Commercial / Industrial level discount rate is directly related to decision-making at a Commercial / Industrial level and likely varies greatly across different regions of the world.  Taking the numbers found in the literature above comprises a conservative case.  Without distortions this discount rate would be equivalent to the interest rate afforded by alternative investments available to larger commercial / industrial entities such as multinational corporations or corporate utility enterprises.  Discount rates reported in the literature that are used for policy decisions are not necessarily equivalent to Commercial / Industrial level financial investment decisions, but oftentimes are not distinguished and may be conflated.  These values represent a conservative case and, due to uncertainty, lower and higher discounting rates should probably be used for sensitivity analysis.",
+    "units": "",
+    "filename": "Discount_Rate_Commercial.csv"
+  },
+  "Average Seat Capacity - Twin Aisle": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "",
+    "filename": "Average_Seat_Capacity_Twin_Aisle.csv"
+  },
+  "Average Cruise Speed - Twin Aisle": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "",
+    "filename": "Average_Cruise_Speed_Twin_Aisle.csv"
+  }
+}

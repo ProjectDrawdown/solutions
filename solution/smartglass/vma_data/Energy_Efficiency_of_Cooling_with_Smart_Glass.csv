@@ -1,9 +1,20 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Lawrence Berkeley National Laboratory, (2006) Advancement of Electrochromic Windows, PIER Final Project Report",http://gaia.lbl.gov/btech/papers/59821.pdf,OECD90,USA,2 - Public Sector/ Multilateral Agency,2006,,,(ratio),,,,,
-"Lawrence Berkeley National Laboratory, (2006) Advancement of Electrochromic Windows, PIER Final Project Report",http://gaia.lbl.gov/btech/papers/59821.pdf,OECD90,USA,2 - Public Sector/ Multilateral Agency,2006,,,(ratio),,,,,
-"Malins (2014) ""Glass of the Future""",http://www.josre.org/wp-content/uploads/2012/10/Smart-Glass-by-Lori-Malins.pdf,OECD90,USA,,2014,,,(ratio),,,,,
-Sbar (2012) Electro Dynamic Windows for Office Buildings,http://dx.doi.org/10.1016/j.ijsbe.2012.09.001,USA,,,2012,,,(ratio),,,,"Used reported Double Pane values versus Single Pane glass for three cases for buildings in Minnesota, Washington DC and Arizona - averaged. Window-Wall-ratio =0.6",
-Sbar (2012) Electro Dynamic Windows for Office Buildings,http://dx.doi.org/10.1016/j.ijsbe.2012.09.001,USA,,,2012,,,(ratio),,,,"Used reported Double Pane values versus glass meeting standard energy efficiency codes (ASHRAE 90.1 2007) for three cases for buildings in Minnesota, Washington DC and Arizona - averaged. Window-Wall-ratio =0.6",
-Sbar (2012) Electro Dynamic Windows for Office Buildings,http://dx.doi.org/10.1016/j.ijsbe.2012.09.001,USA,,,2012,,,(ratio),,,,"Used reported Double Pane values versus Commercial static Double glass for three cases for buildings in Minnesota, Washington DC and Arizona - averaged. Window-Wall-ratio =0.6",
-Deb (2000) Stand Alone PV powered electrochromic smart window,http://www.sciencedirect.com/science/article/pii/S0013468601003905,World,,,2001,,,(ratio),,,,,
-MIT TechReview,https://www.technologyreview.com/s/420221/making-smart-windows-that-are-also-cheap/,World,,,2010,,,(ratio),,,,,
+"16 Sources, Extracting: Zone 0A Extremely Hot Humid",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 0A,,(multiple),,0.045835714285714285,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True
+"16 Sources, Extracting: Zone 0B Extrememly Hot Dry",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 0B,,(multiple),,0.045835714285714285,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True
+"16 Sources, Extracting: Zone 1A Very Hot Humid",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 1A,,(multiple),,0.045835714285714285,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True
+"16 Sources, Extracting: Zone 1B Very Hot Dry",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 1B,,(multiple),,0.045835714285714285,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True
+"16 Sources, Extracting: Zone 2A Hot Humid",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 2A,,(multiple),,0.045835714285714285,Percent,,,,,
+"16 Sources, Extracting: Zone 2B Hot Dry",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 2B,,(multiple),,0.09768050307571534,Percent,,,,,
+"16 Sources, Extracting: Zone 3A Warm Humid",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 3A,,(multiple),,0.06326168601719674,Percent,,,,,
+"16 Sources, Extracting: Zone 3B Warm Dry",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 3B,,(multiple),,0.28,Percent,,,,,
+"16 Sources, Extracting: Zone 3C Warm Marine",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 3C,,(multiple),,0.014441561837787366,Percent,,,,,
+"16 Sources, Extracting: Zone 4A Mixed Humid",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 4A,,(multiple),,0.11945983793545276,Percent,,,,,
+"16 Sources, Extracting: Zone 4B Mixed Dry",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 4B,,(multiple),,0.11945983793545276,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True
+"16 Sources, Extracting: Zone 4C Mixed Marine",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 4C,,(multiple),,0.11945983793545276,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True
+"16 Sources, Extracting: Zone 5A Cool Humid",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 5A,,(multiple),,0.03149234693877552,Percent,,,,,
+"16 Sources, Extracting: Zone 5B Cool Dry",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 5B,,(multiple),,0.08821485198474993,Percent,,,,,
+"16 Sources, Extracting: Zone 5C Cool Marine",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 5C,,(multiple),,0.059853599461762726,Percent,,,,,
+"16 Sources, Extracting: Zone 6A Cold Humid",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 6A,,(multiple),,0.1594951428835966,Percent,,,,,
+"16 Sources, Extracting: Zone 6B Cold Dry",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 6B,,(multiple),,0.1594951428835966,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True
+"16 Sources, Extracting: Zone 7 Very Cold",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 7 ,,(multiple),,0.0247378605554691,Percent,,,,,
+"16 Sources, Extracting: Zone 8 Subarctic/Arctic",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 8 ,,(multiple),,0.0247378605554691,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True

@@ -7,4 +7,4 @@ avoid an error when self.ac.soln_pds_adoption_scenarios_included is missing.
 Set the Helper Tables parameters as follows:
    copy_pds_to_ref=False,
    copy_ref_datapoint=True, copy_pds_datapoint=True, 
-   use_first_ref_datapoint_main=True, use_first_pds_datapoint_main=True,
+   copy_ref_world_too=True, copy_pds_world_too=True,

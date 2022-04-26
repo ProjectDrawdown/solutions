@@ -27,71 +27,7 @@ from model import conversions
 
 DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {
-    'Current Adoption': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
-        use_weight=False),
-    'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION First Cost per Implementation Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
-        use_weight=False),
-    'CONVENTIONAL Operating Cost per Functional Unit per Annum': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum.csv"),
-        use_weight=False),
-    'SOLUTION Operating Cost per Functional Unit per Annum': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum.csv"),
-        use_weight=False),
-    'CONVENTIONAL Net Profit Margin per Functional Unit per Annum': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv"),
-        use_weight=False),
-    'SOLUTION Net Profit Margin per Functional Unit per Annum': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv"),
-        use_weight=False),
-    'Yield from CONVENTIONAL Practice': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Yield_from_CONVENTIONAL_Practice.csv"),
-        use_weight=True),
-    'Yield Gain (% Increase from CONVENTIONAL to SOLUTION)': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION.csv"),
-        use_weight=False),
-    'Electricty Consumed per CONVENTIONAL Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Energy Efficiency Factor': vma.VMA(
-        filename=None, use_weight=False),
-    'Total Energy Used per SOLUTION functional unit': vma.VMA(
-        filename=None, use_weight=False),
-    'Fuel Consumed per CONVENTIONAL Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'Fuel Reduction Factor SOLUTION': vma.VMA(
-        filename=None, use_weight=False),
-    't CO2-eq (Aggregate emissions) Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
-    't CO2 Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
-    't N2O-CO2-eq Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
-    't CH4-CO2-eq Reduced per Land Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "t_CH4_CO2_eq_Reduced_per_Land_Unit.csv"),
-        use_weight=False),
-    'Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE': vma.VMA(
-        filename=None, use_weight=False),
-    'Indirect CO2 Emissions per SOLUTION Implementation Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'Sequestration Rates': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Sequestration_Rates.csv"),
-        use_weight=False),
-    'Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing': vma.VMA(
-        filename=None, use_weight=False),
-    'Disturbance Rate': vma.VMA(
-        filename=None, use_weight=False),
-    'Current Adoption of Holistic Grazing': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Current_Adoption_of_Holistic_Grazing.csv"),
-        use_weight=False),
-    'All other current adoption estimates': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "All_other_current_adoption_estimates.csv"),
-        use_weight=False),
-}
-vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
+VMAs = vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json')
 
 units = {
     "implementation unit": None,
@@ -331,13 +267,12 @@ class Scenario(scenario.LandScenario):
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
             ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,
-            use_first_pds_datapoint_main=True,
-            adoption_base_year=2018,
+            copy_pds_world_too=True,
             copy_pds_to_ref=False,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
-        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=1)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
             ref_total_adoption_units=self.tla_per_region,

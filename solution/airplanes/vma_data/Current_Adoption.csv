@@ -1,3 +1,3 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Drawdown Team estimates based on Boeing and Airbus announced deliveries,See AdoptionEstimates sheet,World,,,2018,,1183.886535061472,billion pass-km,,Billion passenger km,,,
-Drawdown Team estimates based on Boeing and Airbus announced deliveries,See AdoptionEstimates sheet,World,,,2014,,490.5239834755743,billion pass-km,,Billion passenger km,,,
+Drawdown Team estimates based on Boeing and Airbus announced deliveries,See AdoptionEstimates sheet,World,,,2018,,1183.886535061472,billion pass-km,,Billion passenger km,,,False
+Drawdown Team estimates based on Boeing and Airbus announced deliveries,See AdoptionEstimates sheet,World,,,2014,,490.5239834755743,billion pass-km,,Billion passenger km,,,False

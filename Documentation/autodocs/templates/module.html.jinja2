@@ -1,0 +1,49 @@
+{% extends "default/module.html.jinja2" %}
+
+{#
+    Do not print decorators
+#}
+{% macro decorators(doc) %}
+{% endmacro %}
+
+{#
+    Do not print inherited members
+#}
+{% macro inherited(cls) %}
+{% endmacro %}
+
+{% import 'nav.jinja2' as nv with context %}
+{% block nav %}
+    {{ nv.shared_nav() }}
+{% endblock nav %}
+
+{% block style %}
+    {{ super() }}
+    {{ nv.shared_nav_style() }}
+    {% filter minify_css %}
+    <style> /* module style overrides */
+    .pdoc {
+        --code: #fff;
+    }
+    @media (min-width: 770px) {
+        .docstring {
+            margin-left: 1rem;
+        }
+        .pdoc pre {
+            margin-left: 1.5rem;
+            margin-right: 1.5rem;
+        }
+        .attr.class > .name {
+            font-size: 125%;
+        }
+    }
+    main.pdoc > section:first-of-type > .docstring {
+        margin-left: 0;
+        border-bottom: 2px solid var(--accent2);
+    }
+    .pdoc pre {
+        overflow-wrap: normal;
+    }
+    </style>
+{% endfilter %}
+{% endblock style %}

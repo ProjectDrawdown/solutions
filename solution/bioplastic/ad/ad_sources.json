@@ -1,5 +1,13 @@
 {
-  "Ambitious Cases": {
-    "European Bioplastics (2013), 2nd Poly extrapolation": "ad_European_Bioplastics_2013_2nd_Poly_extrapolation.csv"
-  }
+    "Baseline Cases": {
+        "European Bioplastics (2018 update)": "ad_European_Bioplastic_470f305b.csv",
+        "USDA Market Projection": "ad_USDA_Market_Projection.csv"
+    },
+    "Conservative Cases": {
+        "Shen et al. Market Projections (2009)": "ad_Shen_et_al_Market_P_1b39fa85.csv"
+    },
+    "Ambitious Cases": {
+        "European Bioplastics (2013), 2nd Poly extrapolation": "ad_European_Bioplastic_5f4b623e.csv",
+        "IfBB 2018": "ad_IfBB_2018.csv"
+    }
 }

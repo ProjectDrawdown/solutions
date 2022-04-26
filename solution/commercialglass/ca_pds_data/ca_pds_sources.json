@@ -1,20 +1,17 @@
 [
-  {
-    "name": "2.75% building stock retrofit rate",
-    "description": "This model is for Commercial buildings in the non-OECD countries since the OECD countries already have a high adoption of high performance static glass, and is included in the Smart Glass model only. The difficulty in collecting data for non-OECD countries raises the need for some assumptions. In this case, we take the latest data from available countries (China and India), and assume that the adoption rate is fixed for all the historical years in the analysis (2014- current year). The future years have been projected by splitting the current unadopted (single pane) Market (TAM) each year into 1. the existing area from the previous years , 2. new growth in the TAM. The existing area is assumed to be converted to High performance at the rate of retrofit, the new growth is converted at a higher rate according to data on sales. Click to Jump to the Custom PDS Adoption. '",
-    "filename": "custom_pds_ad_2_75_building_stock_retrofit_rate.csv",
-    "include": true
-  },
-  {
-    "name": "5.0% building stock retrofit rate",
-    "description": "This model is for Commercial buildings in the non-OECD countries since the OECD countries already have a high adoption of high performance static glass, and is included in the Smart Glass model only. The difficulty in collecting data for non-OECD countries raises the need for some assumptions. In this case, we take the latest data from available countries (China and India), and assume that the adoption rate is fixed for all the historical years in the analysis (2014- current year). The future years have been projected by splitting the current unadopted (single pane) Market (TAM) each year into 1. the existing area from the previous years , 2. new growth in the TAM. The existing area is assumed to be converted to High performance at the rate of retrofit, the new growth is converted at a higher rate according to data on sales. Click to Jump to the Custom PDS Adoption. ",
-    "filename": "custom_pds_ad_5_0_building_stock_retrofit_rate.csv",
-    "include": true
-  },
-  {
-    "name": "8.0% building stock retrofit rate",
-    "description": "This model is for Commercial buildings in the non-OECD countries since the OECD countries already have a high adoption of high performance static glass, and is included in the Smart Glass model only. The difficulty in collecting data for non-OECD countries raises the need for some assumptions. In this case, we take the latest data from available countries (China and India), and assume that the adoption rate is fixed for all the historical years in the analysis (2014- current year). The future years have been projected by splitting the current unadopted (single pane) Market (TAM) each year into 1. the existing area from the previous years , 2. new growth in the TAM. The existing area is assumed to be converted to High performance at the rate of retrofit, the new growth is converted at a higher rate according to data on sales. Click to Jump to the Custom PDS Adoption. ",
-    "filename": "custom_pds_ad_8_0_building_stock_retrofit_rate.csv",
-    "include": true
-  }
+    {
+        "name": "2.75% building stock retrofit rate",
+        "filename": "ca_pds_2_75_building_s_f62fa0b2.csv",
+        "description": "This model is for Commercial buildings in the non-OECD countries since the OECD countries already have a high adoption of high performance static glass, and is included in the Smart Glass model only. The difficulty in collecting data for non-OECD countries raises the need for some assumptions. In this case, we take the latest data from available countries (China and India), and assume that the adoption rate is fixed for all the historical years in the analysis (2014- current year). The future years have been projected by splitting the current unadopted (single pane) Market (TAM) each year into 1. the existing area from the previous years , 2. new growth in the TAM. The existing area is assumed to be converted to High performance at the rate of retrofit, the new growth is converted at a higher rate according to data on sales. Click to Jump to the Custom PDS Adoption."
+    },
+    {
+        "name": "5.0% building stock retrofit rate",
+        "filename": "ca_pds_5_0_building_st_f44e6685.csv",
+        "description": "This model is for Commercial buildings in the non-OECD countries since the OECD countries already have a high adoption of high performance static glass, and is included in the Smart Glass model only. The difficulty in collecting data for non-OECD countries raises the need for some assumptions. In this case, we take the latest data from available countries (China and India), and assume that the adoption rate is fixed for all the historical years in the analysis (2014- current year). The future years have been projected by splitting the current unadopted (single pane) Market (TAM) each year into 1. the existing area from the previous years , 2. new growth in the TAM. The existing area is assumed to be converted to High performance at the rate of retrofit, the new growth is converted at a higher rate according to data on sales. Click to Jump to the Custom PDS Adoption."
+    },
+    {
+        "name": "8.0% building stock retrofit rate",
+        "filename": "ca_pds_8_0_building_st_23e89fa1.csv",
+        "description": "This model is for Commercial buildings in the non-OECD countries since the OECD countries already have a high adoption of high performance static glass, and is included in the Smart Glass model only. The difficulty in collecting data for non-OECD countries raises the need for some assumptions. In this case, we take the latest data from available countries (China and India), and assume that the adoption rate is fixed for all the historical years in the analysis (2014- current year). The future years have been projected by splitting the current unadopted (single pane) Market (TAM) each year into 1. the existing area from the previous years , 2. new growth in the TAM. The existing area is assumed to be converted to High performance at the rate of retrofit, the new growth is converted at a higher rate according to data on sales. Click to Jump to the Custom PDS Adoption."
+    }
 ]

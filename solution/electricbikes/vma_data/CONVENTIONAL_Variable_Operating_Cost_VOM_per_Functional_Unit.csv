@@ -1,6 +1,6 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Calculated by Drawdown Team from multiple sources,Conventional Costs'!C5,OECD90,,5 - Not Verified,2015,,0.04272358549876824,b$/bPKM,42723585.49876824,US2014$/Billion PKM,0.06475417353254792,,
-Calculated by Drawdown Team from multiple sources,Conventional Costs'!C6,Asia (Sans Japan),,5 - Not Verified,2015,,0.040054873141816,b$/bPKM,40054873.141816,US2014$/Billion PKM,0.9226276403161943,,
-Calculated by Drawdown Team from multiple sources,Conventional Costs'!C7,Eastern Europe,,5 - Not Verified,2015,,0.037857197871985146,b$/bPKM,37857197.871985145,US2014$/Billion PKM,0.001093732675357905,,
-Calculated by Drawdown Team from multiple sources,Conventional Costs'!C8,Middle East and Africa,,5 - Not Verified,2015,,0.03712760712515959,b$/bPKM,37127607.12515959,US2014$/Billion PKM,0.009626214017326202,,
-Calculated by Drawdown Team from multiple sources,Conventional Costs'!C9,Latin America,,5 - Not Verified,2015,,0.03773131831833542,b$/bPKM,37731318.31833542,US2014$/Billion PKM,0.0018982394585736484,,
+Calculated by Drawdown Team from multiple sources,Conventional Costs'!C5,OECD90,,5 - Not Verified,2018,,0.0550029658822219,$/pkm,55002965.8822219,US2014$/Billion PKM,0.1815863704738237,,
+Calculated by Drawdown Team from multiple sources,Conventional Costs'!C6,Asia (Sans Japan),,5 - Not Verified,2018,,0.05226400790581373,$/pkm,52264007.90581373,US2014$/Billion PKM,0.5994505484735393,,
+Calculated by Drawdown Team from multiple sources,Conventional Costs'!C7,Eastern Europe,,5 - Not Verified,2018,,0.05000848561463187,$/pkm,50008485.61463187,US2014$/Billion PKM,0.019418993798410524,,
+Calculated by Drawdown Team from multiple sources,Conventional Costs'!C8,Middle East and Africa,,5 - Not Verified,2018,,0.04925969064228289,$/pkm,49259690.64228289,US2014$/Billion PKM,0.0663728530861966,,
+Calculated by Drawdown Team from multiple sources,Conventional Costs'!C9,Latin America,,5 - Not Verified,2018,,0.04987929267008788,$/pkm,49879292.67008788,US2014$/Billion PKM,0.13317123416802976,,

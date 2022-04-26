@@ -1,0 +1,36 @@
+name: docs_pages_workflow
+ 
+                         # execute this workflow when...
+on:
+  push:                  # we push to develop, or...
+    branches: [ develop ]
+  workflow_dispatch:     # we select the action manually from the github console
+ 
+jobs:
+ 
+  build_docs_job:
+    runs-on: ubuntu-latest
+ 
+    steps:
+    - name: Get repo
+      uses: actions/checkout@v2
+    - name: setup python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+        cache: 'pip'
+    - name: install our dependencies
+      run: pip install pdoc -r requirements.txt
+    
+    - name: Check
+      run: |
+        pwd
+        ls -la
+        chmod +x Documentation/autodocs/builddocs.sh
+      shell: bash
+      
+    - name: Execute script to build our documentation and update pages
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: "./Documentation/autodocs/builddocs.sh"
+      shell: bash

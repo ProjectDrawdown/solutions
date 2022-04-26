@@ -1,37 +1,86 @@
 {
-  "Baseline Cases": {
-    "Based on: IEA ETP 2016 6DS": "ad_based_on_IEA_ETP_2016_6DS.csv"
-  },
-  "Conservative Cases": {
-    "Based on: IEA ETP 2016 4DS": "ad_based_on_IEA_ETP_2016_4DS.csv"
-  },
-  "Ambitious Cases": {
-    "Based on: IEA ETP 2016 2DS": "ad_based_on_IEA_ETP_2016_2DS.csv",
-    "PDS2-Based on ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data (high shift) with recent historical data added": "ad_PDS2based_on_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_128ccfca.csv"
-  },
-  "Region: OECD90": {
+    "Baseline Cases": {
+        "Based on: IEA ETP 2016 2DS": "ad_bon_IEA_ETP_2016_2DS.csv"
+    },
+    "Conservative Cases": {
+        "Based on ITF Reshape+": "ad_bon_ITF_Reshape.csv"
+    },
     "Ambitious Cases": {
-      "ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_High_shift.csv"
+        "PDS2-Based on ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data (high shift) with recent historical data added": "ad_PDS2bon_ITDP_UC_Da_71432cd5.csv"
+    },
+    "Region: OECD90": {
+        "Baseline Cases": {
+            "Based on ITF Recover": "ad_bon_ITF_Recover.csv"
+        },
+        "Conservative Cases": {
+            "Based on ITF Reshape": "ad_bon_ITF_Reshape_1.csv"
+        },
+        "Ambitious Cases": {
+            "Based on ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift": "ad_bon_ITDP_UC_Davis__0c427101.csv",
+            "Based on ITF Reshape+": "ad_bon_ITF_Reshape.csv"
+        }
+    },
+    "Region: Eastern Europe": {
+        "Baseline Cases": {
+            "Based on ITF Recover": "ad_bon_ITF_Recover.csv"
+        },
+        "Conservative Cases": {
+            "Based on ITF Reshape": "ad_bon_ITF_Reshape_1.csv"
+        },
+        "Ambitious Cases": {
+            "Based on ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift": "ad_bon_ITDP_UC_Davis__0c427101.csv",
+            "Based on ITF Reshape+": "ad_bon_ITF_Reshape.csv"
+        }
+    },
+    "Region: Asia (Sans Japan)": {
+        "Baseline Cases": {
+            "Based on ITF Recover": "ad_bon_ITF_Recover.csv"
+        },
+        "Conservative Cases": {
+            "Based on ITF Reshape": "ad_bon_ITF_Reshape_1.csv"
+        },
+        "Ambitious Cases": {
+            "Based on ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift": "ad_bon_ITDP_UC_Davis__0c427101.csv",
+            "Based on ITF Reshape+": "ad_bon_ITF_Reshape.csv"
+        }
+    },
+    "Region: Middle East and Africa": {
+        "Baseline Cases": {
+            "Based on ITF Recover": "ad_bon_ITF_Recover.csv"
+        },
+        "Conservative Cases": {
+            "Based on ITF Reshape": "ad_bon_ITF_Reshape_1.csv"
+        },
+        "Ambitious Cases": {
+            "Based on ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift": "ad_bon_ITDP_UC_Davis__0c427101.csv",
+            "Based on ITF Reshape+": "ad_bon_ITF_Reshape.csv"
+        }
+    },
+    "Region: Latin America": {
+        "Baseline Cases": {
+            "Based on ITF Recover": "ad_bon_ITF_Recover.csv"
+        },
+        "Conservative Cases": {
+            "Based on ITF Reshape": "ad_bon_ITF_Reshape_1.csv"
+        },
+        "Ambitious Cases": {
+            "Based on ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift": "ad_bon_ITDP_UC_Davis__0c427101.csv",
+            "Based on ITF Reshape+": "ad_bon_ITF_Reshape.csv"
+        }
+    },
+    "Region: China": {
+        "Baseline Cases": {
+            "Based on ITF Recover": "ad_bon_ITF_Recover.csv"
+        }
+    },
+    "Region: India": {
+        "Baseline Cases": {
+            "Based on ITF Recover": "ad_bon_ITF_Recover.csv"
+        }
+    },
+    "Region: USA": {
+        "Baseline Cases": {
+            "Based on ITF Recover": "ad_bon_ITF_Recover.csv"
+        }
     }
-  },
-  "Region: Eastern Europe": {
-    "Ambitious Cases": {
-      "ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_High_shift.csv"
-    }
-  },
-  "Region: Asia (Sans Japan)": {
-    "Ambitious Cases": {
-      "ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_High_shift.csv"
-    }
-  },
-  "Region: Middle East and Africa": {
-    "Ambitious Cases": {
-      "ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_High_shift.csv"
-    }
-  },
-  "Region: Latin America": {
-    "Ambitious Cases": {
-      "ITDP - UC Davis (2015)  A Global High Shift Cycling Scenario Updated Report Data - High shift": "ad_ITDP_UC_Davis_2015_A_Global_High_Shift_Cycling_Scenario_Updated_Report_Data_High_shift.csv"
-    }
-  }
 }

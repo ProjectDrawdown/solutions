@@ -1,0 +1,17 @@
+[
+    {
+        "name": "Doubling of Historical Electrification Rate (UIC data)",
+        "filename": "ca_pds_Doubling_of_His_79e1b941.csv",
+        "description": "Electrified railway tkms increase at TWICE the historical average annual rate of track electrification. Using UIC data, we estimate the average electrification rate at 1.4% annually. We double this and use this rate as the optimistically plausible electrification rate. This is reasonable since it still remains below the annual rate of many year's growth according to UIC data below. This may come from increased track length and uniform usage, or higher usage of electrified tracks versus other tracks."
+    },
+    {
+        "name": "Linear projection of Electricity-powered rail freight from 27% of rail freight in 2014 to 40% in 2050 (IEA 2DS projection)",
+        "filename": "ca_pds_Linear_projecti_a24bb482.csv",
+        "description": "UIC data for 2014 indicates 27% electrification of rails. The IEA 2DS scenario projects that 40% of rail freight can be powered by electricity by 2050. We linearly interpolate between these two percentages. We also use an annual average use rate that is 25% higher for the electrified tracks than the conventional."
+    },
+    {
+        "name": "Linear projection of Electricity-powered rail freight from 27% of rail freight in 2014 to 100% in 2050",
+        "filename": "ca_pds_Linear_projecti_0d7d6f89.csv",
+        "description": "UIC data for 2014 indicates 27% electrification of rails. The IEA 2DS scenario projects that 40% of rail freight can be powered by electricity by 2050. We examine the impact of making this target 100% in 2050 by linearly interpolating between these two percentages. We also assume a doubling of the electrified track usage versus the conventional."
+    }
+]

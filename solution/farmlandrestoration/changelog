@@ -1,0 +1,8 @@
+Denton's Notes:
+Farmland Restoration
+In Drawdown2020:
+we delete the PDS-16p2050-testLowSEI scenario because it is some kind of experiment and is unfinished. It doesn't even work in Excel.
+Additionally, we remove PDS-43p2050-Plausible-PDScustom-highlinear-BookVersion1.json because it specifies a custom adoption name of 
+"High, Linear Trend" which does not exist.
+In the generated __init__.py we set ht_pds_datapoints.loc[] to 2014 instead of the generated 2018. The Excel file labels it as 2018,
+but actually uses it as 2014 in all scenarios.

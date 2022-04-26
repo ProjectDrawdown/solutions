@@ -97,6 +97,9 @@ Sub Generate_Scenario_Records()
             Sheets("ScenarioRecord").Activate
             Range("$B$9").Value = scenario
             Call LoadScenario_Click
+
+            ' remove special characters that will mess up the zip archive
+            clean_scenario_name = Trim(Replace(Replace(scenario, "'",""), "/", ""))
             
             ' Write out the sheets
             For Each x In Worksheets
@@ -108,7 +111,7 @@ Sub Generate_Scenario_Records()
                     
                     ' Add to index
                     index_sheet.Cells(counter, 1) = fname
-                    index_sheet.Cells(counter, 2) = scenario
+                    index_sheet.Cells(counter, 2) = clean_scenario_name
                     index_sheet.Cells(counter, 3) = x.Name
                 End If
             Next
@@ -125,3 +128,31 @@ Sub Generate_Scenario_Records()
 End Sub
 
 
+' From https://stackoverflow.com/a/6688482/1539989
+Function WorksheetExists(shtName As String, Optional wb As Workbook) As Boolean
+    Dim sht As Worksheet
+
+    If wb Is Nothing Then Set wb = ThisWorkbook
+    On Error Resume Next
+    Set sht = wb.Sheets(shtName)
+    On Error GoTo 0
+    WorksheetExists = Not sht Is Nothing
+End Function
+
+' Code a couple of Denton's Fixes
+
+Sub do_fixes()
+    ' Replace "Middle East & Africa" with "Middle East and Africa"
+    Sheets("Unit Adoption Calculations").UsedRange.Replace What:="Middle East & Africa", Replacement:="Middle East and Africa"
+
+    ' Fix the mistaken denominator in Land CO2 calcs.   $Hxx --> $Jxx
+    If WorksheetExists("AEZ Data") Then
+        Sheets("CO2 Calcs").Range("B121:AF166").Replace What:="/'AEZ Data'!$H", Replacement:="/'AEZ Data'!$J", LookAt:=xlPart
+    End If
+
+End Sub
+
+Sub do_all()
+    Call do_fixes
+    Call Generate_Scenario_Records
+End Sub

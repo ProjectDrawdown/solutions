@@ -1,0 +1,93 @@
+{
+  "Current Adoption": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "2014: Electrified rail length of 267,783 km divided by total rail length 1,000,289 km = 0.27 times total freight tonne-km on electrified rail assuming freight equally distributed on non-electrified and electrified rail. Similar calculations work for other years. See Adoption1, Adoption2 and Adoption3 sheets. Rail freight tonne-km comes IEA, ETP (2016).",
+    "units": "million tonne-km",
+    "filename": "Current_Adoption.csv"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "US2014$/km of track converted",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "use_weight": false,
+    "bound_correction": true,
+    "description": "Average annual use (VMA #6) times life in years = 30 (California EPA, 2016; Siemens. 2012; IEA ETSAP, 2011).",
+    "units": "million tonne-km/km of track converted",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "use_weight": false,
+    "bound_correction": true,
+    "description": "Average annual use (VMA #7) times life in years = 30 (California EPA, 2016; Siemens. 2012; IEA ETSAP, 2011).",
+    "units": "million tonne-km/km of track converted",
+    "filename": "SOLUTION_Lifetime_Capacity.csv"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "use_weight": false,
+    "bound_correction": true,
+    "description": "Freight tonne-km divided by total rail length (km)",
+    "units": "million tonne-km/km of track converted/year",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv"
+  },
+  "SOLUTION Average Annual Use": {
+    "use_weight": false,
+    "bound_correction": true,
+    "description": "(Freight tonne-km x % of rail km electrified) divided by km rail electrified.",
+    "units": "million tonne-km/km of track converted/year",
+    "filename": "SOLUTION_Average_Annual_Use.csv"
+  },
+  "SOLUTION Total Energy Used per Functional Unit": {
+    "use_weight": false,
+    "bound_correction": true,
+    "description": "The mountainous regions are assumed to only apply to small regions of railway network and are excluded. All other entries are averaged.",
+    "units": "TWh/million tonne-km",
+    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "use_weight": false,
+    "bound_correction": true,
+    "description": "The mountainous regions are assumed to only apply to small regions of railway network and are excluded. The extremely high value for China also excluded. All other entries are averaged.",
+    "units": "Liter/ million tonne-km",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "%",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv"
+  },
+  "Discount Rate - Commercial/Industry": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "In some cases in the literature it is specifically indicated that a distinct discount rate is appropriate when applied to investment decisions made at a Commercial / Industrial level. The Commercial / Industrial level discount rate is directly related to decision-making at a Commercial / Industrial level and likely varies greatly across different regions of the world.  Taking the numbers found in the literature above comprises a conservative case.  Without distortions this discount rate would be equivalent to the interest rate afforded by alternative investments available to larger commericial / industrial entities such as multinational corporations or corporate utility enterprises.  Discount rates reported in the literature that are used for policy decisions are not necessarily equivalent to Commercial / Industrial level financial investment decisions, but oftentimes are not distiguished and may be conflated.  These values represent a conservative case and, due to uncertainty, lower and higher discounting rates should probably be used for sensitivity analysis.",
+    "units": "",
+    "filename": "Discount_Rate_CommercialIndustry.csv"
+  },
+  "Discount Rate - Government": {
+    "use_weight": true,
+    "bound_correction": false,
+    "description": "The discount rates reported here are described as discount rates used for policy evaluation.  The rates reported are weighted by the relative % of GDP represented by the nation or region associated with the rate as reported with the idea that the majority of global investment will likely (at least for the early part of the Drawdown period of inquiry) by making the most sizzeable investments and a weighted discount rate is most relevant for evaluating the financial return potentials of those investments.  These values here, for the most part, discount the 'social welfare' discounting criteria used in some recommendations for discounting for policy (Stern value as an exception).  These values are mostly used for evaluating a more purely financial rationale more based in observable market behavior.  These rates are probably most relevant to be used for Drawdown solutions where government, state utilities, public agencies and policy making bodies are involved in the decision-making with regard to investments.  These values represent a conservative case and, due to uncertainty, and the werighted lower and higher discounting rates (low and high by one standard deviation) should probably be used for sensitivity analysis.",
+    "units": "",
+    "filename": "Discount_Rate_Government.csv"
+  },
+  "Diesel Train Efficiency": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "",
+    "filename": "Diesel_Train_Efficiency.csv"
+  },
+  "Electric Train Efficiency": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "",
+    "filename": "Electric_Train_Efficiency.csv"
+  }
+}

@@ -1,0 +1,5 @@
+Denton's Notes:
+Nutrient Management
+For Drawdown 2020:
+In ScenarioRecord search for all occurrences of "Val:()" and change them to Val:(0.0). Both tools/solutio_xls_extract.py
+has trouble with this, as well as Excel itself cannot load the scenario which makes integration_test_extractpy fail.

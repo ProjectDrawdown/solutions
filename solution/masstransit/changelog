@@ -1,0 +1,3 @@
+The only thing of note is that two of the ad sources had names that differed only by punctuation,
+which initially caused the files to be written on top of each other.  But I fixed that in the
+extractor, so it should not be a problem ever again.

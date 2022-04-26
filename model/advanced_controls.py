@@ -1,5 +1,17 @@
-"""Implements the Advanced Controls, settings which have a default
-   but can be overridden to fit particular needs.
+"""
+An Advanced Controls object contains all the parameters for a given Scenario.
+
+There is a 1:1 relationship between Advanced Controls objects and Scenario objects: each scenario has its Advanced
+Controls object in its `ac` field.  You can think of a Scenario as: a Solution (the model and code) +
+the Advanced Controls (all the customized settings).
+
+The Advanced Controls class has a field for every parameter that is used by any Solution, but not all
+Solutions use all parameters.  (As a simple example, RSS type Solutions do not use parameters related to Land usage.)
+You can see which parameters a specific Solution uses by looking at the saved advanced controls objects in the 'ac'
+subdirectory of the solution definition.
+
+Advanced Controls objects are frozen (immutable).  To "change" a parameter value, you need to construct a new
+AdvancedControls/Scenario combination.
 """
 
 from __future__ import annotations
@@ -9,8 +21,10 @@ import glob
 import json
 import typing
 import re
+import warnings
 from pathlib import Path
 from datetime import datetime
+import numpy as np
 import pandas as pd
 import pytest
 from model import emissionsfactors as ef
@@ -29,7 +43,7 @@ valid_adoption_growth = {'High', 'Medium', 'Low', None}
 
 @dataclasses.dataclass(eq=True, frozen=True)
 class AdvancedControls:
-    """Advanced Controls module, with settings impacting other modules."""
+    """An immutable dictionary-like object of parameter values for a specific scenario."""
 
     # solution_category (SOLUTION_CATEGORY): Whether the solution is primarily REDUCTION of
     #   emissions from an existing technology, REPLACEMENT of a technology to one with lower
@@ -561,28 +575,24 @@ class AdvancedControls:
     ref_adoption_use_pds_years: typing.List[int] = dataclasses.field(default_factory=list)
     pds_adoption_use_ref_years: typing.List[int] = dataclasses.field(default_factory=list)
 
-    # pds_base_adoption: OBSOLETE a list of (region, float) tuples of the base adoption for the
-    #   PDS calculations. For example: [('World', 150000000.0), ('OECD90', 90000000.0), ...]
-    #   SolarPVUtil "ScenarioRecord" rows 151 - 160.
-    #   This is being replaced by ref_base_adoption, once we regenerate all solutions.
     # ref_base_adoption: a dict of region: float values of the base adoption for the REF
     #   calculations. For example: {'World': 150000000.0, 'OECD90': 90000000.0, ...}
     #   SolarPVUtil "ScenarioRecord" rows 151 - 160.
-    # pds_adoption_final_percentage: a list of (region, %) tuples of the final adoption
-    #   percentage for the PDS calculations. For example: [('World', 0.54), ('OECD90', 0.60), ...]
+    # pds_adoption_final_percentage: a dict of region: % tuples of the final adoption
+    #   percentage for the PDS calculations. For example: {'World': 0.54, 'OECD90': 0.60, ...}
     #   SolarPVUtil "ScenarioRecord" rows 170 - 179.
-    pds_base_adoption: typing.List[tuple] = None
-    ref_base_adoption: typing.Dict = None
-    pds_adoption_final_percentage: typing.List[tuple] = None
 
-    # pds_adoption_s_curve_innovation: a list of (region, float) tuples of the innovation
+    ref_base_adoption: typing.Dict = None
+    pds_adoption_final_percentage: typing.Dict = None
+
+    # pds_adoption_s_curve_innovation: a dict of region:float values of the innovation
     #   factor used in the Bass Diffusion S-Curve model.
     #   SolarPVUtil "ScenarioRecord" rows 170 - 179.
-    # pds_adoption_s_curve_imitation: a list of (region, float) tuples of the innovation
+    # pds_adoption_s_curve_imitation: a dict of region:float values of the innovation
     #   factor used in the Bass Diffusion S-Curve model.
     #   SolarPVUtil "ScenarioRecord" rows 170 - 179.
-    pds_adoption_s_curve_innovation: typing.List[tuple] = None
-    pds_adoption_s_curve_imitation: typing.List[tuple] = None
+    pds_adoption_s_curve_innovation: typing.Dict = None
+    pds_adoption_s_curve_imitation: typing.Dict = None
 
     # LAND only
     tco2eq_reduced_per_land_unit: typing.Any = dataclasses.field(default=None, metadata={
@@ -1000,8 +1010,13 @@ class AdvancedControls:
             if v and not pd.isna(v.avg_high_low(key='mean')):
                 break
         else:
-            raise KeyError(f'"{vma_titles}" must be included in vmas to calculate mean/high/low.'
-                    f'vmas included: {self.vmas.keys()}')
+            if len(vma_titles) == 1:
+                needed = repr(vma_titles[0])
+            else:
+                needed = f"one of {', '.join([repr(t) for t in vma_titles])}"
+            warnings.warn(f"Expected non-empty VMA {needed}")
+            return raw_val_from_excel
+
 
         stat = stat.lower()
         self.vma_statistics[name] = longstat or stat

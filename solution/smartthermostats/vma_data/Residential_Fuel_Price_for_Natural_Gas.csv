@@ -1,2 +1,2 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Drawdown Common Fuel Data, Natural Gas",,World,,,2016,,,US$2014/kWh,0.0,US$2014/TJ,,,
+"Drawdown Common Fuel Data, Natural Gas",,World,,,2016,,0.06116531885254616,US$2014/kWh,16990.36636152178,US$2014/TJ,,,

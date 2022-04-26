@@ -1,30 +1,47 @@
 {
-  "Ambitious Cases": {
-    "IEA, 2013, \"Transition to Sustainable Buildings\" \u2013 see TAM Factoring": "tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv",
-    "\u00dcrge-Vorsatz et al. (2015) \u2013 see TAM Factoring": "tam_\u00dcrgeVorsatz_et_al__2015_see_TAM_Factoring.csv"
-  },
-  "Region: China": {
-    "Ambitious Cases": {
-      "IEA, 2013, \"Transition to Sustainable Buildings\" \u2013 see TAM Factoring": "tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv",
-      "Hong et al. (2014) \u2013 see TAM Factoring": "tam_Hong_et_al__2014_see_TAM_Factoring.csv"
-    }
-  },
-  "Region: India": {
-    "Ambitious Cases": {
-      "IEA, 2013, \"Transition to Sustainable Buildings\" \u2013 see TAM Factoring": "tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv",
-      "Chaturvedi et al (2014) \u2013 see TAM Factoring": "tam_Chaturvedi_et_al_2014_see_TAM_Factoring.csv"
-    }
-  },
-  "Region: EU": {
-    "Ambitious Cases": {
-      "IEA, 2013, \"Transition to Sustainable Buildings\" \u2013 see TAM Factoring": "tam_IEA_2013_Transition_to_Sustainable_Buildings_see_TAM_Factoring.csv",
-      "Boermans et al. (2012); BPIE (2014) \u2013 see TAM Factoring": "tam_Boermans_et_al__2012_BPIE_2014_see_TAM_Factoring.csv"
-    }
-  },
-  "Region: USA": {
     "Baseline Cases": {
-      "EIA, 2016, \"Annual Energy Outlook 2016\" \u2013 Reference Case": "tam_EIA_2016_Annual_Energy_Outlook_2016_Reference_Case.csv",
-      "EIA, 2016, \"Annual Energy Outlook 2016\" \u2013 Reference Case w/o CPP": "tam_EIA_2016_Annual_Energy_Outlook_2016_Reference_Case_wo_CPP.csv"
+        "Project Drawdown Integrated Building TAM Model v1.1 - Commercial HIGH": "tam_Project_Drawdown_Integrated_Building_TAM_Model_v1_1_Commercial_HIGH.csv",
+        "Project Drawdown Integrated Building TAM Model v1.1 - Commercial LOW": "tam_Project_Drawdown_Integrated_Building_TAM_Model_v1_1_Commercial_LOW.csv",
+        "Project Drawdown Integrated Building TAM Model v1.1 - Commercial AVERAGE": "tam_Project_Drawdown_Integrated_Building_TAM_Model_v1_1_Commercial_AVERAGE.csv"
+    },
+    "Region: OECD90": {
+        "Ambitious Cases": {
+            "Project Drawdown Integrated Building TAM Model v1.1 - Commercial AVERAGE": "tam_Project_Drawdown_Integrated_Building_TAM_Model_v1_1_Commercial_AVERAGE.csv"
+        }
+    },
+    "Region: Eastern Europe": {
+        "Ambitious Cases": {
+            "Project Drawdown Integrated Building TAM Model v1.1 - Commercial AVERAGE": "tam_Project_Drawdown_Integrated_Building_TAM_Model_v1_1_Commercial_AVERAGE.csv"
+        }
+    },
+    "Region: Asia (Sans Japan)": {
+        "Ambitious Cases": {
+            "Project Drawdown Integrated Building TAM Model v1.1 - Commercial AVERAGE": "tam_Project_Drawdown_Integrated_Building_TAM_Model_v1_1_Commercial_AVERAGE.csv"
+        }
+    },
+    "Region: Middle East and Africa": {
+        "Ambitious Cases": {
+            "Project Drawdown Integrated Building TAM Model v1.1 - Commercial AVERAGE": "tam_Project_Drawdown_Integrated_Building_TAM_Model_v1_1_Commercial_AVERAGE.csv"
+        }
+    },
+    "Region: Latin America": {
+        "Ambitious Cases": {
+            "Project Drawdown Integrated Building TAM Model v1.1 - Commercial AVERAGE": "tam_Project_Drawdown_Integrated_Building_TAM_Model_v1_1_Commercial_AVERAGE.csv"
+        }
+    },
+    "Region: China": {
+        "Ambitious Cases": {
+            "Project Drawdown Integrated Building TAM Model v1.1 - Commercial AVERAGE": "tam_Project_Drawdown_Integrated_Building_TAM_Model_v1_1_Commercial_AVERAGE.csv"
+        }
+    },
+    "Region: India": {
+        "Ambitious Cases": {
+            "Project Drawdown Integrated Building TAM Model v1.1 - Commercial AVERAGE": "tam_Project_Drawdown_Integrated_Building_TAM_Model_v1_1_Commercial_AVERAGE.csv"
+        }
+    },
+    "Region: EU": {
+        "Ambitious Cases": {
+            "Project Drawdown Integrated Building TAM Model v1.1 - Commercial AVERAGE": "tam_Project_Drawdown_Integrated_Building_TAM_Model_v1_1_Commercial_AVERAGE.csv"
+        }
     }
-  }
 }

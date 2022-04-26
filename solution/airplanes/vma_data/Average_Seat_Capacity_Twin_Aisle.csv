@@ -1,2 +1,17 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Drawdown Team assumptions based on review of aircraft models,,World,Twin Aisle Aircraft,,,,325.0,seats,,,,,
+Drawdown Team assumptions based on review of aircraft models,,World,Twin Aisle Aircraft,,,,325.0,seats,,,,,False
+Massachusetts Institute of Technology. 2021. “Global Airline Industry Program: Airline Data Project.,https://web.mit.edu/airlinedata/www/Aircraft&Related.html,World,Twin Aisle Aircraft,,2019.0,,265.0,seats,,,,,False
+Massachusetts Institute of Technology. 2021. “Global Airline Industry Program: Airline Data Project.,https://web.mit.edu/airlinedata/www/Aircraft&Related.html,World,Twin Aisle Aircraft,,2018.0,,263.0,seats,,,,,False
+Statista. 2020a. “Brazilian Airlines’ Aircraft by Number of Seats 2019.,https://www-statista-com.ezproxy.gavilan.edu/statistics/875307/brazil-airlines-aircraft-share-number-passenger-seats/,OECD90,Brazil,,2019.0,,245.71874999999997,seats,,,,,False
+"Kito, Minami. 2021. “Impact of Aircraft Lifetime Change on Lifecycle CO2 Emissions and Costs in Japan.” Ecological Economics 188:107104",,OECD90,Japan,,2020.0,,440.0,seats,,,,B777-200,False
+"Kito, Minami. 2021. “Impact of Aircraft Lifetime Change on Lifecycle CO2 Emissions and Costs in Japan.” Ecological Economics 188:107104",,OECD90,Japan,,2020.0,,550.0,seats,,,,B777-300,False
+"Kito, Minami. 2021. “Impact of Aircraft Lifetime Change on Lifecycle CO2 Emissions and Costs in Japan.” Ecological Economics 188:107104",,OECD90,Japan,,2020.0,,440.0,seats,,,,B777-200ER,False
+"Kito, Minami. 2021. “Impact of Aircraft Lifetime Change on Lifecycle CO2 Emissions and Costs in Japan.” Ecological Economics 188:107104",,OECD90,Japan,,2020.0,,264.0,seats,,,,B777-300ER,False
+"Kito, Minami. 2021. “Impact of Aircraft Lifetime Change on Lifecycle CO2 Emissions and Costs in Japan.” Ecological Economics 188:107104",,OECD90,Japan,,2020.0,,246.0,seats,,,,B787-9,False
+"Kito, Minami. 2021. “Impact of Aircraft Lifetime Change on Lifecycle CO2 Emissions and Costs in Japan.” Ecological Economics 188:107104",,OECD90,Japan,,2020.0,,240.0,seats,,,,B787-8,False
+"Graver, Brandon. 2020. “CO2 Emissions from Commercial Aviation: 2013, 2018, and 2019.” 36.",https://theicct.org/sites/default/files/publications/CO2-commercial-aviation-oct2020.pdf,World,World,,2019.0,,353.0,seats,,,,B777-300/-300ER,False
+"Graver, Brandon. 2020. “CO2 Emissions from Commercial Aviation: 2013, 2018, and 2019.” 36.",https://theicct.org/sites/default/files/publications/CO2-commercial-aviation-oct2020.pdf,World,World,,2019.0,,315.0,seats,,,,Boeing 777-200 / -200ER / -200LR,False
+"Graver, Brandon. 2020. “CO2 Emissions from Commercial Aviation: 2013, 2018, and 2019.” 36.",https://theicct.org/sites/default/files/publications/CO2-commercial-aviation-oct2020.pdf,World,World,,2019.0,,284.0,seats,,,,Boeing 787-9,False
+"Graver, Brandon. 2020. “CO2 Emissions from Commercial Aviation: 2013, 2018, and 2019.” 36.",https://theicct.org/sites/default/files/publications/CO2-commercial-aviation-oct2020.pdf,World,World,,2019.0,,302.0,seats,,,,Boeing 787-8,False
+"Graver, Brandon. 2020. “CO2 Emissions from Commercial Aviation: 2013, 2018, and 2019.” 36.",https://theicct.org/sites/default/files/publications/CO2-commercial-aviation-oct2020.pdf,World,World,,2019.0,,298.0,seats,,,,Airbus A330-300,False
+"Graver, Brandon. 2020. “CO2 Emissions from Commercial Aviation: 2013, 2018, and 2019.” 36.",https://theicct.org/sites/default/files/publications/CO2-commercial-aviation-oct2020.pdf,World,World,,2019.0,,302.0,seats,,,,Airbus A350-900,False

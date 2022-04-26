@@ -1,0 +1,56 @@
+{
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Mt CH4/yr abatement capacity"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "Mt CH4 abated/Mt CH4/yr abatement capacity"
+  },
+  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+    "title": "SOLUTION Variable Operating Cost (VOM) per Functional Unit",
+    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "US2014$/Mt CH4 abated"
+  },
+  "CONVENTIONAL Direct Emissions per Functional Unit": {
+    "title": "CONVENTIONAL Direct Emissions per Functional Unit",
+    "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/Mt CH4 abated"
+  },
+  "SOLUTION Direct Emissions per Functional Unit": {
+    "title": "SOLUTION Direct Emissions per Functional Unit",
+    "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/Mt CH4 abated"
+  },
+  "CH4-CO2eq Tons Reduced": {
+    "title": "CH4-CO2eq Tons Reduced",
+    "filename": "CH4_CO2eq_Tons_Reduced.csv",
+    "stat_correction": true,
+    "units": "t CH4-CO2eq per Mt CH4 abated"
+  },
+  "Total abatement potential 2020  - initial value for TAM": {
+    "title": "Total abatement potential 2020  - initial value for TAM",
+    "filename": "Total_abatement_potential_2020_initial_value_for_TAM.csv",
+    "stat_correction": true,
+    "units": "Mt CH4 in 2020"
+  },
+  "Price of natural gas": {
+    "title": "Price of natural gas",
+    "filename": "Price_of_natural_gas.csv",
+    "stat_correction": true,
+    "units": "$/mcf"
+  },
+  "Global warming potential of methane": {
+    "title": "Global warming potential of methane",
+    "filename": "Global_warming_potential_of_methane.csv",
+    "stat_correction": true,
+    "units": "t CO2e/t CH4"
+  }
+}

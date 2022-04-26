@@ -1,0 +1,8 @@
+Denton's Notes:
+Hybrid Cars
+ScenarioRecord cells E743, E746, E760, E761, E769, E787 use comma separators and need to be changed to period.
+FirstCost cells C37:C82 contain "('Unit Adoption Calculations'!AY###)^C$26)", and Excel implements 0^0 as NaN 
+instead of 1. Python implements 0^0 as 1.
+Update the formula in C37:C82 in two places to add an IF, for example for C37:
+=IF('Advanced Controls'!$C$117="Y",(C$27*(IF(C$26=0,1,('Unit Adoption Calculations'!AY137)^C$26)))*$F$15,
+    MAX((C$27*(IF(C$26=0,1,('Unit Adoption Calculations'!AY137)^C$26)))*$F$15,O37))

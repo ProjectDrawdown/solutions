@@ -26,81 +26,7 @@ from solution import rrs
 
 DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {
-    'Current Adoption': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
-            use_weight=False),
-    'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION First Cost per Implementation Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
-            use_weight=False),
-    'CONVENTIONAL Lifetime Capacity': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Lifetime Capacity': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Lifetime_Capacity.csv"),
-            use_weight=False),
-    'CONVENTIONAL Average Annual Use': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Average Annual Use': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Average_Annual_Use.csv"),
-            use_weight=False),
-    'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"),
-            use_weight=True),
-    'SOLUTION Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"),
-            use_weight=False),
-    'CONVENTIONAL Fixed Operating Cost (FOM)': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Fixed Operating Cost (FOM)': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv"),
-            use_weight=False),
-    'SOLUTION Energy Efficiency Factor': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Total Energy Used per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Fuel Consumed per Functional Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv"),
-            use_weight=False),
-    'SOLUTION Fuel Efficiency Factor': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Fuel_Efficiency_Factor.csv"),
-            use_weight=False),
-    'CONVENTIONAL Direct Emissions per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Direct Emissions per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Indirect CO2 Emissions per Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Indirect CO2 Emissions per Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'CH4-CO2eq Tons Reduced': vma.VMA(
-            filename=None, use_weight=False),
-    'N2O-CO2eq Tons Reduced': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Revenue per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Revenue per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'Conversion factor for collector area to solar thermal capacity': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Conversion_factor_for_collector_area_to_solar_thermal_capacity.csv"),
-            use_weight=False),
-    'Natural Gas Share of Conventional Water Heating': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Natural_Gas_Share_of_Conventional_Water_Heating.csv"),
-            use_weight=False),
-    'Electricity Share of Conventional Water Heating': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Electricity_Share_of_Conventional_Water_Heating.csv"),
-            use_weight=False),
-    'Conventional Fuel HW Efficiency': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Conventional_Fuel_HW_Efficiency.csv"),
-            use_weight=True),
-    'Conventional Electricity HW Efficiency': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Conventional_Electricity_HW_Efficiency.csv"),
-            use_weight=False),
-}
-vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
+VMAs = vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json')
 
 units = {
     "implementation unit": "TW",
@@ -141,7 +67,6 @@ class Scenario(scenario.RRSScenario):
         # ADOPTION
         self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
         self._pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
-        self._pds_ad_settings['main_includes_regional'] = False
         self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
@@ -180,7 +105,7 @@ class Scenario(scenario.RRSScenario):
                 pds_adoption_trend_per_region=pds_adoption_trend_per_region,
                 pds_adoption_is_single_source=pds_adoption_is_single_source)
 
-        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=1)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
                 ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=pds_tam_per_region,

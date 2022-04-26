@@ -1,0 +1,12 @@
+Denton's Notes:
+InstreamHydro
+The "Baseline Cases", "Ambitious Cases", etc headers were removed from all regions in TAM Data, which breaks 
+tools/solution_xls_extract parsing. Copy that header from another solution.
+
+Small Hydro (different model?):
+The Custom REF Adoption tab deleted the "Include?" settings from S24:T34. Copy them from another spreadsheet, 
+and set the first four to Yes. Otherwise the class is generated with all custom_ref_data_sources disabled. 
+(Note: columns S and T, the other thing Small Hydro did is shorten the column ranges used for names)
+
+The Custom REF Adoption tab supplies no regional data, not even 0. Change the IFERROR value in Helper Tables D28:L73 to 0.0:
+=IFERROR(MIN((IF($F$15=1,FORECAST($B28,D$21:D$22,$B$21:$B$22),'Custom REF Adoption'!C26*1)),'Unit Adoption Calculations'!C18),0)

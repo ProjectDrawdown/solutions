@@ -1,0 +1,41 @@
+{% extends "default/frame.html.jinja2" %}
+
+{% block title %}
+{{ doc_title }}
+{% endblock %}
+
+{% import 'nav.jinja2' as nv with context %}
+{% block style %}
+    {{ super() }}
+    {{ nv.shared_nav_style() }}
+    <style>
+        main.pdoc a {
+            text-decoration: underline !important;
+        }
+    </style>
+{% endblock style %}
+
+{% block nav %}
+    {{ nv.shared_nav() }}
+
+    {% if search and all_modules|length > 1 %}
+        {% include "search.html.jinja2" %}
+    {% endif %}
+{% endblock nav %}
+
+{% block content %}
+    <main class="pdoc">
+        <div class='doc_location'>{{doc_loc}}</div>
+        {% autoescape false %}
+        {{ the_doc | to_html }}
+        {% endautoescape %}
+        <style>
+            .doc_location {
+                position: relative;
+                top: -15px;
+                color: var(--accent2);
+            }
+        </style>
+    </main>
+
+{% endblock content %}

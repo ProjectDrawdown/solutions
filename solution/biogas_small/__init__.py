@@ -27,85 +27,7 @@ from solution import rrs
 
 DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {
-    'Current Adoption': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
-            use_weight=False),
-    'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv"),
-            use_weight=True),
-    'SOLUTION First Cost per Implementation Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
-            use_weight=False),
-    'CONVENTIONAL Lifetime Capacity': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Lifetime_Capacity.csv"),
-            use_weight=True),
-    'SOLUTION Lifetime Capacity': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Lifetime_Capacity.csv"),
-            use_weight=False),
-    'CONVENTIONAL Average Annual Use': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Average_Annual_Use.csv"),
-            use_weight=True),
-    'SOLUTION Average Annual Use': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Average_Annual_Use.csv"),
-            use_weight=False),
-    'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"),
-            use_weight=True),
-    'SOLUTION Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"),
-            use_weight=False),
-    'CONVENTIONAL Fixed Operating Cost (FOM)': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Fixed Operating Cost (FOM)': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Energy Efficiency Factor': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Total Energy Used per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Fuel Consumed per Functional Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv"),
-            use_weight=True),
-    'SOLUTION Fuel Efficiency Factor': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Direct Emissions per Functional Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv"),
-            use_weight=True),
-    'SOLUTION Direct Emissions per Functional Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Direct_Emissions_per_Functional_Unit.csv"),
-            use_weight=False),
-    'CONVENTIONAL Indirect CO2 Emissions per Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Indirect CO2 Emissions per Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'CH4-CO2eq Tons Reduced': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CH4_CO2eq_Tons_Reduced.csv"),
-            use_weight=False),
-    'N2O-CO2eq Tons Reduced': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Revenue per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Revenue per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'tCO2/yr per digester': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "tCO2_yr_per_digester.csv"),
-            use_weight=False),
-    'Black carbon GWP': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Black_carbon_GWP.csv"),
-            use_weight=False),
-    't CO2 eq per Metric ton of fuel': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "t_CO2_eq_per_Metric_ton_of_fuel.csv"),
-            use_weight=True),
-    'Average Household Biodigester Production per year': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Average_Household_Biodigester_Production_per_year.csv"),
-            use_weight=False),
-    'Kerosene (Heating Oil) Spot Price': vma.VMA(
-            filename=DATADIR.joinpath(*('energy', 'vma_Kerosene_Heating_Oil_Spot_Price.csv')),
-            use_weight=False),
-}
-vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
+VMAs = vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json')
 
 units = {
     "implementation unit": "Biogas plant",
@@ -182,7 +104,7 @@ class Scenario(scenario.RRSScenario):
                 pds_adoption_trend_per_region=pds_adoption_trend_per_region,
                 pds_adoption_is_single_source=pds_adoption_is_single_source)
 
-        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=1)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
                 ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=pds_tam_per_region,

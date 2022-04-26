@@ -26,91 +26,7 @@ from solution import rrs
 
 DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {
-    'Current Adoption': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
-            use_weight=False),
-    'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv"),
-            use_weight=True),
-    'SOLUTION First Cost per Implementation Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
-            use_weight=True),
-    'CONVENTIONAL Lifetime Capacity': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Lifetime_Capacity.csv"),
-            use_weight=False),
-    'SOLUTION Lifetime Capacity': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Lifetime_Capacity.csv"),
-            use_weight=False),
-    'CONVENTIONAL Average Annual Use': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Average_Annual_Use.csv"),
-            use_weight=True),
-    'SOLUTION Average Annual Use': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Average_Annual_Use.csv"),
-            use_weight=True),
-    'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Fixed Operating Cost (FOM)': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv"),
-            use_weight=True),
-    'SOLUTION Fixed Operating Cost (FOM)': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Fixed_Operating_Cost_FOM.csv"),
-            use_weight=True),
-    'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv"),
-            use_weight=False),
-    'SOLUTION Energy Efficiency Factor': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Total Energy Used per Functional Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv"),
-            use_weight=False),
-    'CONVENTIONAL Fuel Consumed per Functional Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv"),
-            use_weight=False),
-    'SOLUTION Fuel Efficiency Factor': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Fuel_Efficiency_Factor.csv"),
-            use_weight=False),
-    'CONVENTIONAL Direct Emissions per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Direct Emissions per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Indirect CO2 Emissions per Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Indirect CO2 Emissions per Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'CH4-CO2eq Tons Reduced': vma.VMA(
-            filename=None, use_weight=False),
-    'N2O-CO2eq Tons Reduced': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Revenue per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Revenue per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'TAM Share from Space Heating': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "TAM_Share_from_Space_Heating.csv"),
-            use_weight=False),
-    'High Efficiency Heat Pump Coefficient of Performance': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "High_Efficiency_Heat_Pump_Coefficient_of_Performance.csv"),
-            use_weight=False),
-    'Average Size of Heat Pumps (residential) Units': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Average_Size_of_Heat_Pumps_residential_Units.csv"),
-            use_weight=False),
-    'Average Size of Heat Pumps (commercial) Units': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Average_Size_of_Heat_Pumps_commercial_Units.csv"),
-            use_weight=False),
-    'Average Size of Conventional Technologies': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Average_Size_of_Conventional_Technologies.csv"),
-            use_weight=True),
-    'Learning Rate': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Learning_Rate.csv"),
-            use_weight=False),
-    'Discount Rate': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Discount_Rate.csv"),
-            use_weight=True),
-}
-vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
+VMAs = vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json')
 
 units = {
     "implementation unit": "Installation Units",
@@ -163,8 +79,8 @@ class Scenario(scenario.RRSScenario):
             ['EU', 2014, 2050],
             ['USA', 2014, 2050]]
         sconfig = pd.DataFrame(sconfig_list[1:], columns=sconfig_list[0]).set_index('region')
-        sconfig['pds_tam_2050'] = pds_tam_per_region.loc[[2050]].T
-        sc_regions, sc_percentages = zip(*self.ac.pds_base_adoption)
+        sconfig['last_pds_tam'] = pds_tam_per_region.loc[[2050]].T
+        sc_regions, sc_percentages = zip(*self.ac.ref_base_adoption)
         sconfig['base_adoption'] = pd.Series(list(sc_percentages), index=list(sc_regions))
         sconfig['base_percent'] = sconfig['base_adoption'] / pds_tam_per_region.loc[2014]
         sc_regions, sc_percentages = zip(*self.ac.pds_adoption_final_percentage)
@@ -219,7 +135,7 @@ class Scenario(scenario.RRSScenario):
                 pds_adoption_trend_per_region=pds_adoption_trend_per_region,
                 pds_adoption_is_single_source=pds_adoption_is_single_source)
 
-        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=1)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
                 ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=pds_tam_per_region,

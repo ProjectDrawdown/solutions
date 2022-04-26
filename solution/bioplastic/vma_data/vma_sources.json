@@ -1,0 +1,93 @@
+{
+  "Current Adoption": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "MMt of Plastic Produced Annually",
+    "filename": "Current_Adoption.csv"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "US2014$/MMt of Plastic Produced Annually",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "use_weight": true,
+    "bound_correction": false,
+    "description": "Weights from European Bioplastics 2018 - More non-biodegradable costs are necessary to use the time-based weighting scheme and split this into two variables.",
+    "units": "US2014$/MMt of Plastic Produced Annually",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "It is assumed that plastic materials are single-use.",
+    "units": "MMt of Plastic Produced Annually/MMt of Plastic Produced Annually/year",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv"
+  },
+  "SOLUTION Average Annual Use": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "It is assumed that plastic materials are single-use.",
+    "units": "MMt of Plastic Produced Annually/MMt of Plastic Produced Annually/year",
+    "filename": "SOLUTION_Average_Annual_Use.csv"
+  },
+  "CONVENTIONAL Total Energy Used per Functional Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "TWh/MMt of Plastic Produced Annually",
+    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv"
+  },
+  "SOLUTION Total Energy Used per Functional Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "TWh/MMt of Plastic Produced Annually",
+    "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv"
+  },
+  "CONVENTIONAL Direct Emissions per Functional Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Virgin plastics production",
+    "units": "t CO2-eq/MMt of Plastic Produced Annually",
+    "filename": "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv"
+  },
+  "SOLUTION Direct Emissions per Functional Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Relevant LCA values are all included in the sub-solutions below (#s 27 and 28). The direct emissions per solution functional unit are calculated as the weighted average of total adoption of biodegradable and non-biodegradable plastics - in blue.",
+    "units": "t CO2-eq/MMt of Plastic Produced Annually",
+    "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv"
+  },
+  "Life cycle difference in GHG per kg of polymer for biopolymers compared to traditional polymers (kg CO2 eq/kg)": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "This variable is not currently used in any calculations. Calculated data are based on direct substitution of drop ins, calculated from average values in table 28 and 17.",
+    "units": "t CO2-eq/MMT polymers",
+    "filename": "Life_cycle_difference_in_GHG_per_kg_of_polymer__3fad27b7.csv"
+  },
+  "Feedstock:MMT Bioplastic Constraint": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "",
+    "filename": "FeedstockMMT_Bioplastic_Constraint.csv"
+  },
+  "Direct Emissions per SOLUTION Functional Unit - Biodegradable": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Weights from European Bioplastics 2018. Biodegradable bioplastics are 43.2% of bioplastics market. Further categorizations for weighting are included in the tables to the right, but weighted values are not currently used due to lack of complete data. LCA studies with end of life are excluded. Keep COUNT updated when new data is input.",
+    "units": "t CO2-eq/MMt of Plastic Produced Annually",
+    "filename": "Direct_Emissions_per_SOLUTION_Functional_Unit_B_a47949b2.csv"
+  },
+  "Direct Emissions per SOLUTION Functional Unit - Non-Biodegradable": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Weights from European Bioplastics 2018. Bio-based, non-biodegradable are 56.8% of bioplastics market. Further categorizations for weighting are included in the tables to the right, but weighted values are not currently used due to lack of complete data. LCA studies with end of life are excluded. Keep COUNT updated when new data is input.",
+    "units": "t CO2-eq/MMt of Plastic Produced Annually",
+    "filename": "Direct_Emissions_per_SOLUTION_Functional_Unit_N_20dc0891.csv"
+  }
+}

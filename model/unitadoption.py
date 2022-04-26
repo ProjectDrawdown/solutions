@@ -53,28 +53,27 @@ def cumulative_degraded_land(
 class UnitAdoption(DataHandler):
     """Implementation for the Unit Adoption module.
 
-       Arguments:
-         ac: advanced_controls.py object, settings to control model operation.
-         soln_ref_funits_adopted: Annual functional units adopted in the Reference scenario.
-         soln_pds_funits_adopted: Annual functional units adopted in the PDS scenario.
-         ref_total_adoption_units: dataframe of TAM/TLA/TOA per region for the Reference scenario.
-         pds_total_adoption_units: dataframe of TAM/TLA/TOA per region for the PDS scenario.
-
-         repeated_cost_for_iunits (bool): whether there is a repeated first cost to
+    Arguments:
+        ac: advanced_controls.py object, settings to control model operation.
+        soln_ref_funits_adopted: Annual functional units adopted in the Reference scenario.
+        soln_pds_funits_adopted: Annual functional units adopted in the PDS scenario.
+        ref_total_adoption_units: dataframe of TAM/TLA/TOA per region for the Reference scenario.
+        pds_total_adoption_units: dataframe of TAM/TLA/TOA per region for the PDS scenario.
+        repeated_cost_for_iunits (bool): whether there is a repeated first cost to
            maintaining implementation units at a specified level in
            soln_pds_new_iunits_reqd, soln_ref_new_iunits_reqd, & conv_ref_new_iunits.
-         electricity_unit_factor (float): a factor to multiply the electricity-related
+        electricity_unit_factor (float): a factor to multiply the electricity-related
            results by. For example, Land solutions typically multiply by 1e6 because their
            basic land unit is a million hectares but the electricity use (for irrigation, etc)
            is calculated per hectare.
         
-        Excel matching options:
-         bug_cfunits_double_count (bool): enable bug-for-bug compatibility
-         replacement_period_offset:  I'm not sure why, but the existing code added '1' in a number of places
-           to replacement periods, and the resulting code passes tests for a number of solutions.
-           It does not match the current Excel spreadsheets I am looking at in 2021, and it doesn't make sense.
-           But I'm giving in and making it a parameter defaulting to 1 for backwards compatibility, and set to
-           0 for new models where it is breaking things.
+    Quirks options:
+        bug_cfunits_double_count (bool): enable bug-for-bug compatibility
+        replacement_period_offset:  There are two different formulas used by the Excel for
+          calculating replacement period, which differ by a constant '1' added in some places to the
+          code.  I don't really understand this (the added constant doesn't make sense to me),
+          but it is clear that different models need this set differently.  I'm setting the default
+          to 1 because that was the original behavior.  The other used value is 0.
     """
 
     def __init__(self, ac, soln_ref_funits_adopted, soln_pds_funits_adopted,
@@ -372,24 +371,18 @@ class UnitAdoption(DataHandler):
         """Cumulative Functional Units Utilized.
            SolarPVUtil 'Unit Adoption Calculations'!Q134:AA181
         """
-        first_year = self.soln_pds_funits_adopted.fillna(0.0)
+        funits_adopted = self.soln_pds_funits_adopted.copy().fillna(0.0)
         if self.bug_cfunits_double_count:
             # in a number of older solutions, 'Advanced Controls'!$C$61:C70 is added to
             # the 2014 soln_pds_cumulative_funits, which ends up double counting 2014.
             # We optionally enable this bug-for-bug compatibility.
             # https://docs.google.com/document/d/19sq88J_PXY-y_EnqbSJDl0v9CdJArOdFLatNNUFhjEA/edit#heading=h.z9hqutnbnigx
-            idx = first_year.first_valid_index()
-            if self.ac is not None and self.ac.ref_base_adoption is not None:
-                # solutions updated for Drawdown 2020 have a ref_base_adoption dict
-                omit_main = pd.DataFrame(self.ac.ref_base_adoption, index=[idx])
-            else:
-                # Solutions not yet updated fall back to the original code here
-                omit_main = self.soln_pds_funits_adopted.iloc[[0], :].fillna(0.0).copy(deep=True)
-            omit_main.index.name = 'Year'
-            main_region = dd.REGIONS[0]
-            omit_main[main_region] = 0.0
-            first_year = first_year.add(omit_main, fill_value=0)
-        result = first_year.cumsum(axis=0, skipna=False)
+            # Note we actually have to fetch the initial adoption from ac here, since that amount may be different
+            # than pds_funits_adopted number (in the case of a custom adoption, for example)
+            added_adoption = pd.Series(self.ac.ref_base_adoption)
+            added_adoption['World'] = 0.0
+            funits_adopted.iloc[0] = funits_adopted.iloc[0] + added_adoption
+        result = funits_adopted.cumsum(axis=0, skipna=False)
         result.name = "soln_pds_cumulative_funits"
         return result
 

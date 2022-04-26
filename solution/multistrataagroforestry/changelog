@@ -1,0 +1,6 @@
+Denton's Notes:
+Multistrata Agroforestry
+Unit adoption in 2015 is zero, so First Cost cell C27 is #DIV/0!. Change cell C27 to:
+=IFERROR(C20*(1/C21)^C26,C20)
+The Custom TLA tab C645:C693 is empty, and values from the ScenarioRecord are not being populated for some reason.
+Paste 360.04639205058 to those cells.

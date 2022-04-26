@@ -1,0 +1,8 @@
+
+Deleted older changelog as none of the previous issues still held.
+
+I needed to set helpertables copy_ref_datapoint = False
+
+On the adoption tab, someone had put in '-' (the minus character) in early data instead of NaN, which confused pandas
+into interpreting the data as object, which messed up all the ensuing math.  I deleted the '-' characters and
+re-extracted, which fixed the problem.

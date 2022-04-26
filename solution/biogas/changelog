@@ -1,0 +1,7 @@
+Denton's Notes:
+Biogas:
+A number of the regions have no Adoption Data except for hard-coded constants for 2012-2014. This makes the Python implementation 
+try to fit a trend to that data, which does not match the Excel behavior. Zero out 2012-2014 of regional adoption sources which 
+are not populated with other data.
+
+In India and EU regions, update "Based on IEA ETP 2016" source to "Based on IEA ETP 2016 - 6DS" and same for 4DS and 2DS.

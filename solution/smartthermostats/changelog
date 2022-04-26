@@ -1,0 +1,2 @@
+First solution updated with the new extractor!  Ran into issues with s-curve start-year > 2014.  Had to create a new
+quirks parameter for sconfig to match a bug in Excel that uses the 2014 tam when it should be using base year.

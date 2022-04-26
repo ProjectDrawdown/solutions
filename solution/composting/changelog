@@ -1,0 +1,8 @@
+Denton's Notes:
+Composting
+In Adoption Data cells U46:U94, the final term of the conditional is 'STDEV.P(C46:M46)' which means the Standard Deviation does not 
+include the regional sum in column Q. In SolarPVUtil and other solutions where the Adoption Data extends a few more columns, the 
+Standard Deviation does include the regional sum. It is nonsensical to include the regional sum in the mean but not the standard deviation. 
+We update the last STDEV.P in U46:U94 to be STDEV.P(C46:Q46).
+
+VMA #27 deleted the "**Add calc above" string from column L, which is how vma_xls_extract.py identifies the bottom of the VMA. Put it back.

@@ -1,0 +1,59 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "million hectares"
+  },
+  "CONVENTIONAL Operating Cost per Functional Unit per Annum": {
+    "title": "CONVENTIONAL Operating Cost per Functional Unit per Annum",
+    "filename": "CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum.csv",
+    "use_weight": true,
+    "units": "US$2014/ha/yr"
+  },
+  "CONVENTIONAL Net Profit Margin per Functional Unit per Annum": {
+    "title": "CONVENTIONAL Net Profit Margin per Functional Unit per Annum",
+    "filename": "CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv",
+    "use_weight": true,
+    "units": "US$2014/ha/yr"
+  },
+  "SOLUTION Net Profit Margin per Functional Unit per Annum": {
+    "title": "SOLUTION Net Profit Margin per Functional Unit per Annum",
+    "filename": "SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "Yield from CONVENTIONAL Practice": {
+    "title": "Yield from CONVENTIONAL Practice",
+    "filename": "Yield_from_CONVENTIONAL_Practice.csv",
+    "use_weight": true,
+    "units": "kg/ha/yr"
+  },
+  "Yield Gain (% Increase from CONVENTIONAL to SOLUTION)": {
+    "title": "Yield Gain (% Increase from CONVENTIONAL to SOLUTION)",
+    "filename": "Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Forest Degradation Rate": {
+    "title": "Forest Degradation Rate",
+    "filename": "Forest_Degradation_Rate.csv",
+    "stat_correction": true
+  },
+  "Percent Women Force in Agriculture": {
+    "title": "Percent Women Force in Agriculture",
+    "filename": "Percent_Women_Force_in_Agriculture.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "Percent Women Farmholders in Agriculture": {
+    "title": "Percent Women Farmholders in Agriculture",
+    "filename": "Percent_Women_Farmholders_in_Agriculture.csv",
+    "stat_correction": true
+  },
+  "Avoided Deforested Area With Increase in Agricultural Intensification": {
+    "title": "Avoided Deforested Area With Increase in Agricultural Intensification",
+    "filename": "Avoided_Deforested_Area_With_Increase_in_Agricultural_Intensification.csv",
+    "stat_correction": true
+  }
+}

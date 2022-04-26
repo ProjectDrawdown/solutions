@@ -27,74 +27,7 @@ from model import conversions
 
 DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {
-    'Current Adoption': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
-            use_weight=False),
-    'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION First Cost per Implementation Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Operating Cost per Functional Unit per Annum': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum.csv"),
-            use_weight=True),
-    'SOLUTION Operating Cost per Functional Unit per Annum': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Net Profit Margin per Functional Unit per Annum': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv"),
-            use_weight=True),
-    'SOLUTION Net Profit Margin per Functional Unit per Annum': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv"),
-            use_weight=False),
-    'Yield from CONVENTIONAL Practice': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Yield_from_CONVENTIONAL_Practice.csv"),
-            use_weight=True),
-    'Yield Gain (% Increase from CONVENTIONAL to SOLUTION)': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION.csv"),
-            use_weight=False),
-    'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Energy Efficiency Factor': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Total Energy Used per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Fuel Consumed per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Fuel Efficiency Factor': vma.VMA(
-            filename=None, use_weight=False),
-    't CO2-eq (Aggregate emissions) Reduced per Land Unit': vma.VMA(
-            filename=DATADIR.joinpath(*('land', 'vma_t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit.csv')),
-            use_weight=False),
-    't CO2 Reduced per Land Unit': vma.VMA(
-            filename=None, use_weight=False),
-    't N2O-CO2-eq Reduced per Land Unit': vma.VMA(
-            filename=None, use_weight=False),
-    't CH4-CO2-eq Reduced per Land Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE': vma.VMA(
-            filename=None, use_weight=False),
-    'Indirect CO2 Emissions per  Implementation Unit - SOLUTION': vma.VMA(
-            filename=None, use_weight=False),
-    'Sequestration Rates': vma.VMA(
-            filename=None, use_weight=False),
-    'Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing': vma.VMA(
-            filename=None, use_weight=False),
-    'Disturbance Rate': vma.VMA(
-            filename=None, use_weight=False),
-    'Forest Degradation Rate': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Forest_Degradation_Rate.csv"),
-            use_weight=False),
-    'Percent Women Force in Agriculture': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Percent_Women_Force_in_Agriculture.csv"),
-            use_weight=False),
-    'Percent Women Farmholders in Agriculture': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Percent_Women_Farmholders_in_Agriculture.csv"),
-            use_weight=False),
-    'Avoided Deforested Area With Increase in Agricultural Intensification': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Avoided_Deforested_Area_With_Increase_in_Agricultural_Intensification.csv"),
-            use_weight=False),
-}
-vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
+VMAs = vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json')
 
 units = {
     "implementation unit": None,
@@ -164,7 +97,7 @@ class Scenario(scenario.LandScenario):
                 pds_adoption_trend_per_region=pds_adoption_trend_per_region,
                 pds_adoption_is_single_source=pds_adoption_is_single_source)
 
-        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=1)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
                 ref_total_adoption_units=self.tla_per_region, pds_total_adoption_units=self.tla_per_region,

@@ -1,0 +1,93 @@
+{
+  "SOLUTION First Cost per Implementation Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "First cost of implementation - note that establishment of forest plantations through afforestation generally occurs on  previously degraded land.",
+    "units": "US$2014/ ha",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv"
+  },
+  "CONVENTIONAL Operating Cost per Functional Unit per Annum": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "US$2014/ ha/ yr",
+    "filename": "CONVENTIONAL_Operating_Cost_per_Functional_Unit_f1ba9d84.csv"
+  },
+  "SOLUTION Operating Cost per Functional Unit per Annum": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "US$2014/ ha/ yr",
+    "filename": "SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum.csv"
+  },
+  "CONVENTIONAL Net Profit Margin per Functional Unit per Annum": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Costs are sometimes presented per cow rather than per hectare. Number of cows per hectare varies tremendously based on variables like climate, soil quality, age and size of cows, and grazing system. In cases where costs are presented per cow, Drawdown assumes one cow per hectare.  Scarcity and abundance of land resources: competing uses and the shrinking land resource base assumes that each ton of dry matter is sufficient for half a tropical livestock unit (live weight). According to FAO Livestock production in tropical Africa with special reference to the tsetse-afferent zone, a tropical livestock unit is considered to be 250kg live weight, the equivalent of one cow as tropical cattle tend to be smaller than temperate cattle. For temperate and boreal regions one livestock unit is a mature dairy cow, estimated at 1000kg according to the EU Statistics Glossary.\n\nThus Drawdown\u2019s global weighted average of 4.8 tons DM per hectare of grassland  is sufficient to support .61 tons of live weight ruminants which converts to 2.4 tropical livestock units or 0.6 EU livestock units. The total area of temperate grassland is 1768 Mha and tropical is 1819. Thus as a rough estimate, one cow per hectare is acceptable for the purposes of using financial data from grazing studies.\n\nNote: Forest plantations are allocated on degraded land - this present model assumes marginal conventional use of this degraded land areas, principally for grazing. \nIn the absence of sufficient financial data sources documenting the implementation of grazing practices on degraded land, Drawdown\u2019s forest plantation model uses conventional grazing data as a basis for comparison. However, in order to model decreased productivity on degraded land, financial variables for conventional grazing are weighted value based on the proportion of total global grassland area (3514 Mha) that is already degraded (979 Mha), i.e. 27.85%. This calculation is based on Project Drawdown's AEZ values.",
+    "units": "US$2014/ ha/ yr",
+    "filename": "CONVENTIONAL_Net_Profit_Margin_per_Functional_U_e2604348.csv"
+  },
+  "SOLUTION Net Profit Margin per Functional Unit per Annum": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Note: all data points refer to annual net profit margins.",
+    "units": "US$2014/ ha/ yr",
+    "filename": "SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv"
+  },
+  "t CO2-eq (Aggregate emissions) Reduced per Land Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "t CO2-eq / ha / year",
+    "filename": "t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit.csv"
+  },
+  "Sequestration Rates": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Only values which explicitly include biomass C sequestration for ABOVE- and BELOW-ground and SOIL components (AGB + BGB + SOC) were included in the final calculations. \nNote: Data points with separate value for above-ground biomass, below-ground biomss or soil C sequestration were  included as a separate variables (Variables 26, 27 and 28, respectively). The summed average of these separate pools was EXCLUDED as separate data point under the present variable because there are currently no data points for SOC only.",
+    "units": "t C/ha/yr",
+    "filename": "Sequestration_Rates.csv"
+  },
+  "Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "It is assumed that the carbon stored in the form of biomass will not be burnt after the timber harvest, so, in the calculation of emission at the time of harvest, we have subtracted the amount of carbon stored in the biomass from the total amount of carbon sequestered in the entire life span of the timber plant. The timber yield (low and high) was available in cubic meter/ha/year for different species across temperate and tropical regions at FAO. The carbon stored in the wood was calculated by multiplying the timber yield with the average percent carbon content of biomass. The conversion used is 1 cubic meters = 0.55 tonn",
+    "units": "t C/ha",
+    "filename": "Sequestered_Carbon_NOT_Emitted_after_Cyclical_H_055a4519.csv"
+  },
+  "Rotational length (years)": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "years",
+    "filename": "Rotational_length_years.csv"
+  },
+  "Carbon content in biomass (%)": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "%",
+    "filename": "Carbon_content_in_biomass.csv"
+  },
+  "Aboveground Biomass (AGB)": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "This variable includes only data-points with specific C sequestration rates for above-ground biomass (AGB) components. The variable is currently not included in final model calculations.",
+    "units": "t C/ha/yr",
+    "filename": "Aboveground_Biomass_AGB.csv"
+  },
+  "Soil Organic Carbon (SOC)": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "This variable includes only data-points with specific C sequestration rates for soil organic carbon (SOC) components. The variable is currently not included in final model calculations.",
+    "units": "t C/ha/yr",
+    "filename": "Soil_Organic_Carbon_SOC.csv"
+  },
+  "Weight for financial variable on degraded area": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "%",
+    "filename": "Weight_for_financial_variable_on_degraded_area.csv"
+  }
+}

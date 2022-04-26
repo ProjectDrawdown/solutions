@@ -1,17 +1,15 @@
-"""Alternative Cements solution model.
-   Excel filename: AlternativeCements_v1.1c_IntegrationJune2020.xlsm
-"""
+# Alternative Cements solution model.
+# Originally exported from: AlternativeCements_v1.1c_ pop adjustment updates_Oct2021.xlsm
 
-import pathlib
-
+from pathlib import Path
 import numpy as np
 import pandas as pd
-import openpyxl
 
 from model import adoptiondata
 from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
+from model import conversions
 from model import customadoption
 from model import dd
 from model import emissionsfactors
@@ -25,91 +23,9 @@ from model import vma
 from model import tam
 from solution import rrs
 
-DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
-THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {
-    'Current Adoption': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
-        use_weight=False),
-    'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv"),
-        use_weight=False),
-    'SOLUTION First Cost per Implementation Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
-        use_weight=False),
-    'CONVENTIONAL Lifetime Capacity': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Lifetime_Capacity.csv"),
-        use_weight=False),
-    'SOLUTION Lifetime Capacity': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_Lifetime_Capacity.csv"),
-        use_weight=False),
-    'CONVENTIONAL Average Annual Use': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Average_Annual_Use.csv"),
-        use_weight=False),
-    'SOLUTION Average Annual Use': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_Average_Annual_Use.csv"),
-        use_weight=False),
-    'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Fixed Operating Cost (FOM)': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Fixed Operating Cost (FOM)': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv"),
-        use_weight=False),
-    'SOLUTION Energy Efficiency Factor': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Total Energy Used per Functional Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv"),
-        use_weight=False),
-    'CONVENTIONAL Fuel Consumed per Functional Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv"),
-        use_weight=False),
-    'SOLUTION Fuel Efficiency Factor': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_Fuel_Efficiency_Factor.csv"),
-        use_weight=False),
-    'CONVENTIONAL Direct Emissions per Functional Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Direct_Emissions_per_Functional_Unit.csv"),
-        use_weight=False),
-    'SOLUTION Direct Emissions per Functional Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_Direct_Emissions_per_Functional_Unit.csv"),
-        use_weight=False),
-    'CONVENTIONAL Indirect CO2 Emissions per Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Indirect_CO2_Emissions_per_Unit.csv"),
-        use_weight=False),
-    'SOLUTION Indirect CO2 Emissions per Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv"),
-        use_weight=False),
-    'CH4-CO2eq Tons Reduced': vma.VMA(
-        filename=None, use_weight=False),
-    'N2O-CO2eq Tons Reduced': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Revenue per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Revenue per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'Discount Rate - Commercial': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Discount_Rate_Commercial.csv"),
-        use_weight=False),
-    'Clinker to Cement Ratio in Year 2': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Clinker_to_Cement_Ratio_in_Year_2.csv"),
-        use_weight=True),
-    'Clinker to Cement Ratio of Conventional Technology': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Clinker_to_Cement_Ratio_of_Conventional_Technology.csv"),
-        use_weight=False),
-    'Clinker Ratio Range Selection': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Clinker_Ratio_Range_Selection.csv"),
-        use_weight=False),
-    'Variable 29': vma.VMA(
-        filename=None, use_weight=False),
-    'Percent Adoption of Blended Cements in Year 2 (2050)': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Percent_Adoption_of_Blended_Cements_in_Year_2_2050.csv"),
-        use_weight=False),
-}
-vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
+DATADIR = Path(__file__).parents[2]/'data'
+THISDIR = Path(__file__).parent
+VMAs = vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json')
 
 units = {
     "implementation unit": "MMt",
@@ -121,13 +37,13 @@ units = {
 name = 'Alternative Cements'
 solution_category = ac.SOLUTION_CATEGORY.REDUCTION
 
-scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
+scenarios = ac.load_scenarios_from_json(directory=THISDIR/'ac', vmas=VMAs)
 
 # These are the "default" scenarios to use for each of the drawdown categories.
 # They should be set to the most recent "official" set"
-PDS1 = "PDS1-100p2050-0.6Clinker/Cement-postintJune2020"
-PDS2 = "PDS2-100p2050-0.46clinker/cement-postintjune2020"
-PDS3 = "PDS-100p2050-0.27clinker/cement-postintjune2020"
+PDS1 = "PDS1-100p2050-Oct2021-popadjus"
+PDS2 = "PDS2-100p2050-Oct2021-popadjust"
+PDS3 = "PDS3-100p2050-Oct2021-popadjust"
 
 class Scenario(scenario.RRSScenario):
     name = name
@@ -135,164 +51,70 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
     module_name = THISDIR.stem
+    base_year = 2018
 
     def __init__(self, scen=None):
         # AC
         self.initialize_ac(scen, scenarios, PDS2)
 
         # TAM
-        self._ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
+
+        # Instructions: Set TAM override parameters appropriately if any of these vary from the standard (then delete these comments):
+        # trend (3rd Poly): 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly 3rd Poly
+        # growth (medium): Medium Medium Medium Medium Medium Medium Medium Medium Medium Medium
+        # low_sd_mult (1.0): 1 1 1 1 1 1 1 1 1 1
+        # high_sd_mult (1.0): 1 1 1 1 1 1 1 1 1 1
+
+        self._ref_tam_sources = scenario.load_sources(THISDIR/'tam/tam_ref_sources.json','*')
         self._pds_tam_sources = self._ref_tam_sources
         self.set_tam()
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
+        # ADOPTION
+        self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data/ca_pds_sources.json', 'filename')
+        self._ref_ca_sources = scenario.load_sources(THISDIR/'ca_ref_data/ca_ref_sources.json', 'filename')
+        (ref_adoption_data_per_region,
+         pds_adoption_data_per_region,
+         pds_adoption_trend_per_region,
+         pds_adoption_is_single_source) = self.initialize_adoption_bases()
 
-        # Custom PDS Data
-        wb = openpyxl.load_workbook(filename=THISDIR.joinpath('data.xlsx'), data_only=True, keep_links=False)
-        def isint(x):
-            try:
-                int(x)
-                return True
-            except ValueError:
-                return False
-        def demangle(name):
-            # Pandas tries to be helpful by mangling duplicate column names, so the first
-            # read_excel returns 'Latin America' and the second 'Latin America.1'
-            if not '.' in name:
-                return name
-            new, suffix = name.rsplit('.', 1)
-            return new if isint(suffix) else name
-        clinker_pct = self.ac.lookup_vma(vma_title='Clinker to Cement Ratio in Year 2')
-
-        # Data Source 1
-        #breakpoint()
-        hvfac_mmt_pds1 = pd.read_excel(wb, sheet_name='HVFAC Links', header=0, index_col=0,
-                usecols='B:L', dtype='float', engine='openpyxl', skiprows=62, nrows=46
-                ).rename(mapper=demangle, axis='columns').rename(columns={
-                    'Asia (sans Japan)': 'Asia (Sans Japan)',
-                    'Middle East & Africa': 'Middle East and Africa',
-                    })
-        hvfac_mmt_pds1.index.name = 'Year'
-        hvfac_mmt_pds1.loc[2014] = 0.0
-        ds1_df = hvfac_mmt_pds1.sort_index() / clinker_pct
-
-        # Data Source 2
-        hvfac_mmt_pds2 = pd.read_excel(wb, sheet_name='HVFAC Links', header=0, index_col=0,
-                usecols='O:Y', dtype='float', engine='openpyxl', skiprows=62, nrows=46
-                ).rename(mapper=demangle, axis='columns').rename(columns={
-                    'Asia (sans Japan)': 'Asia (Sans Japan)',
-                    'Middle East & Africa': 'Middle East and Africa',
-                    })
-        hvfac_mmt_pds2.index.name = 'Year'
-        hvfac_mmt_pds2.loc[2014] = 0.0
-        ds2_df = hvfac_mmt_pds2.sort_index() / clinker_pct
-
-        # Data Source 3
-        hvfac_mmt_pds3 = pd.read_excel(wb, sheet_name='HVFAC Links', header=0, index_col=0,
-                usecols='AB:AL', dtype='float', engine='openpyxl', skiprows=62, nrows=46
-                ).rename(mapper=demangle, axis='columns').rename(columns={
-                    'Asia (sans Japan)': 'Asia (Sans Japan)',
-                    'Middle East & Africa': 'Middle East and Africa',
-                    })
-        hvfac_mmt_pds3.index.name = 'Year'
-        hvfac_mmt_pds3.loc[2014] = 0.0
-        ds3_df = hvfac_mmt_pds3.sort_index() / clinker_pct
-
-        # Data Source 4
-        filename_ds4 = THISDIR.joinpath('ca_pds_data', 'pds_adoption_scenario_4.csv')
-        book_mmt = pd.read_csv(filename_ds4, header=0, index_col=0, skipinitialspace=True,
-                         skip_blank_lines=True, comment='#', dtype=np.float64)
-        book_mmt.index = book_mmt.index.astype(int)
-        ds4_df = book_mmt / clinker_pct
-
-        ca_pds_data_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
-        ca_pds_data_sources[0]['dataframe'] = ds1_df
-        ca_pds_data_sources[1]['dataframe'] = ds2_df
-        ca_pds_data_sources[2]['dataframe'] = ds3_df
-        ca_pds_data_sources[3]['dataframe'] = ds4_df
-        self.pds_ca = customadoption.CustomAdoption(data_sources=ca_pds_data_sources,
-            soln_adoption_custom_name=self.ac.soln_pds_adoption_custom_name,
-            high_sd_mult=self.ac.soln_pds_adoption_custom_high_sd_mult,
-            low_sd_mult=self.ac.soln_pds_adoption_custom_low_sd_mult,
-            total_adoption_limit=pds_tam_per_region)
-
-        # Custom REF Data
-        # Data Source 1
-        hvfac_mmt_ref = pd.read_excel(io=wb, sheet_name='HVFAC Links', header=0, index_col=0,
-                usecols='B:L', dtype='float', engine='openpyxl', skiprows=113, nrows=46
-                ).rename(mapper=demangle, axis='columns').rename(columns={
-                    'Asia (sans Japan)': 'Asia (Sans Japan)',
-                    'Middle East & Africa': 'Middle East and Africa',
-                    })
-        hvfac_mmt_ref.index.name = 'Year'
-        hvfac_mmt_ref.loc[2014] = 0.0
-        ref1_df = hvfac_mmt_ref.sort_index() / clinker_pct
-
-        # Data Source 2
-        filename_ref2 = THISDIR.joinpath('ca_ref_data', 'ref_adoption_scenario_2.csv')
-        book_ref_mmt = pd.read_csv(filename_ref2, header=0, index_col=0, skipinitialspace=True,
-                         skip_blank_lines=True, comment='#', dtype=np.float64)
-        book_ref_mmt.index = book_ref_mmt.index.astype(int)
-        ref2_df = book_ref_mmt / clinker_pct
-
-        ca_ref_data_sources = scenario.load_sources(THISDIR/'ca_ref_data'/'ca_ref_sources.json', 'filename')
-        ca_ref_data_sources[0]['dataframe'] = ref1_df
-        ca_ref_data_sources[1]['dataframe'] = ref2_df
-        self.ref_ca = customadoption.CustomAdoption(data_sources=ca_ref_data_sources,
-            soln_adoption_custom_name=self.ac.soln_ref_adoption_custom_name,
-            high_sd_mult=1.0, low_sd_mult=1.0,
-            total_adoption_limit=ref_tam_per_region)
-
-        self.initialize_adoption_bases()
-        if self.ac.soln_ref_adoption_basis == 'Custom':
-            ref_adoption_data_per_region = self.ref_ca.adoption_data_per_region()
-        else:
-            ref_adoption_data_per_region = None
-
-        if False:
-            # One may wonder why this is here. This file was code generated.
-            # This 'if False' allows subsequent conditions to all be elif.
-            pass
-        elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
-            pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
-            pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
-            pds_adoption_is_single_source = None
-        elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
-            pds_adoption_data_per_region = self.ad.adoption_data_per_region()
-            pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
-            pds_adoption_is_single_source = self.ad.adoption_is_single_source()
-        elif self.ac.soln_pds_adoption_basis == 'Linear':
-            pds_adoption_data_per_region = None
-            pds_adoption_trend_per_region = None
-            pds_adoption_is_single_source = None
-
-        ht_ref_adoption_initial = pd.Series(
-            list(self.ac.ref_base_adoption.values()), index=dd.REGIONS)
-        ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial /
-            ref_tam_per_region.loc[2018])
+        final_year=2050  # Currently fixed for all models; may be variable in the future.
+        ht_ref_adoption_initial = pd.Series(self.ac.ref_base_adoption)
+        ht_ref_adoption_final = (ref_tam_per_region.loc[final_year] * 
+            (ht_ref_adoption_initial / ref_tam_per_region.loc[self.base_year]))
         ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
-        ht_ref_datapoints.loc[2018] = ht_ref_adoption_initial
-        ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
+        ht_ref_datapoints.loc[self.base_year] = ht_ref_adoption_initial
+        ht_ref_datapoints.loc[final_year] = ht_ref_adoption_final
+        pds_initial_year = 2018  # sometimes, but rarely, different than self.base_year
+                                # Excel 'Helper Tables'!B85
         ht_pds_adoption_initial = ht_ref_adoption_initial
-        ht_pds_adoption_final_percentage = pd.Series(
-            list(self.ac.pds_adoption_final_percentage.values()),
-            index=list(self.ac.pds_adoption_final_percentage.keys()))
-        ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
+        ht_pds_adoption_final_percentage = pd.Series(self.ac.pds_adoption_final_percentage)
+        ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[final_year]
         ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
-        ht_pds_datapoints.loc[2018] = ht_pds_adoption_initial
-        ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
+        ht_pds_datapoints.loc[pds_initial_year] = ht_pds_adoption_initial
+        ht_pds_datapoints.loc[final_year] = ht_pds_adoption_final
         self.ht = helpertables.HelperTables(ac=self.ac,
-            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-            pds_adoption_data_per_region=pds_adoption_data_per_region,
-            ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
+            ref_datapoints=ht_ref_datapoints,
+            pds_datapoints=ht_pds_datapoints,
             ref_adoption_data_per_region=ref_adoption_data_per_region,
-            use_first_pds_datapoint_main=False,
-            copy_pds_to_ref=False, copy_ref_datapoint=False, copy_pds_datapoint=False,
+            pds_adoption_data_per_region=pds_adoption_data_per_region,
+            ref_adoption_limits=ref_tam_per_region,
+            pds_adoption_limits=pds_tam_per_region,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+            # Quirks Parameters.  The generator tries to guess these correctly, but can get
+            # it wrong.  See the documentation for HelperTables.__init__() to understand
+            # exactly what the paramaters do, and how to set them.
+            copy_pds_to_ref=False,
+            copy_ref_datapoint=False,
+            copy_pds_datapoint="Ref Table",
+            copy_pds_world_too=True,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
-        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=4)
+        # DERIVED VALUES
+
+        # Emissions: if this is an older model, you may need to set a data version to make tests pass.
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
             ref_total_adoption_units=ref_tam_per_region,
@@ -300,6 +122,8 @@ class Scenario(scenario.RRSScenario):
             soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
             repeated_cost_for_iunits=True,
+            # Quirks parameters
+            replacement_period_offset=0,
             bug_cfunits_double_count=False)
         soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
         soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
@@ -307,14 +131,15 @@ class Scenario(scenario.RRSScenario):
         soln_net_annual_funits_adopted=self.ua.soln_net_annual_funits_adopted()
 
         self.fc = firstcost.FirstCost(ac=self.ac, pds_learning_increase_mult=2,
-            ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+            ref_learning_increase_mult=2,
+            conv_learning_increase_mult=2,
             soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
             soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
             conv_ref_tot_iunits=conv_ref_tot_iunits,
             soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
             soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
             conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
-            fc_convert_iunit_factor=1.0)
+            fc_convert_iunit_factor=1)
 
         self.oc = operatingcost.OperatingCost(ac=self.ac,
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
@@ -327,7 +152,7 @@ class Scenario(scenario.RRSScenario):
             single_iunit_purchase_year=2017,
             soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),
             conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),
-            conversion_factor=1.0)
+            conversion_factor=1)
 
         self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
             soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
@@ -350,3 +175,4 @@ class Scenario(scenario.RRSScenario):
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
             soln_avg_annual_use=self.ac.soln_avg_annual_use,
             conv_avg_annual_use=self.ac.conv_avg_annual_use)
+

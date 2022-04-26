@@ -1,0 +1,15 @@
+{
+    "Baseline Cases": {
+        "Drawdown TAM: Reference 1": "tam_pds_Drawdown_TAM_Reference_1.csv",
+        "Drawdown TAM: Reference 2": "tam_pds_Drawdown_TAM_Reference_2.csv"
+    },
+    "Conservative Cases": {
+        "Drawdown TAM: Plausible": "tam_pds_Drawdown_TAM_Plausible.csv"
+    },
+    "Ambitious Cases": {
+        "Drawdown TAM: Drawdown": "tam_pds_Drawdown_TAM_Drawdown.csv"
+    },
+    "Maximum Cases": {
+        "Drawdwon TAM: Optimum": "tam_pds_Drawdown_TAM_Optimum.csv"
+    }
+}

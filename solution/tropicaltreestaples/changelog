@@ -1,0 +1,9 @@
+Tropical Tree Staples
+The Expected Yield Gain in a number of ScenarioRecord entries is "Error 2007" (which is #DIV/0!), which will not load 
+and causes the VBA code to die. Search for and change the values to 0 instead of Error 2007.
+
+Variable Meta-analysis line 251 removed the "Exclude Data?" heading which breaks solution_xls_extract. Put it back.
+
+There is no VMA data for yield_gain_from_conv_to_soln, and the solution does not need it. Edit the generated AdvancedControls 
+json files to remove the statistic field from yield_gain_from_conv_to_soln, so that advanced_controls.py will not try to 
+find the VMA data.

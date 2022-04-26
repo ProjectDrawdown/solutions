@@ -1,35 +1,17 @@
 [
-  {
-    "name": "PDS1 (15%) - Drawdown Book Edition 1",
-    "include": true,
-    "description": "PDS1 - Drawdown Team Calculations based on: 15% adoption by Car commuters in 2050 ",
-    "filename": "custom_pds_ad_PDS1_15_Drawdown_Book_Edition_1.csv"
-  },
-  {
-    "name": "PDS2 (20%) - Drawdown Book Edition 1",
-    "include": true,
-    "description": "PDS2 - Drawdown Team Calculations based on: 20% adoption by Car commuters in 2050 ",
-    "filename": "custom_pds_ad_PDS2_20_Drawdown_Book_Edition_1.csv"
-  },
-  {
-    "name": "PDS3 (30%) - Drawdown Book Edition 1",
-    "include": true,
-    "description": "PDS3 -  Drawdown Team Calculations based on: 30% adoption by Car commuters in 2050 ",
-    "filename": "custom_pds_ad_PDS3_30_Drawdown_Book_Edition_1.csv"
-  },
-  {
-    "name": "PDS1 - With Global Load Factor of 1.75 person per vehicle per trip by 2050",
-    "include": true,
-    "description": "We take a relatively high average car load factor from data from several countries and assume that it can be the 2050 global average load factor. We assume that that figure is out of a maximum as entered on Advanced Controls (~3 persons per trip) and estimate what effective adoption share the target load factor represents (assuming that all trips are either single occupancy or the maximum entered. This load factor in 2050 and that in 2014 (current value) are interpolated to get the load factor each year which is used to estimate the adoption. Recent Historical adoptions were estimated by assuming that the average load factors calculated from the weighted available data are applied to the total urban mobility each year after applying the car mode share (assumed fixed) "
-  },
-  {
-    "name": "PDS2 - With Global Load Factor of 2 person per vehicle per trip by 2050",
-    "include": true,
-    "description": "We take a relatively high average car load factor from data from several countries and assume that it can be the 2050 global average load factor. We assume that that figure is out of a maximum as entered on Advanced Controls (~3 persons per trip) and estimate what effective adoption share the target load factor represents (assuming that all trips are either single occupancy or the maximum entered. This load factor in 2050 and that in 2014 (current value) are interpolated to get the load factor each year which is used to estimate the adoption. Recent Historical adoptions were estimated by assuming that the average load factors calculated from the weighted available data are applied to the total urban mobility each year after applying the car mode share (assumed fixed) "
-  },
-  {
-    "name": "PDS3- With Global Load Factor of 3 person per vehicle per trip by 2050",
-    "include": true,
-    "description": "We take a very high load factor average, which is close to the maximum and assume that it can be the 2050 global average load factor. We assume that that figure is out of a maximum as entered on Advanced Controls (~3 persons per trip) and estimate what effective adoption share the target load factor represents (assuming that all trips are either single occupancy or the maximum entered. This load factor in 2050 and that in 2014 (current value) are interpolated to get the load factor each year which is used to estimate the adoption. Recent Historical adoptions were estimated by assuming that the average load factors calculated from the weighted available data are applied to the total urban mobility each year after applying the car mode share (assumed fixed) "
-  }
+    {
+        "name": "PDS1 - With Global Load Factor of 1.75 person per vehicle per trip by 2050",
+        "filename": "ca_pds_PDS1_With_Globa_bd5394c4.csv",
+        "description": "We take a relatively high average car load factor from data from several countries and assume that it can be the 2050 global average load factor. We assume that that figure is out of a maximum as entered on Advanced Controls (~3 persons per trip) and estimate what effective adoption share the target load factor represents (assuming that all trips are either single occupancy or the maximum entered. This load factor in 2050 and that in 2014 (current value) are interpolated to get the load factor each year which is used to estimate the adoption.\nRecent Historical adoptions were estimated by assuming that the average load factors calculated from the weighted available data are applied to the total urban mobility each year after applying the car mode share (assumed fixed)"
+    },
+    {
+        "name": "PDS2 - With Global Load Factor of 2 person per vehicle per trip by 2050",
+        "filename": "ca_pds_PDS2_With_Globa_ecca93c9.csv",
+        "description": "We take a relatively high average car load factor from data from several countries and assume that it can be the 2050 global average load factor. We assume that that figure is out of a maximum as entered on Advanced Controls (~3 persons per trip) and estimate what effective adoption share the target load factor represents (assuming that all trips are either single occupancy or the maximum entered. This load factor in 2050 and that in 2014 (current value) are interpolated to get the load factor each year which is used to estimate the adoption.\nRecent Historical adoptions were estimated by assuming that the average load factors calculated from the weighted available data are applied to the total urban mobility each year after applying the car mode share (assumed fixed)"
+    },
+    {
+        "name": "PDS3- With Global Load Factor of 3 person per vehicle per trip by 2050",
+        "filename": "ca_pds_PDS3_With_Globa_7a127149.csv",
+        "description": "We take a very high load factor average, which is close to the maximum and assume that it can be the 2050 global average load factor. We assume that that figure is out of a maximum as entered on Advanced Controls (~3 persons per trip) and estimate what effective adoption share the target load factor represents (assuming that all trips are either single occupancy or the maximum entered. This load factor in 2050 and that in 2014 (current value) are interpolated to get the load factor each year which is used to estimate the adoption.\nRecent Historical adoptions were estimated by assuming that the average load factors calculated from the weighted available data are applied to the total urban mobility each year after applying the car mode share (assumed fixed)"
+    }
 ]

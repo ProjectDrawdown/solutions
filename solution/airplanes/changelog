@@ -1,0 +1,19 @@
+Denton's notes:
+Airplanes
+TAM Data starting at S46 (min/max/sd) entered hard-coded constants, not formulae, and the constants are wrong
+for the TAM Data entered. Paste in formulae from some other spreadsheet.
+
+Update 2022:
+The same issues Denton found previously still applied, and were fixed in the Excel prior to
+making the expected.zip file.
+
+Additionally, we found that the Custom Ref Adoption table is computed via a scenario-dependent
+formula, which the extractor doesn't know  how to deal with.  Fixed this manually by creating
+two custom ref files (the values for scenarios 1 and 2 were the same), manually pasting the
+PDS1 and 2 data into the second file, and changing the scenarios to load the correct custom ref
+file.  With this change, all tests pass.
+
+(Meta note: it looks to me as though the intent for the custom ref adoption was to use a fixed
+set of historical data, then revert to the standard %-of-TAM for future-looking data.  At some
+point we should enable a fixed history as a built-in capability, in which case this model could
+revert to a standard ref adoption.)

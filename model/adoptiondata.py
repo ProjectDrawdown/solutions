@@ -1,4 +1,56 @@
-"""Adoption Data module."""
+"""'Adoption' is the amount or degree of use of a solution over time (typically increasing, sometimes decreasing).
+Adoption may be global or specific to a particular reagon.  The units of adoption are defined by the
+solution that uses it (and are sometimes shared across multiple solutions, e.g. TeraWatts for energy).
+
+There are multiple ways of representing adoption: `AdoptionData` (this module), `CustomAdoption`,
+and pure functions `Linear` or `S-Curve`.  The `HelperTables` module mediates between the different
+options to provide the final adoption data for a solution/scenario.
+
+`AdoptionData` represents adoption as a statistical combination, interpolation and/or extrapolation
+of some number of published studies (the 'source data', also called 'Existing Prognostications').
+That is, the data from the existing study or studies is represented
+in data files, then the adoption is configured by how to aggregate that data. 
+
+Data sources are represented in a multi-level hierarchy, organized by region and by an assessment of
+whether the study is baseline (representing no change), conservative (representing modest change),
+or ambitious (most change).
+For example:
+```
+{
+    'Ambitious Cases': {'Study Name A': 'filename A', 'Study Name B': 'filename B', ...},
+    'Baseline Cases': {'Study Name C': 'filename C', 'Study Name D': 'filename D', ...},
+    'Conservative Cases': {'Study Name E': 'filename E', 'Study Name F': 'filename F', ...}
+}
+```
+
+Regional is somewhat awkwardly added in parallel to these, so you *actually* get data structures like this:
+```
+{
+    'Ambitious Cases': { ... },
+    'Baseline Cases': { ... },
+    'Conservative Cases': { ... },
+    'Region: OECD90': {
+        'Ambitious Cases: { ... },
+        ...
+    },
+    'Region: India': {
+        'Ambitious Cases: { ... },
+        ...
+    },
+    ....
+}
+```
+These structures are serialized as JSON in a file named 'ad_sources.json' in the 'ad' subdirectory of solutions that
+use AdoptionData representations.
+
+The configuration is represented by an multi-dimensional array of parameters which have the following meanings:
+
+ * `trend`: Which fitting curve to use to interpolate/extrapolate missing data.  Choices are linear, 2nd order
+ polynomial, 3rd order polynomial, or exponential. 
+ * `growth`: Whether a lower, medium or higher estimate of growth should be used.
+ * `low_sd_mult`: Values below mean(data) - `low_sd_mult`*(stdev(data)) are discarded before fitting.  (deprecated.)
+ * `high_sd_mult`: Values above mean(data) + `high_sd_mult`*(stdev(data)) are discarded before fitting. (deprecated.)
+ """
 
 from functools import lru_cache
 import pathlib
@@ -23,10 +75,22 @@ default_adoption_config_array = [
     ]
 def make_adoption_config(adoption_config_array=None, overrides=None) -> pd.DataFrame:
     """Create an adoption configuration.
-    Overrides, if provided, should be in the form of a list of tuples
-    `(param, region, value)`
-    If override region is None, the value is applied to all regions."""
 
+    The configuration values all have standard defaults, but may be overridden.
+    Overrides, if provided, should be in the form of a list of tuples  `(param, region, value)`.
+    An override may be applied to a specific region (if the region value is non-empty), or to
+    all regions (if the region value is None).
+    
+    Example: this call will create a standard configuration that uses a 2nd degree polynomial fit
+    for all regions, and a high growth adjustment for China and India:
+    ```
+        make_adoption_config(overrides=[
+            ('trend',None,'2nd Poly'),
+            ('growth','India','High'),
+            ('growth','China','High')
+        ])
+    ```
+    """
     ad_config_array = adoption_config_array or default_adoption_config_array
     adconfig = pd.DataFrame(ad_config_array[1:], columns=ad_config_array[0]).set_index('param')
     if overrides is not None:
@@ -39,28 +103,22 @@ def make_adoption_config(adoption_config_array=None, overrides=None) -> pd.DataF
 
 
 class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
-    """Implements Adoption Data module."""
+    """Adoption of a solution, estimated from existing data (aka 'Existing Prognostications')."""
 
     def __init__(self, ac, data_sources, adconfig, main_includes_regional=None,
                  groups_include_hundred_percent=True):
-        """Arguments:
-             ac: advanced_controls.py
-             data_sources: a dict() of group names which contain dicts of data source names.
-               For example:
-               {
-                 'Ambitious Cases': {'Study Name A': 'filename A', 'Study Name B': 'filename B', ...}
-                 'Baseline Cases': {'Study Name C': 'filename C', 'Study Name D': 'filename D', ...}
-                 'Conservative Cases': {'Study Name E': 'filename E', 'Study Name F': 'filename F', ...}
-               }
-             adconfig: Pandas dataframe with rows:
-               'trend', 'growth', 'low_sd_mult', 'high_sd_mult'
-               and colums for each region
-             main_includes_regional: boolean of whether the global min/max/sd should include
+        """Create AdoptionData object from data sources and configuration.
+        
+        Args:
+            ac: advanced controls object.
+            data_sources: a data structure organizing source data, as contained in an ad_sources.json file
+            adconfig: Configuration of statistical analysis, as returned by `make_adoption_config`.
+            main_includes_regional (boolean): whether the global min/max/sd should include
                data from the primary regions.
 
-            Quirks parameters:
-                groups_include_hundred_percent.  Some models included the 100% / maximum case as
-                a group when computing S.D., others (Electricity Generation) do not.  Defaults to True
+        Quirks Parameters:
+            groups_include_hundred_percent (boolean):  Some models included the 100% / maximum case as
+            a group when computing S.D., others (Electricity Generation) do not.  Defaults to True.
         """
         self.ac = ac
         self.data_sources = data_sources
@@ -69,6 +127,29 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
         self.groups_include_hundred_percent = groups_include_hundred_percent
         self._populate_adoption_data()
 
+    @lru_cache()
+    def adoption_sources(self, region):
+        """Return source adoption data for the specified region, as a dataframe with one column per source.
+        """
+        # World: SolarPVUtil 'Adoption Data'!B45:R94
+        # etc.
+        return self._adoption_data[region]
+
+    @lru_cache()
+    @data_func
+    def adoption_data_per_region(self):
+        """Return a dataframe of adoption data, one column per region."""
+        growth = self.ac.soln_pds_adoption_prognostication_growth
+        main_region = dd.REGIONS[0]
+        if growth is None:
+            tmp = self.adoption_low_med_high(region=main_region)
+            df = pd.DataFrame(np.nan, columns=dd.REGIONS, index=tmp.index)
+        else:
+            df = pd.DataFrame(columns=dd.REGIONS)
+            for region in df.columns:
+                df.loc[:, region] = self.adoption_low_med_high(region)[growth]
+        df.name = 'adoption_data_per_region'
+        return df
 
     def _name_to_identifier(self, name):
         """Convert names like "Middle East and Africa" to "middle_east_and_africa"."""
@@ -116,7 +197,7 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
             result.loc[:, 'S.D'] = adoption_data.loc[:, columns].std(axis=1, ddof=0)
         else:
             # The need to do a quirks adjustment here means we have to hack is_group_name:
-            is_group = self.quirky_is_group_name(data_sources=data_sources, name=source)
+            is_group = self._quirky_is_group_name(data_sources=data_sources, name=source)
             
             # Excel treats single named columns differently from groups containing only a single column.
             # For a single named column, the SD is taken over all sources.  For a group, it is taken over
@@ -128,7 +209,7 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
                 result.loc[:, 'S.D'] = adoption_data.std(axis=1, ddof=0)
         return result
 
-    def quirky_is_group_name(self, data_sources, name):
+    def _quirky_is_group_name(self, data_sources, name):
         is_group = interpolation.is_group_name(data_sources, name)
         if self.groups_include_hundred_percent or not is_group:
             return is_group
@@ -193,37 +274,21 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
         return self.data_sources.get(key, self.data_sources)
 
 
-    @lru_cache()
-    def adoption_data(self, region):
-        """Return adoption data for the given solution in the 'World' region.
-           World: SolarPVUtil 'Adoption Data'!B45:R94
-           OECD90: SolarPVUtil 'Adoption Data'!B105:R154
-           Eastern Europe: SolarPVUtil 'Adoption Data'!B169:R218
-           Asia (Sans Japan): SolarPVUtil 'Adoption Data'!B232:R281
-           Middle East and Africa: SolarPVUtil 'Adoption Data'!B295:R344
-           Latin America: SolarPVUtil 'Adoption Data'!B358:R407
-           China: SolarPVUtil 'Adoption Data'!B421:R470
-           India: SolarPVUtil 'Adoption Data'!B485:R534
-           EU: SolarPVUtil 'Adoption Data'!B549:R598
-           USA: SolarPVUtil 'Adoption Data'!B614:R663
-        """
-        return self._adoption_data[region]
-
 
     @lru_cache()
     @data_func
-    def adoption_data_main_with_regional(self):
-        """Return adoption data for the 'World' region with regional data added in.
-           SolarPVUtil 'Adoption Data'!B45:R94 when B30:B31 are both 'Y' """
+    def _adoption_data_with_regional(self):
+        """Return adoption data for the 'World' region with regional data added in."""
+        # World: SolarPVUtil 'Adoption Data'!B45:R94
+        # etc.
         main_region = dd.REGIONS[0]
         regional = pd.DataFrame(columns=dd.MAIN_REGIONS)
         for region in regional.columns:
             regional[region] = self.adoption_trend(region=region).loc[:, 'adoption']
         regional_sum = regional.sum(axis=1)
         regional_sum.name = 'RegionalSum'
-        adoption = self.adoption_data(region=main_region).copy()
+        adoption = self.adoption_sources(region=main_region).copy()
         adoption.loc[:, 'RegionalSum'] = np.nan
-        adconfig = self.adconfig[main_region]
         if self.ac.soln_pds_adoption_prognostication_source == 'ALL SOURCES':
             adoption.update(regional_sum)
         return adoption
@@ -231,30 +296,21 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
 
     @lru_cache()
     def adoption_min_max_sd(self, region):
-        """Return the min, max, and standard deviation for the adoption data in the 'World' region.
-           World: SolarPVUtil 'Adoption Data'!X45:Z94
-           OECD90: SolarPVUtil 'Adoption Data'!X105:Z154
-           Eastern Europe: SolarPVUtil 'Adoption Data'!X169:Z218
-           Asia (Sans Japan): SolarPVUtil 'Adoption Data'!X232:Z281
-           Middle East and Africa: SolarPVUtil 'Adoption Data'!X295:Z344
-           Latin America: SolarPVUtil 'Adoption Data'!X358:Z407
-           China: SolarPVUtil 'Adoption Data'!X421:Z470
-           India: SolarPVUtil 'Adoption Data'!X485:Z534
-           EU: SolarPVUtil 'Adoption Data'!X549:Z598
-           USA: SolarPVUtil 'Adoption Data'!X614:Z663
-        """
+        """Return the min, max, and standard deviation for the adoption data for the specified region."""
+        #    World: SolarPVUtil 'Adoption Data'!X45:Z94
+        #    etc.
         data_sources = self._get_data_sources(region=region)
         main_region = dd.REGIONS[0]  # first columns, ex: 'World'
         if region == main_region:
             if self.main_includes_regional:
-                adoption = self.adoption_data_main_with_regional()
+                adoption = self._adoption_data_with_regional()
                 data_sources = data_sources.copy()
                 data_sources.update({'RegionalSum': {'RegionalSum': ''}})
             else:
-                adoption = self.adoption_data(region)
+                adoption = self.adoption_sources(region)
             source = self.ac.soln_pds_adoption_prognostication_source
         else:
-            adoption = self.adoption_data(region)
+            adoption = self.adoption_sources(region)
             source = "ALL SOURCES"
         result = self._min_max_sd(adoption_data=adoption, source=source,
                 data_sources=data_sources, region=region)
@@ -264,30 +320,21 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
 
     @lru_cache()
     def adoption_low_med_high(self, region):
-        """Return the selected data sources as Medium, and N stddev away as Low and High.
-           World: SolarPVUtil 'Adoption Data'!AB45:AD94
-           OECD90: SolarPVUtil 'Adoption Data'!AB105:AD154
-           Eastern Europe: SolarPVUtil 'Adoption Data'!AB169:AD218
-           Asia (Sans Japan): SolarPVUtil 'Adoption Data'!AB232:AD281
-           Middle East and Africa: SolarPVUtil 'Adoption Data'!AB295:AD344
-           Latin America: SolarPVUtil 'Adoption Data'!AB358:AD407
-           China: SolarPVUtil 'Adoption Data'!AB421:AD470
-           India: SolarPVUtil 'Adoption Data'!AB485:AD534
-           EU: SolarPVUtil 'Adoption Data'!AB549:AD598
-           USA: SolarPVUtil 'Adoption Data'!AB614:AD663
-        """
+        """Return the selected data sources as Medium, and N stddev away as Low and High."""
+        #    World: SolarPVUtil 'Adoption Data'!AB45:AD94
+        #    etc.
         data_sources = self._get_data_sources(region=region)
         main_region = dd.REGIONS[0]  # first columns, ex: 'World'
         if region == main_region:
             if self.main_includes_regional:
-                adoption = self.adoption_data_main_with_regional()
+                adoption = self._adoption_data_with_regional()
                 data_sources = data_sources.copy()
                 data_sources.update({'RegionalSum': {'RegionalSum': ''}})
             else:
-                adoption = self.adoption_data(region)
+                adoption = self.adoption_sources(region)
             source = self.ac.soln_pds_adoption_prognostication_source
         else:
-            adoption = self.adoption_data(region=region)
+            adoption = self.adoption_sources(region=region)
             source = "ALL SOURCES"
         result = self._low_med_high(adoption_data=adoption,
                 min_max_sd=self.adoption_min_max_sd(region), adconfig=self.adconfig[region],
@@ -298,45 +345,11 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
 
     @lru_cache()
     def adoption_trend(self, region, trend=None):
-        """Adoption prediction via one of several interpolation algorithms in the region.
-
-           World:
-           Linear: SolarPVUtil 'Adoption Data'!BY50:CA96     Degree2: 'Adoption Data'!CF50:CI96
-           Degree3: SolarPVUtil 'Adoption Data'!CN50:CR96    Exponential: 'Adoption Data'!CW50:CY96
-
-           OECD90:
-           Linear: SolarPVUtil 'Adoption Data'!BY110:CA156     Degree2: 'Adoption Data'!CF110:CI156
-           Degree3: SolarPVUtil 'Adoption Data'!CN110:CR156    Exponential: 'Adoption Data'!CW110:CY156
-
-           Eastern Europe:
-           Linear: SolarPVUtil 'Adoption Data'!BY174:CA220     Degree2: 'Adoption Data'!CF174:CI220
-           Degree3: SolarPVUtil 'Adoption Data'!CN174:CR220    Exponential: 'Adoption Data'!CW174:CY220
-
-           Asia (Sans Japan):
-           Linear: SolarPVUtil 'Adoption Data'!BY237:CA283     Degree2: 'Adoption Data'!CF237:CI283
-           Degree3: SolarPVUtil 'Adoption Data'!CN237:CR283    Exponential: 'Adoption Data'!CW237:CY283
-
-           Latin America:
-           Linear: SolarPVUtil 'Adoption Data'!BY363:CA409     Degree2: 'Adoption Data'!CF363:CI409
-           Degree3: SolarPVUtil 'Adoption Data'!CN363:CR409    Exponential: 'Adoption Data'!CW363:CY409
-
-           China:
-           Linear: SolarPVUtil 'Adoption Data'!BY426:CA472     Degree2: 'Adoption Data'!CF426:CI472
-           Degree3: SolarPVUtil 'Adoption Data'!CN426:CR472    Exponential: 'Adoption Data'!CW426:CY472
-
-           India:
-           Linear: SolarPVUtil 'Adoption Data'!BY490:CA536     Degree2: 'Adoption Data'!CF490:CI536
-           Degree3: SolarPVUtil 'Adoption Data'!CN490:CR536    Exponential: 'Adoption Data'!CW490:CY536
-
-           EU:
-           Linear: SolarPVUtil 'Adoption Data'!BY554:CA600     Degree2: 'Adoption Data'!CF554:CI600
-           Degree3: SolarPVUtil 'Adoption Data'!CN554:CR600    Exponential: 'Adoption Data'!CW554:CY600
-
-           USA:
-           Linear: SolarPVUtil 'Adoption Data'!BY619:CA665     Degree2: 'Adoption Data'!CF619:CI665
-           Degree3: SolarPVUtil 'Adoption Data'!CN619:CR665    Exponential: 'Adoption Data'!CW619:CY665
-
-        """
+        """Adoption prediction via one of several interpolation algorithms in the region."""
+        # World:
+        # Linear: SolarPVUtil 'Adoption Data'!BY50:CA96     Degree2: 'Adoption Data'!CF50:CI96
+        # Degree3: SolarPVUtil 'Adoption Data'!CN50:CR96    Exponential: 'Adoption Data'!CW50:CY96,
+        # etc
         main_region = dd.REGIONS[0]  # first columns, ex: 'World'
         if not trend:
             trend = self.adconfig.loc['trend', region]
@@ -360,21 +373,6 @@ class AdoptionData(DataHandler, object, metaclass=MetaclassCache):
         first_year = result.index[0]
         result.loc[first_year, region] = adoption_low_med_high.loc[first_year, 'Medium']
 
-    @lru_cache()
-    @data_func
-    def adoption_data_per_region(self):
-        """Return a dataframe of adoption data, one column per region."""
-        growth = self.ac.soln_pds_adoption_prognostication_growth
-        main_region = dd.REGIONS[0]
-        if growth is None:
-            tmp = self.adoption_low_med_high(region=main_region)
-            df = pd.DataFrame(np.nan, columns=dd.REGIONS, index=tmp.index)
-        else:
-            df = pd.DataFrame(columns=dd.REGIONS)
-            for region in df.columns:
-                df.loc[:, region] = self.adoption_low_med_high(region)[growth]
-        df.name = 'adoption_data_per_region'
-        return df
 
     @lru_cache()
     @data_func

@@ -1,7 +1,7 @@
 {
-  "Baseline Cases": {
-    "Based on: CES ITU AMPERE Baseline": "tam_based_on_CES_ITU_AMPERE_Baseline.csv",
-    "Based on: CES ITU AMPERE 550": "tam_based_on_CES_ITU_AMPERE_550.csv",
-    "Based on: CES ITU AMPERE 450": "tam_based_on_CES_ITU_AMPERE_450.csv"
-  }
+    "Baseline Cases": {
+        "Based on: CES ITU AMPERE Baseline": "tam_based_on_CES_ITU_AMPERE_Baseline.csv",
+        "Based on: CES ITU AMPERE 550": "tam_based_on_CES_ITU_AMPERE_550.csv",
+        "Based on: CES ITU AMPERE 450": "tam_based_on_CES_ITU_AMPERE_450.csv"
+    }
 }

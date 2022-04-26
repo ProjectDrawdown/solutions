@@ -1,0 +1,19 @@
+Denton's notes:
+Grassland Protection
+The Custom TLA tab C645:C693 contains 500. Though the ScenarioRecord for some scenarios specifies 373.11342405, 
+that function is broken and a TLA of 500 is used. Update the JSON files to set custom_tla_fixed_value to 500.
+
+Custom PDS Adoption N270 contains 2014, it should be 2018.
+
+The Custom REF Adoption tab supplies no regional data, not even 0. Change the IFERROR value in Helper Tables D28:L73 to 0.0:
+=IFERROR(MIN((IF($F$15=1,FORECAST($B28,D$21:D$22,$B$21:$B$22),'Custom REF Adoption'!C26*1)),'Unit Adoption Calculations'!C18),0)
+The symptom is that Unit Adoption Calculations Q252 is NaN in Excel and not NaN in Python.
+
+solution/grassland/ca_ref_data/custom_ref_ad_Type_Scenario_1_Name_Here_REF_CASE_.csv extracts one more digit of precision 
+for 2018 and 2019 than subsequent years, which breaks a <= check in unitadoption.py:soln_ref_new_iunits_reqd_LAND. 
+Edit the CSV file to remove the extra digit of precision from all columns, 2018&2019 should have the same values as 2020+. 
+The symptom is that Unit Adoption AG199 is zero in Python and non-zero in Excel.
+
+In Custom PDS Adoption Scenario 4, AF243:AF289 contain a formula of:
+=$O$249-SUM($AD$189:AD243)
+$AD$189 is copy+paste from scenario 3, change them to $AD$243.

@@ -1,0 +1,114 @@
+{
+  "Current Adoption": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Historical Solar PV total generation split in the conversion calculations to have just Solar PV utility scale generation.",
+    "units": "TWh",
+    "filename": "Current_Adoption.csv"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Values before 2016 were excluded.",
+    "units": "US$2014/kW",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "The value for Lifetime Capacity - SOLUTION is converted from a raw data input (years) to kWh/kW by multiplying by the Average Annual Use - Solution variable.",
+    "units": "TWh/TW",
+    "filename": "SOLUTION_Lifetime_Capacity.csv"
+  },
+  "SOLUTION Average Annual Use": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "The raw data input is generally a capacity factor value that is converted to average annual use (TWh/TW/) by multiplying capacity factor by total hours/year (8760). NOTE: the IPCC uses the following sources for calculating minimum and maximum Average Annual Use values for solar PV Solar PV: IEA (2013a), IRENA (2013), JRC (2012), LBNL (2013), UK CCC (2011), US EIA (2013)",
+    "units": "TWh/TW/year",
+    "filename": "SOLUTION_Average_Annual_Use.csv"
+  },
+  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "US$2014/kWh",
+    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"
+  },
+  "SOLUTION Fixed Operating Cost (FOM)": {
+    "use_weight": false,
+    "bound_correction": true,
+    "description": "The value for SOLUTION Fixed Operation & Maintenance (FOM) Cost is calculated per implementation unit (i.e. per kW of installed capacity). FOM costs can include expenses such as day-to-day preventative and corrective maintenance, labor costs, asset and site management, and maintaining health and safety, among others. NOTE: Utility-scale solar PV does not incur any variable operation and maintenance costs, so FOM are the only costs associated with the SOLUTION other than First Cost. Values before 2016 were excluded.",
+    "units": "US$2014/kW",
+    "filename": "SOLUTION_Fixed_Operating_Cost_FOM.csv"
+  },
+  "SOLUTION Indirect CO2 Emissions per Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "These values show lifecycle GHG emissions for a range of different photovoltaic technologies (both thin-film and crystalline-Si) across different regions and system sizes. Values before 2015 were excluded.",
+    "units": "t CO2-eq/TWh",
+    "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv"
+  },
+  "Coal Plant Efficiency": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "For the IEA data, a lower heating value (LHV) is used. The average EIA data from 2004-2014 is reported in Btu/kWh, and this average is converted to an efficiency measure by dividing the equivalent Btu content of a kWh of electricity (which is 3,412 Btu) by the raw data input (see: https://www.eia.gov/tools/faqs/faq.cfm?id=667&t=2). For the IPCC data, minimum, median, and maximum values are included.NOTE: the IPCC uses the following sources for calculating minimum, median, and maximum fixed annual opeartion and maintenance costs for coal and natural gas: \nCoal PC (Pulverized Coal): Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).\nGas Combined Cycle: Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2011),IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).",
+    "units": "%",
+    "filename": "Coal_Plant_Efficiency.csv"
+  },
+  "Natural Gas Plant Efficiency": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "For the IEA data, minimum and maximum lower heating values (LHV) are included. The average EIA data from 2004-2014 is reported in Btu/kWh, and this average is converted to an efficiency measure by dividing the equivalent Btu content of a kWh of electricity (which is 3,412 Btu) by the raw data input (see: https://www.eia.gov/tools/faqs/faq.cfm?id=667&t=2). For the IPCC data, minimum, median, and maximum values are included. NOTE: the IPCC uses the following sources for calculating minimum, median, and maximum fixed annual opeartion and maintenance costs for coal and natural gas: \nCoal PC (Pulverized Coal): Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).\nGas Combined Cycle: Black and Veatch (2012), DEA (2012), IEA/NEA (2010), IEA (2011),IEA (2013a), IEA-RETD (2013), Schmidt et al. (2012), US EIA (2013).",
+    "units": "%",
+    "filename": "Natural_Gas_Plant_Efficiency.csv"
+  },
+  "Oil Plant Efficiency": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "%",
+    "filename": "Oil_Plant_Efficiency.csv"
+  },
+  "Percentage of Solar Photovoltaic Generation from Utility Scale": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "This variable is used in the model to separate aggregated solar PV adoption data for adoption prognostications that combined both utility and rooftop PV and is an important assumption for this model.",
+    "units": "%",
+    "filename": "Percentage_of_Solar_Photovoltaic_Generation_fro_8547020a.csv"
+  },
+  "Solar PV Module Learning Rate": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "In order to create a customized learning rate for utility-scale solar PV that uses separate learning rates for PV modules vs balance of systems (BOS) costs, a separate variable was created specifically for the PV module learning rate. This variable is used below under 'Learning Rate' to calculate an overall learning rate for the PV system (see explanation below). 20,08%",
+    "units": "%",
+    "filename": "Solar_PV_Module_Learning_Rate.csv"
+  },
+  "Utility Scale PV BOS Learning Rate": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "In order to create a customized learning rate for utility-scale solar PV that uses separate learning rates for PV modules vs balance of systems (BOS) costs, a separate variable was created specifically for the BOS learning rate. This variable is used below under 'Learning Rate' to calculate an overall learning rate for the PV system (see explanation below). Datapoints previous to 2015 were removed.",
+    "units": "%",
+    "filename": "Utility_Scale_PV_BOS_Learning_Rate.csv"
+  },
+  "Percentage of PV System Installed Costs from Module": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "In order to create a customized learning rate for utility-scale solar PV that uses separate learning rates for PV modules vs balance of systems (BOS) costs, a separate variable was created to indicate what percentage of total installed costs are from the PV module vs the balance of systems costs for utility-scale solar PV. The Bolinger and Seel (2015) data is specifically for utility-scale solar PV, but it is exclusive to USA. We assume on average that utility-scale solar PV will incur higher balance of systems costs than rooftop installations. This variable is used below under 'Learning Rate' to calculate an overall learning rate for the PV system (see explanation below).",
+    "units": "%",
+    "filename": "Percentage_of_PV_System_Installed_Costs_from_Module.csv"
+  },
+  "Carbon abatement cost comparison": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "The cost of carbon abatement comparison has been collected from Lazard's LCOE ver 12.0, p-15. This implied carbon abatement value calculation is made by adding the difference in total energy cost ( solar vs coal/gas) to the difference in dollar value of carbon emissions per year",
+    "units": "US$/Ton CO2eqv",
+    "filename": "Carbon_abatement_cost_comparison.csv"
+  },
+  "Discount Rate: Commercial / Industry": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "In some cases in the literature it is specifically indicated that a distinct discount rate is appropriate when applied to investment decisions made at a Commercial / Industrial level. The Commercial / Industrial level discount rate is directly related to decision-making at a Commercial / Industrial level and likely varies greatly across different regions of the world.  Taking the numbers found in the literature above comprises a conservative case.  Without distortions this discount rate would be equivalent to the interest rate afforded by alternative investments available to larger commericial / industrial entities such as multinational corporations or corporate utility enterprises.  Discount rates reported in the literature that are used for policy decisions are not necessarily equivalent to Commercial / Industrial level financial investment decisions, but oftentimes are not distiguished and may be conflated.  These values represent a conservative case and, due to uncertainty, lower and higher discounting rates should probably be used for sensitivity analysis.",
+    "units": "%",
+    "filename": "Discount_Rate_Commercial_Industry.csv"
+  }
+}

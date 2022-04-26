@@ -1,5 +1,16 @@
 {
-  "Ambitious Cases": {
-    "ITDP/UCD (2015) A Global High Shift Cycling Scenario - High Shift Scenario  - Early Years replaced with Recent Historical Data": "ad_ITDPUCD_2015_A_Global_High_Shift_Cycling_Scenario_High_Shift_Scenario_Early_Years_replac_b131f9f6.csv"
-  }
+    "Baseline Cases": {
+        "Based on ITF Recover": "ad_bon_ITF_Recover.csv",
+        "Based on ITDP Global High Shift-baseline scenario": "ad_bon_ITDP_Global_Hi_432893d0.csv",
+        "Based on Population Density 1.0% decline in cities": "ad_bon_Population_Den_1d231f64.csv"
+    },
+    "Conservative Cases": {
+        "Based on ITF ReshapePlus": "ad_bon_ITF_ReshapePlus.csv",
+        "Based on ITDP Global High Shift-high shift scenario": "ad_bon_ITDP_Global_Hi_c1bb83f3.csv",
+        "Based on Population Density 0% change in cities": "ad_bon_Population_Den_6a3e3134.csv"
+    },
+    "Ambitious Cases": {
+        "Based on ITF Reshape": "ad_bon_ITF_Reshape.csv",
+        "Based on Population Density 1.0% increase in cities": "ad_bon_Population_Den_f559804f.csv"
+    }
 }

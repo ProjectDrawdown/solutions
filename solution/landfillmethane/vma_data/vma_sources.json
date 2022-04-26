@@ -1,0 +1,74 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "TWh"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "title": "CONVENTIONAL First Cost per Implementation Unit",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+    "use_weight": true,
+    "units": "US$2014/kW"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US$2014/kW"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "title": "SOLUTION Lifetime Capacity",
+    "filename": "SOLUTION_Lifetime_Capacity.csv",
+    "stat_correction": true,
+    "units": "TWh/TW"
+  },
+  "SOLUTION Average Annual Use": {
+    "title": "SOLUTION Average Annual Use",
+    "filename": "SOLUTION_Average_Annual_Use.csv",
+    "stat_correction": true,
+    "units": "TWh/TW/year"
+  },
+  "SOLUTION Fixed Operating Cost (FOM)": {
+    "title": "SOLUTION Fixed Operating Cost (FOM)",
+    "filename": "SOLUTION_Fixed_Operating_Cost_FOM.csv",
+    "stat_correction": true,
+    "units": "US$2014/kW"
+  },
+  "SOLUTION Direct Emissions per Functional Unit": {
+    "title": "SOLUTION Direct Emissions per Functional Unit",
+    "filename": "SOLUTION_Direct_Emissions_per_Functional_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/TWh"
+  },
+  "SOLUTION Indirect CO2 Emissions per Unit": {
+    "title": "SOLUTION Indirect CO2 Emissions per Unit",
+    "filename": "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/TWh"
+  },
+  "CH4-CO2eq Tons Reduced": {
+    "title": "CH4-CO2eq Tons Reduced",
+    "filename": "CH4_CO2eq_Tons_Reduced.csv",
+    "stat_correction": true,
+    "units": "t CO2-eq/TWh"
+  },
+  "tCO2 from Landfill Gas Burning": {
+    "title": "tCO2 from Landfill Gas Burning",
+    "filename": "tCO2_from_Landfill_Gas_Burning.csv",
+    "stat_correction": true,
+    "units": "tCO2/TWh"
+  },
+  "tCH4-CO2-eq from Landfill Gas Burning": {
+    "title": "tCH4-CO2-eq from Landfill Gas Burning",
+    "filename": "tCH4_CO2_eq_from_Landfill_Gas_Burning.csv",
+    "stat_correction": true,
+    "units": "tCO2-eq/TWh"
+  },
+  "tN2O-CO2-eq from Landfill Gas Burning": {
+    "title": "tN2O-CO2-eq from Landfill Gas Burning",
+    "filename": "tN2O_CO2_eq_from_Landfill_Gas_Burning.csv",
+    "stat_correction": true,
+    "units": "tCO2-eq/TWh"
+  }
+}

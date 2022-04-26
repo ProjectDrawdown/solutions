@@ -1,0 +1,3 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+IEA (2013) & Siemens (2009),,World,,2 - Public Sector/ Multilateral Agency,2013,,see Advanced Controls for inputs,,0.08095051696440823,%,0.784157675167553,Weighted Average Electrical (non-thermal) Efficiency Factor for BAS,
+IEA (2013) & Siemens (2009),,World,,2 - Public Sector/ Multilateral Agency,2013,,see Advanced Controls for inputs,,0.24069299803579677,%,0.21534782387765009,Weighted Average Thermal Efficiency Factor for BAS,

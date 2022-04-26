@@ -53,10 +53,13 @@ def annual_breakout(
     if not has_var_costs and not fixed_oper_cost_per_iunit:
         return breakout
 
+    # supply a reasonable value if none provided; this matches the requested default in the Excel
+    if lifetime_replacement == 0:
+        lifetime_replacement = 100
+
     for year in range(first_year, last_year + 1):
         # within the years of interest, assume replacement of worn out equipment.
         lifetime = lifetime_replacement
-        assert lifetime_replacement != 0, 'Cannot have a lifetime replacement of 0 and non-zero operating costs'
         while math.ceil(lifetime) < (last_year + 1 - year):
             lifetime += lifetime_replacement
 
@@ -325,7 +328,7 @@ class OperatingCost(DataHandler):
         """
         result = self.soln_ref_annual_world_first_cost + self.conv_ref_annual_world_first_cost
         result = result - self.soln_pds_annual_world_first_cost
-        index = pd.RangeIndex(result.first_valid_index(), 2140)
+        index = pd.RangeIndex(dd.CORE_START_YEAR, 2140)
         result = result.reindex(index=index)
         # Excel returns 0.0 for years after self.ac.report_end_year
         result.loc[self.ac.report_end_year + 1:] = 0.0
@@ -342,7 +345,7 @@ class OperatingCost(DataHandler):
         conv_ref_lifetime_cost = self.conv_ref_annual_breakout().sum(axis=1)
         soln_pds_lifetime_cost = self.soln_pds_annual_breakout().sum(axis=1)
         result = conv_ref_lifetime_cost - soln_pds_lifetime_cost
-        index = pd.RangeIndex(result.first_valid_index(), 2140)
+        index = pd.RangeIndex(dd.CORE_START_YEAR, 2140)
         result = result.reindex(index)
         result.name = 'soln_marginal_operating_cost_savings'
         return result
@@ -355,7 +358,7 @@ class OperatingCost(DataHandler):
            SolarPVUtil 'Operating Cost'!D126:D250
         """
         result = self.soln_marginal_first_cost() + self.soln_marginal_operating_cost_savings()
-        index = pd.RangeIndex(result.first_valid_index(), 2140)
+        index = pd.RangeIndex(dd.CORE_START_YEAR, 2140)
         result = result.reindex(index)
         result.name = 'soln_net_cash_flow'
         return result
@@ -399,7 +402,7 @@ class OperatingCost(DataHandler):
         result.name = 'soln_vs_conv_single_iunit_cashflow'
 
         soln_lifetime = self.ac.soln_lifetime_replacement
-        if self.ac.soln_avg_annual_use is not None and self.ac.conv_avg_annual_use is not None:
+        if self.ac.soln_avg_annual_use is not None and self.ac.conv_avg_annual_use is not None and self.ac.conv_avg_annual_use != 0:
             conv_usage_mult = self.ac.soln_avg_annual_use / self.ac.conv_avg_annual_use  # RRS
         else:
             conv_usage_mult = 1  # LAND
@@ -510,7 +513,7 @@ class OperatingCost(DataHandler):
         result.name = 'soln_only_single_iunit_cashflow'
 
         soln_lifetime = self.ac.soln_lifetime_replacement
-        if self.ac.soln_avg_annual_use is not None and self.ac.conv_avg_annual_use is not None:
+        if self.ac.soln_avg_annual_use is not None and self.ac.conv_avg_annual_use is not None and self.ac.conv_avg_annual_use != 0:
             conv_usage_mult = self.ac.soln_avg_annual_use / self.ac.conv_avg_annual_use  # RRS
         else:
             conv_usage_mult = 1  # LAND

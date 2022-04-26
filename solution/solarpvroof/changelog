@@ -1,0 +1,11 @@
+Denton's Notes:
+In Drawdown 2020 in the adoption data tab the most aggressive case was renamed "100% Case" but the formulae in EF45 is 
+still looking for "100% RES Case". Change the formula to "100% Case"
+=IF(OR($B$38="ALL SOURCES",$B$38="Baseline Cases",$B$38="Conservative Cases",$B$38="Ambitious Cases",$B$38="100% Case"),
+    $C$19,CONCATENATE("Single Source-",LEFT($C$19,1)))
+
+In Drawdown 2020, update Operating Cost C257:AV257 and C394:AV394 to include a MAX(..., 0) in the conditional. 
+Otherwise it ends up with -0.0, which fails the comparison with 0.0 and makes the result not match Python in 
+ways we don't want to emulate.
+=IF($C$258*MAX((ROUNDUP(C255,0)-C255),0)=0,$C$258,($C$258*((ROUNDUP(C255,0)-C255))))
+=IF($C$395*MAX((ROUNDUP(C392,0)-C392),0)=0,$C$395,($C$395*((ROUNDUP(C392,0)-C392))))

@@ -215,13 +215,6 @@ def test_substitute_vma_passthru_value():
     assert ac.seq_rate_global == 4.3
 
 
-def test_substitute_vma_raises():
-    ac = advanced_controls.AdvancedControls(vmas={}, seq_rate_global=1)
-    assert ac.seq_rate_global == 1
-    with pytest.raises(KeyError):
-        advanced_controls.AdvancedControls(vmas={}, seq_rate_global='mean')
-
-
 def test_substitute_vma_handles_raw_value_discrepancy():
     class fakeVMA:
         df = pd.DataFrame(0, index=[0, 1], columns=vma.VMA_columns)
@@ -269,28 +262,6 @@ def test_substitute_vma_regional_statistics():
     ac = advanced_controls.AdvancedControls(vmas=vmas, pds_2014_cost='mean per region')
     expected = pd.Series(data=vals, name='regional values')
     pd.testing.assert_series_equal(expected, ac.pds_2014_cost)
-
-
-def test_substitute_vma_not_has_data():
-    class fakeVMA:
-        def __init__(self):
-            self.v = (np.nan, np.nan, np.nan)
-
-        def avg_high_low(self, key):
-            if key == 'mean': return self.v[0]
-            if key == 'high': return self.v[1]
-            if key == 'low': return self.v[2]
-            return v
-
-    v = fakeVMA()
-    v.df = pd.DataFrame(0, index=[0, 1], columns=vma.VMA_columns)
-    vmas = {'Sequestration Rates': v}
-    with pytest.raises(KeyError):
-        _ = advanced_controls.AdvancedControls(vmas=vmas, seq_rate_global='mean')
-
-    v.v = (1, 2, 3)
-    ac = advanced_controls.AdvancedControls(vmas=vmas, seq_rate_global='mean')
-    assert ac.seq_rate_global == 1
 
 
 def test_yield_coeff():

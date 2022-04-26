@@ -1,0 +1,10 @@
+Denton's Notes:
+In Drawdown 2020, the following scenarios in the ScenarioRecord need to be updated:
+PDS-45p2050-Plausible-PDScustom-low-BookVersion1
+PDS-54p2050-Drawdown-PDScustom-high-basedonpasture-BookVersion1
+PDS-54p2050-Optimum-PDScustom-high0.5SD-BookVersion1
+
+In the Additional Variables at row offset 276, add:
+Total Pasture/Grazing Area	Val:(2863) Formula:=G208	Mha
+(original document https://docs.google.com/document/d/1OiKg3_OOGjYOUdnHTQuZggsko5n31qv_YV4h77E3LHk/edit?usp=sharing
+has a picture, p 17.)

@@ -27,65 +27,7 @@ from model import conversions
 
 DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {
-    'Current Adoption': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
-        use_weight=False),
-    'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION First Cost per Implementation Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
-        use_weight=False),
-    'CONVENTIONAL Operating Cost per Functional Unit per Annum': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum.csv"),
-        use_weight=True),
-    'SOLUTION Operating Cost per Functional Unit per Annum': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum.csv"),
-        use_weight=True),
-    'CONVENTIONAL Net Profit Margin per Functional Unit per Annum': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv"),
-        use_weight=True),
-    'SOLUTION Net Profit Margin per Functional Unit per Annum': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv"),
-        use_weight=True),
-    'Yield from CONVENTIONAL Practice': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Yield_from_CONVENTIONAL_Practice.csv"),
-        use_weight=True),
-    'Yield Gain (% Increase from CONVENTIONAL to SOLUTION)': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION.csv"),
-        use_weight=False),
-    'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Energy Efficiency Factor': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Total Energy Used per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Fuel Consumed per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Fuel Efficiency Factor': vma.VMA(
-        filename=None, use_weight=False),
-    't CO2-eq (Aggregate emissions) Reduced per Land Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit.csv"),
-        use_weight=False),
-    't CO2 Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
-    't N2O-CO2-eq Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
-    't CH4-CO2-eq Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE': vma.VMA(
-        filename=None, use_weight=False),
-    'Indirect CO2 Emissions per  Implementation Unit - SOLUTION': vma.VMA(
-        filename=None, use_weight=False),
-    'Sequestration Rates': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Sequestration_Rates.csv"),
-        use_weight=False),
-    'Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing': vma.VMA(
-        filename=None, use_weight=False),
-    'Disturbance Rate': vma.VMA(
-        filename=None, use_weight=False),
-}
-vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
+VMAs = vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json')
 
 units = {
     "implementation unit": None,
@@ -166,14 +108,14 @@ class Scenario(scenario.LandScenario):
         # Data Source 1
         lin = 'Willer 2018 SEI calc RA lin'
         ds1_percent = {
-                'OECD90': self.ad.adoption_data(region='OECD90').loc[2050, lin] / world_2014,
-                'Eastern Europe': self.ad.adoption_data(
+                'OECD90': self.ad.adoption_sources(region='OECD90').loc[2050, lin] / world_2014,
+                'Eastern Europe': self.ad.adoption_sources(
                     region='Eastern Europe').loc[2050, lin] / world_2014,
-                'Asia (Sans Japan)': self.ad.adoption_data(
+                'Asia (Sans Japan)': self.ad.adoption_sources(
                     region='Asia (Sans Japan)').loc[2050, lin] / world_2014,
-                'Middle East and Africa': self.ad.adoption_data(
+                'Middle East and Africa': self.ad.adoption_sources(
                     region='Middle East and Africa').loc[2050, lin] / world_2014,
-                'Latin America': self.ad.adoption_data(
+                'Latin America': self.ad.adoption_sources(
                     region='Latin America').loc[2050, lin] / world_2014,
                 'China': 0.0, 'India': 0.0, 'EU': 0.0, 'USA': 0.0}
         ds1_regen = 0.2  # RA adoption in addition to organic agriculture adoption
@@ -184,14 +126,14 @@ class Scenario(scenario.LandScenario):
         ply = 'Willer 2018 SEI calc RA 3rd poly'
         exp = 'Willer 2018 SEI calc RA exp'
         ds2_percent = {
-                'OECD90': self.ad.adoption_data(region='OECD90').loc[2050, ply] / world_2014,
-                'Eastern Europe': self.ad.adoption_data(
+                'OECD90': self.ad.adoption_sources(region='OECD90').loc[2050, ply] / world_2014,
+                'Eastern Europe': self.ad.adoption_sources(
                     region='Eastern Europe').loc[2050, exp] / world_2014,
-                'Asia (Sans Japan)': self.ad.adoption_data(
+                'Asia (Sans Japan)': self.ad.adoption_sources(
                     region='Asia (Sans Japan)').loc[2050, ply] / world_2014,
-                'Middle East and Africa': self.ad.adoption_data(
+                'Middle East and Africa': self.ad.adoption_sources(
                     region='Middle East and Africa').loc[2050, exp] / world_2014,
-                'Latin America': self.ad.adoption_data(
+                'Latin America': self.ad.adoption_sources(
                     region='Latin America').loc[2050, ply] / world_2014,
                 'China': 0.0, 'India': 0.0, 'EU': 0.0, 'USA': 0.0}
         ds2_regen = 0.2  # RA adoption in addition to organic agriculture adoption
@@ -447,14 +389,14 @@ class Scenario(scenario.LandScenario):
             pds_adoption_data_per_region=pds_adoption_data_per_region,
             ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,
             ref_adoption_data_per_region=ref_adoption_data_per_region,
-            use_first_pds_datapoint_main=False,
-            adoption_base_year=2018,
+            copy_pds_world_too=False,
+            copy_through_year=2018,
             copy_pds_to_ref=False,
             copy_ref_datapoint=False,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
-        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=1)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
             ref_total_adoption_units=self.tla_per_region,

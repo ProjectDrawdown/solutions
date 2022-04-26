@@ -11,9 +11,10 @@ expected_file = thisdir / 'expected.zip'
 solution_name = thisdir.parents[0].name
 
 # If there are long-running test failures that should be skipped, you can indicate them here.
-# Someday we'll have a scanner that will check for these
+# Custom code in __init__.py calculates Custom Adoption values for years 2012 and 2013, and Excel does not.
+# Does not affect any other results.
 SCENARIO_SKIP = None
-TEST_SKIP = None
+TEST_SKIP = ['A23:B71']
 
 def test_loader():
     """Test that the solution can load the defined scenarios"""

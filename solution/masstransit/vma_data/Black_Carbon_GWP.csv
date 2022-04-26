@@ -1,10 +1,10 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Bond et al (2013),,World,,,2013,,590.0,CO2 eq,,CO2 eq,,Direct effect,
-Bond et al (2013),,World,,,2013,,900.0,CO2 eq,,CO2 eq,,Total climate forcing,
-Bond and Sun (2005) Can reducing black carbon emissions counteract global warming,http://pubs.acs.org/doi/pdf/10.1021/es0480421,World,,1  - Peer Reviewed,2005,,680.0,CO2 eq,,CO2 eq,,,
-Rypdal (2009) Costs and global impacts of black carbon abatement strategies,http://folk.uio.no/gunnarmy/paper/rypdal_tellus_2009.pdf,World,,1  - Peer Reviewed,2009,,830.0,CO2 eq,,CO2 eq,,,
-Bachmann (2009),http://www.c2es.org/docUploads/black-carbon-12-16-09.pdf,World,,2 - Public Sector/ Multilateral Agency,2009,,500.0,CO2 eq,,CO2 eq,,,
-Bachmann (2009),http://www.c2es.org/docUploads/black-carbon-12-16-09.pdf,World,,2 - Public Sector/ Multilateral Agency,2009,,460.0,CO2 eq,,CO2 eq,,,
-Schulz et al (2013) - Bounding the role of black carbon in the climate system: A scientific assessment: Black Carbon in the Climate System (Direct Effect),,World,,,2013,,590.0,CO2 eq,,CO2 eq,,Direct effect,
-Schulz et al (2013) - Bounding the role of black carbon in the climate system: A scientific assessment: Black Carbon in the Climate System (Total Climate Forcing),,World,,,2013,,900.0,CO2 eq,,CO2 eq,,Total climate forcing,
-de la Sota (2019) Quantification of Carbonaceous Aerosol Emissions from Cookstoves in Senegal ,http://www.aaqr.org/files/article/6809/8_AAQR-17-11-AC3-0540_80-91.pdf,World,,2 - Public Sector/ Multilateral Agency,2019,,960.0,CO2 eq,,CO2 eq,,,
+Bond et al (2013),,World,,,2013,,590.0,CO2 eq,,CO2 eq,,Direct effect,False
+Bond et al (2013),,World,,,2013,,900.0,CO2 eq,,CO2 eq,,Total climate forcing,False
+Bond and Sun (2005) Can reducing black carbon emissions counteract global warming,http://pubs.acs.org/doi/pdf/10.1021/es0480421,World,,1  - Peer Reviewed,2005,,680.0,CO2 eq,,CO2 eq,,,False
+Rypdal (2009) Costs and global impacts of black carbon abatement strategies,http://folk.uio.no/gunnarmy/paper/rypdal_tellus_2009.pdf,World,,1  - Peer Reviewed,2009,,830.0,CO2 eq,,CO2 eq,,,False
+Bachmann (2009),http://www.c2es.org/docUploads/black-carbon-12-16-09.pdf,World,,2 - Public Sector/ Multilateral Agency,2009,,500.0,CO2 eq,,CO2 eq,,,False
+Bachmann (2009),http://www.c2es.org/docUploads/black-carbon-12-16-09.pdf,World,,2 - Public Sector/ Multilateral Agency,2009,,460.0,CO2 eq,,CO2 eq,,,False
+Schulz et al (2013) - Bounding the role of black carbon in the climate system: A scientific assessment: Black Carbon in the Climate System (Direct Effect),,World,,,2013,,590.0,CO2 eq,,CO2 eq,,Direct effect,False
+Schulz et al (2013) - Bounding the role of black carbon in the climate system: A scientific assessment: Black Carbon in the Climate System (Total Climate Forcing),,World,,,2013,,900.0,CO2 eq,,CO2 eq,,Total climate forcing,False
+de la Sota (2019) Quantification of Carbonaceous Aerosol Emissions from Cookstoves in Senegal ,http://www.aaqr.org/files/article/6809/8_AAQR-17-11-AC3-0540_80-91.pdf,World,,2 - Public Sector/ Multilateral Agency,2019,,960.0,CO2 eq,,CO2 eq,,,False

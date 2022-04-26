@@ -27,67 +27,7 @@ from model import conversions
 
 DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {
-    'Current Adoption': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
-        use_weight=False),
-    'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION First Cost per Implementation Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Operating Cost per Functional Unit per Annum': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Operating Cost per Functional Unit per Annum': vma.VMA(
-        filename=None, use_weight=False),
-    'Yield from CONVENTIONAL Practice': vma.VMA(
-        filename=None, use_weight=False),
-    'Yield Gain (% Increase from CONVENTIONAL to SOLUTION)': vma.VMA(
-        filename=None, use_weight=False),
-    'Average Electricty Used DEGRADED LAND': vma.VMA(
-        filename=None, use_weight=False),
-    'Energy Efficiency Factor UNDEGRADED LAND': vma.VMA(
-        filename=None, use_weight=False),
-    'ALTERNATIVE APPROACH Annual Energy Used UNDEGRADED LAND': vma.VMA(
-        filename=None, use_weight=False),
-    'Fuel Consumed on DEGRADED Land': vma.VMA(
-        filename=None, use_weight=False),
-    'Fuel Reduction Factor for UNDEGRADED Land': vma.VMA(
-        filename=None, use_weight=False),
-    't CO2-eq (Aggregate emissions) Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
-    't CO2 Reduced per Land Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "t_CO2_Reduced_per_Land_Unit.csv"),
-        use_weight=False),
-    't N2O-CO2-eq Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
-    't CH4-CO2-eq Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'Indirect CO2-eq Emissions DEGRADED LAND': vma.VMA(
-        filename=None, use_weight=False),
-    'Indirect CO2-eq Emissions UNDEGRADED LAND': vma.VMA(
-        filename=None, use_weight=False),
-    'Sequestration Rates': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Sequestration_Rates.csv"),
-        use_weight=False),
-    'Growth Rate of Land Degradation': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Growth_Rate_of_Land_Degradation.csv"),
-        use_weight=False),
-    'Disturbance Rate': vma.VMA(
-        filename=None, use_weight=False),
-    't C storage in Protected Landtype': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "t_C_storage_in_Protected_Landtype.csv"),
-        use_weight=False),
-    'Global Multipler for Regrowth': vma.VMA(
-        filename=None, use_weight=False),
-    'Tropical Multipler for Regrowth': vma.VMA(
-        filename=None, use_weight=False),
-    'Temperate Multiplier for Regrowth': vma.VMA(
-        filename=None, use_weight=False),
-    'Total Available Land': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Total_Available_Land.csv"),
-        use_weight=False),
-}
-vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
+VMAs = vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json')
 
 units = {
     "implementation unit": None,
@@ -169,13 +109,13 @@ class Scenario(scenario.LandScenario):
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
             ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,
-            use_first_pds_datapoint_main=False,
-            adoption_base_year=2018,
+            copy_pds_world_too=False,
+            copy_through_year=2018,
             copy_pds_to_ref=False,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
-        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=1)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
             ref_total_adoption_units=self.tla_per_region,

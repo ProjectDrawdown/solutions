@@ -1,2 +1,6 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Sustainability Roundtable, Inc (2012), p. 8",http://www.sustainround.com/library/sites/default/files/SBER-ELC_Member%20Briefing_11%20ECMs_UPDATE.pdf,USA,,3 - For Profit,2012,,,Percentage of Solution Cost,0.0,US2014$/million m2 commercial floor space,,,
+"Sustainability Roundtable, Inc (2012), p. 8",http://www.sustainround.com/library/sites/default/files/SBER-ELC_Member%20Briefing_11%20ECMs_UPDATE.pdf,OECD90,USA,3 - For Profit,2012,,0.6407377944528876,Percentage of Solution Cost,14.56916943365558,US2014$/m2 commercial floor space,,,
+Ready One (2017),https://ready.one/building-automation-per-square-foot/,OECD90,USA,3 - For Profit,2017,,24.78,US$2017/m2 commercial floor space,23.932433420365534,US2014$/m2 commercial floor space,,,
+Intel (2016),https://blogs.intel.com/iot/2016/06/20/costs-savings-roi-smart-building-implementation/,OECD90,USA,3 - For Profit,2016,,26.9,US$2016/m2 commercial floor space,26.54721237941988,US2014$/m2 commercial floor space,,,
+FPL (2014),https://www.fpl.com/business/pdf/building-controls-brief.pdf,OECD90,USA,3 - For Profit,2014,,16.14,US$2014/m2 commercial floor space,16.14,US2014$/m2 commercial floor space,,,
+Home Depot (2018) ,https://www.homedepot.com/,OECD90,USA,3 - For Profit,2018,,6.77,US$2018/m2 commercial floor space,6.3852418176653405,US2014$/m2 commercial floor space,,,

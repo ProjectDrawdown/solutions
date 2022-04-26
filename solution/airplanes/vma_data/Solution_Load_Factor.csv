@@ -1,16 +1,24 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-Drawdown Team assumptions based on review of aircraft model data,,World,,5 - Not Verified,2016,,0.8,%,,,,,
-Association of European Airlines,http://www.aea.be/statistics.html,OECD90,Europe,2 - Public Sector/ Multilateral Agency,2016,,0.805,%,,,,"From 17Nov, 2016",
-IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,World,International Flights,2 - Public Sector/ Multilateral Agency,2016,,0.788,%,,,,,
-IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,OECD90,USA - Domestic Flights,2 - Public Sector/ Multilateral Agency,2016,,0.81,%,,,,,
-IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,Eastern Europe,Russia - Domestic Flights,2 - Public Sector/ Multilateral Agency,2016,,0.684,%,,,,,
-IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,Asia (Sans Japan),India - Domestic Flights,2 - Public Sector/ Multilateral Agency,2016,,0.847,%,,,,,
-IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,Asia (Sans Japan),China - Domestic Flights,2 - Public Sector/ Multilateral Agency,2016,,0.791,%,,,,,
-IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,OECD90,Australia - Domestic Flights,2 - Public Sector/ Multilateral Agency,2016,,0.769,%,,,,,
-IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,OECD90,Japan - Domestic Flights,2 - Public Sector/ Multilateral Agency,2016,,0.647,%,,,,,
-IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,Latin America,Brazil - Domestic Flights,2 - Public Sector/ Multilateral Agency,2016,,0.833,%,,,,,
-ICAO,http://www.icao.int/Newsroom/NewsDoc2015/COM.72.15.EN.pdf,Middle East and Africa,Africa,2 - Public Sector/ Multilateral Agency,2015,,0.689,%,,,,,
-ICAO,http://www.icao.int/Newsroom/NewsDoc2015/COM.72.15.EN.pdf,OECD90,USA,2 - Public Sector/ Multilateral Agency,2015,,0.835,%,,,,,
-ICAO,http://www.icao.int/Newsroom/NewsDoc2015/COM.72.15.EN.pdf,World,,2 - Public Sector/ Multilateral Agency,2015,,0.802,%,,,,,
-Association of Asia Pacific Airlines,http://www.aapairlines.org/resource_centre/AAPA_PR_Issue15_SepTrafficResults_22Oct15.pdf,Asia (Sans Japan),,2 - Public Sector/ Multilateral Agency,2015,,0.772,%,,,,,
-Oliver Wyman,http://www.oliverwyman.com/content/dam/oliver-wyman/global/en/2016/jan/oliver-wyman-airline-economic-analysis-2015-2016.pdf,OECD90,USA,3 - For Profit,2016,,0.869,%,,,,,
+Drawdown Team assumptions based on review of aircraft model data,,World,,5 - Not Verified,2016,,0.8,Load Factor,,,,,False
+Association of European Airlines,http://www.aea.be/statistics.html,OECD90,Europe,2 - Public Sector/ Multilateral Agency,2016,,0.805,Load Factor,,,,"From 17Nov, 2016",False
+IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,World,International Flights,2 - Public Sector/ Multilateral Agency,2016,,0.788,Load Factor,,,,,False
+IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,OECD90,USA - Domestic Flights,2 - Public Sector/ Multilateral Agency,2016,,0.81,Load Factor,,,,,False
+IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,Eastern Europe,Russia - Domestic Flights,2 - Public Sector/ Multilateral Agency,2016,,0.684,Load Factor,,,,,False
+IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,Asia (Sans Japan),India - Domestic Flights,2 - Public Sector/ Multilateral Agency,2016,,0.847,Load Factor,,,,,False
+IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,Asia (Sans Japan),China - Domestic Flights,2 - Public Sector/ Multilateral Agency,2016,,0.791,Load Factor,,,,,False
+IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,OECD90,Australia - Domestic Flights,2 - Public Sector/ Multilateral Agency,2016,,0.769,Load Factor,,,,,False
+IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,OECD90,Japan - Domestic Flights,2 - Public Sector/ Multilateral Agency,2016,,0.647,Load Factor,,,,,False
+IATA,http://www.iata.org/pressroom/pr/Pages/2016-03-08-01.aspx,Latin America,Brazil - Domestic Flights,2 - Public Sector/ Multilateral Agency,2016,,0.833,Load Factor,,,,,False
+ICAO,http://www.icao.int/Newsroom/NewsDoc2015/COM.72.15.EN.pdf,Middle East and Africa,Africa,2 - Public Sector/ Multilateral Agency,2015,,0.689,Load Factor,,,,,False
+ICAO,http://www.icao.int/Newsroom/NewsDoc2015/COM.72.15.EN.pdf,OECD90,USA,2 - Public Sector/ Multilateral Agency,2015,,0.835,Load Factor,,,,,False
+ICAO,http://www.icao.int/Newsroom/NewsDoc2015/COM.72.15.EN.pdf,World,,2 - Public Sector/ Multilateral Agency,2015,,0.802,Load Factor,,,,,False
+Association of Asia Pacific Airlines,http://www.aapairlines.org/resource_centre/AAPA_PR_Issue15_SepTrafficResults_22Oct15.pdf,Asia (Sans Japan),,2 - Public Sector/ Multilateral Agency,2015,,0.772,Load Factor,,,,,False
+Oliver Wyman,http://www.oliverwyman.com/content/dam/oliver-wyman/global/en/2016/jan/oliver-wyman-airline-economic-analysis-2015-2016.pdf,OECD90,USA,3 - For Profit,2016,,0.869,Load Factor,,,,,False
+"Goldstein (2018) Meet The Most Crowded Airlines: Load Factor Hits All-Time High, Forbes ",https://www.forbes.com/sites/michaelgoldstein/2018/07/09/meet-the-most-crowded-airlines-load-factor-hits-all-time-high/#3d61dbf54fbd,World,,3 - For Profit,2018,,0.817,Load Factor,,,,,False
+IATA (2019) Healthy Passenger Demand Continues in 2018 with Another Record Load Factor,https://www.iata.org/pressroom/pr/Pages/2019-02-07-01.aspx,World,,2 - Public Sector/ Multilateral Agency,2018,,0.804,Load Factor,,,,,False
+"Zheng, Xinyi Sola. 2018. “U.S. Domestic Airline Fuel-Efficiency Ranking 2017-2018.” 17",,USA,USA,1  - Peer Reviewed,2018,,0.85,Load Factor,,,,,False
+"Statista. 2021. “Commercial Airlines: Passenger Load Factor Worldwide 2005-2021.” Statista. Retrieved September 10, 2021",http://www.statista.com/statistics/658830/passenger-load-factor-of-commercial-airlines-worldwide/,World,World,2 - Public Sector/ Multilateral Agency,2020,,0.82,Load Factor,,,,Pre Covid,False
+"Statista. 2021. “Commercial Airlines: Passenger Load Factor Worldwide 2005-2021.” Statista. Retrieved September 10, 2021",http://www.statista.com/statistics/658830/passenger-load-factor-of-commercial-airlines-worldwide/,World,World,2 - Public Sector/ Multilateral Agency,2020,,0.595,Load Factor,,,,Post Covid,True
+Civil Aviation Administration of China. 2021. 2020 Statistical Bulletin on the Development of the Civil Aviation Industry.,https://www.mot.gov.cn/tongjishuju/minhang/202106/P020210616371268778138.pdf,China,China,2 - Public Sector/ Multilateral Agency,2020,,0.665,Load Factor,,,,Post Covid,True
+Destination 2050. A route to net zero european aviation,,EU,Europe,2 - Public Sector/ Multilateral Agency,2019,,0.8834,Load Factor,,,,Average value of several EU airlines,False
+"Zheng, Sola, and Dan Rutherford. 1960. “Fuel Burn of New Commercial Jet Aircraft: 1960 to 2019.",https://theicct.org/sites/default/files/publications/Aircraft-fuel-burn-trends-sept2020.pdf,World,World,2 - Public Sector/ Multilateral Agency,2019,,0.825,Load Factor,,,,Average value of single and twin alse,False

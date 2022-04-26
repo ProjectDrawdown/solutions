@@ -1,0 +1,13 @@
+Denton's Notes:
+Ocean Power
+Regional Adoption data still has the constants for 2012-2014 for the China, India, EU, USA regions, 
+which makes the trend computation try to predict something. Remove the constants.
+
+Helper Tables C31 links to the PDS data for 2018, which is one more year than the other energy models do. 
+Restore the formula using cell C32.
+
+Similar to the other Drawdown2020 energy models like SolarPV, in the adoption data tab the most aggressive
+case was renamed "100% Case" but the formulae in EF45 is still looking for "100% RES Case". However for Ocean Power, 
+fixing EF45 results in negative adoption for the years 2018-2022 and this makes First Cost not work. Change 
+ScenarioRecord E1557 to 'Based on: average of Greenpeace Advanced Energy Revolution (2015) and Ecofys (2018)' 
+to get an actual single source matching the Excel behavior.

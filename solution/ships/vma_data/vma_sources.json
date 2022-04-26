@@ -1,0 +1,86 @@
+{
+  "Current Adoption": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "A \"Conventional ship\" is one avergae global fuel consumption in 2014, the Base Year. ships that are 50% more efficient are considered \"Efficient Ships\". The  value of 'work done by 'efficient ships' in 2014 is estimated from the aggregate values of EEOI and is calculated in cell H15, 'Adoption' sheet. For details on calculations pse  see 'AdoptionCalculator sheet'",
+    "units": "Billion Ton - nmiles",
+    "filename": "Current_Adoption.csv"
+  },
+  "CONVENTIONAL First Cost per Implementation Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "The cost of conventional ship is assumed as zero.",
+    "units": "US2014$/Ship",
+    "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Cost of the solution varies with size and type of the ship.A combined set of 17 technologies are taken and their cumulative costs are calculated . Refer additional sheets 'technologies' for details.  Weighted capital cost of different technologies for different sizes of ships of a type are calculated and used as an average cost  for a specific type of ship. The share of each type of ship in the global shipping market is used as weights. Capital cost and maintenance costs are used to derive the total cost.",
+    "units": "US2014$/Ship",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Transport work done per ship per year is calculated on additional sheet 'conventional' for details.This number is arrived at by calculating the transport work done by each type of ship and is weighted  according to the share of each type of ship in the global shipping market. The average life of a ship is 25 years and 30 years (two different sources). However, for the model a 25 year life has been used.",
+    "units": "Billion Ton - nmiles/Ship",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Although life of various technologies are different, multiplication factors are used in calculation of costs so that the technology is replaced in due time. Eg. a technology with life of 5 years  is replaced 5 times to calculate cost for 25 years. Hence 25 years is assumed as the life of the solution.",
+    "units": "Billion Ton - nmiles/Ship",
+    "filename": "SOLUTION_Lifetime_Capacity.csv"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "The weighted work done per ship is calculated as weighted (by ship type) transport work done per ship.",
+    "units": "Billion Ton - nmiles/Ship/year",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv"
+  },
+  "SOLUTION Average Annual Use": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "The weighted work done per ship is calculated as weighted (by ship type) transport work done per ship.  It is assumed that the conventional ship and the efficient ship (with solution) has the same annual use and the characteristics of the market (ship size, tons carried, no. of ships) does not vary due to more efficient ships.",
+    "units": "Billion Ton - nmiles/Ship/year",
+    "filename": "SOLUTION_Average_Annual_Use.csv"
+  },
+  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "This includes annual maintenance costs for the energy efficiency technologies only, fuel costs are entered on the Main Controls separately. See sheet 'technologies' for details.",
+    "units": "US2014$/Billion Ton - nmiles",
+    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Calculated from aggregate fuel used by different types of ships/aggregate tpt work done per year. Refer additional sheet 'conventional ' for details",
+    "units": "Liter/ Billion Ton - nmiles",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Derived as (weighted average) improvements in technical efficiency for a suite of 17 technologies. 22.50 % improvements have been estimated from energy efficient technologies and 27.5% improvements from slow steaming. Refer additional sheet 'technologies'.",
+    "units": "%",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv"
+  },
+  "Discount Rate: Commercial / Industry": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "In some cases in the literature it is specifically indicated that a distinct discount rate is appropriate when applied to investment decisions made at a Commercial / Industrial level. The Commercial / Industrial level discount rate is directly related to decision-making at a Commercial / Industrial level and likely varies greatly across different regions of the world.  Taking the numbers found in the literature above comprises a conservative case.  Without distortions this discount rate would be equivalent to the interest rate afforded by alternative investments available to larger commercial / industrial entities such as multinational corporations or corporate utility enterprises.  Discount rates reported in the literature that are used for policy decisions are not necessarily equivalent to Commercial / Industrial level financial investment decisions, but oftentimes are not distinguished and may be conflated.  These values represent a conservative case and, due to uncertainty, lower and higher discounting rates should probably be used for sensitivity analysis.",
+    "units": "",
+    "filename": "Discount_Rate_Commercial_Industry.csv"
+  },
+  "Learning Rate": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "The learning rate for different technologies is different. ICCT,2011 study assumes a learning curve of 10-15% for some technologies. Maddox Consulting, 2012 study uses a learning rate of 10% for waste heat recovery technology over the first five years and no further reduction thereafter. Considering these studies a conservative figure of 5% is taken as the average learning rate for energy efficiency improvement technologies.",
+    "units": "",
+    "filename": "Learning_Rate.csv"
+  }
+}

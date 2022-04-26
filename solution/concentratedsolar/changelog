@@ -1,1 +1,28 @@
 Deleted the three 2020 scenarios since one of them broke with a missing TAM.
+Two of the scenarios had pds adoption overrides set, in spite of the model using copy_pds_to_ref.  When we disallowed recursion
+between pds/ref helpertables functionality, this broke.  I fixed it by removing the adoption overrides ("pds_adoption_use_ref_years"),
+which weren't accomplishing anything useful anyway.
+
+Denton's Notes:
+Concentrated Solar
+AdoptionData for Latin America has a 0.0 in 2020 for all sources but one. solution_xls_extract.xls treats these zeros as NaN, 
+because in most of the other solutions that is what it means, but here it is important. Update the following files to change the 
+Latin America column in 2020 to 0.0:
+ad_based_on_AMPERE_2014_MESSAGE_MACRO_550.csv
+ad_based_on_AMPERE_2014_IMAGE_TIMER_550.csv
+ad_based_on_AMPERE_2014_IMAGE_TIMER_450.csv
+
+HelperTables B21 is still 2014, but the spreadsheet nonetheless uses 2018 as its base year. Update B21 to 2018.
+
+In Emissions Factors, empty rows were inserted starting at A40. Copy the data from lower in the sheet back into place.
+
+The Custom REF Adoption tab supplies no regional data, not even 0. Change the IFERROR value in Helper Tables D28:L73 to 0.0:
+=IFERROR(MIN((IF($F$15=1,FORECAST($B28,D$21:D$22,$B$21:$B$22),'Custom REF Adoption'!C26*1)),'Unit Adoption Calculations'!C18),0)
+The symptom is that Unit Adoption Calculations Q252 is NaN in Excel and not NaN in Python.
+
+In ScenarioRecord for the Book Ed 1 Drawdown and Optimum scenarios, "Years with Y-PDS" is set which results in a 
+circular reference due to the way baseline years were added in the 2020 results. Clear cells E683 and E910.
+
+ConcentratedSolar should set bug_cfunits_double_count=True, but the scenario loaded in the file has all regional 
+adoption set to 0 in advanced controls to tools/solution_xls_extract.py cannot figure this out. 
+Set bug_cfunits_double_count=True in solution/concentratedsolar/__init__.py

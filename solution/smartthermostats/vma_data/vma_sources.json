@@ -1,0 +1,98 @@
+{
+    "Current Adoption": {
+        "filename": "Current_Adoption.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Limited current adoption data found. Row 1 is most widely cited market reported figure for total number of deployed smart thermostats. Rows 2 and 3 are the breakdown of that total between the two markets where smart thermostats are currently deployed: North America/USA and EU. See 'Custom Adoption based on GDP' sheet for more information and data. "
+    },
+    "CONVENTIONAL First Cost per Implementation Unit": {
+        "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Data from manufacturers and retailers. All sources are from the US market, and this is because most of the market growth will happen in the US and EU (and similar prices are assumed for EU). Weights represent a rough estimate of the market share between mechanical or non-programmable thermostats and programmable thermostats, specific to the US. See 'Main Controls' for links to EIA data source for percentages of homes with programmable vs non-programmable thermostats. Prices are normalized to US$2014. Assumes DIY installation (so installation costs = $0.00). *Sources are not in Zotero because cost data is taken directly from retailer websites (see links for data). "
+    },
+    "SOLUTION First Cost per Implementation Unit": {
+        "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Data is from vendors of smart thermostats. Most vendors operate in the North American market, with several serving both North America/EU and others (Rows 4 and 5) serving the EU market Prices are normalized to US$2014 and currency conversions made where necessary. Assumes DIY installation (so installation costs = $0.00). *Sources are not in Zotero because cost data is taken directly from vendor websites (see links for data). "
+    },
+    "CONVENTIONAL Lifetime Capacity": {
+        "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Lifetime capacity estimates for programmable thermostats are similar to those for smart thermostats, though very little lifetime estimates exist for smart thermostats (see next variable). Weights represent a rough estimate of the market share between mechanical or non-programmable thermostats and programmable thermostats, specific to the US."
+    },
+    "SOLUTION Lifetime Capacity": {
+        "filename": "SOLUTION_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Very few lifetime capacity estimates for smart thermostats were found in the literature given the infancy of smart thermostat technology. The source included assumes a similar EUL between programmable and smart thermostats. Smart thermostat vendors do not list lifetime estimates for their products, and individual product warranties were for periods much shorter than the EUL contained in the source listed (Warranties - Nest: 2 years; Ecobee: 3 years; Honeywell: 5 years).  "
+    },
+    "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This Operating Cost variable represents the average annual costs (in US$2014) per million households with a conventional thermostat for space cooling and heating-related electricity expenses. The Raw Data Input above represents the total average energy expenditure per millions of households for space cooling and is taken from Advanced Controls. This input is converted to a total cost per millions of households by multiplying by the global electricity price for residential electricity used by Drawdown. The model assumes that both space heating and cooling contribute to the electricity consumption per household.\n\nThis Operating Cost variable represents the average annual costs (in US$2014) per millions of households with a conventional thermostat for space heating-related expenses. The Raw Data Input above represents the total average energy expenditure per millions of households for space heating and is taken from Advanced Controls. This input is converted to a total cost per millions of households by multiplying by the global price for natural gas used by Drawdown. The model currently assumes that natural gas is the only fuel used for space heating in the household. Natural gas does represent a majority of the fuels used for space heating, but there are many other space heating fuels that are not included (e.g. liquid fuels, oil, coal, electricity, etc)."
+    },
+    "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "\nThis Operating Cost variable is calculated by applying the energy efficiency factor from Advanced Controls  to calculate the average annual costs (in US$2014) per millions of households with a smart thermostat for space cooling and heating-related electricity expenses. This input is converted to a total cost per millions of households by multiplying by the global electricity price for residential electricity used by Drawdown. The model currently assumes that electricity is used for both space cooling and heating. \n      "
+    },
+    "CONVENTIONAL Total Energy Used per Functional Unit": {
+        "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This variable lists a weighted average value for total electricity consumed for space heating and cooling in the US, EU-27, and urban China. The input in Row 1 is taken from variables 27 and 28, which list separately the total weighted average annual consumption values for electricity in the residential sector for space heating and cooling.\n\nTWh are used because the emissions calculations for electricity efficiency are calculated from TWh reduced per year"
+    },
+    "SOLUTION Energy Efficiency Factor": {
+        "filename": "SOLUTION_Energy_Efficiency_Factor.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "These inputs for energy efficiency factor are all based on the percent reduction in electricity consumption for space cooling in households that have installed a smart thermostat. These inputs are from several industry-sponsored pilot test programs and white papers as well as an independent analysis of a similar pilot program."
+    },
+    "CONVENTIONAL Fuel Consumed per Functional Unit": {
+        "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "This variable lists weighted average values for total fuel consumed for space heating in the US, EU-27, and urban China. These values are taken from multiple sources.  The weights for each input are applied by taking the percentage share of total households in each region (out of only these regions). \n\nTJ are used because the emissions calculations for fuel efficiency are based on natural gas and thus TJ reduced per year"
+    },
+    "SOLUTION Fuel Efficiency Factor": {
+        "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "These inputs for fuel efficiency factor are all based on the percent reduction in natural gas consumption for households that have installed a smart thermostat. These inputs are from several industry-sponsored pilot test programs and white papers as well as several independent analyses of similar pilot programs. **The model currently assumes that natural gas is the only fuel used for space heating. "
+    },
+    "Residential Electricity Price": {
+        "filename": "Residential_Electricity_Price.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This input is taken from the Drawdown Common Electricity Prices dataset and, specifically, from the Global Residential weighted average electricity price. It is converted from US$2014/kWh to US$2014/TWh. "
+    },
+    "Residential Fuel Price for Natural Gas": {
+        "filename": "Residential_Fuel_Price_for_Natural_Gas.csv",
+        "use_weight": false,
+        "bound_correction": true,
+        "description": "This input is taken from the Drawdown Common Fuel Prices dataset and, specifically, from the average natural gas price."
+    },
+    "Learning Rates for Air Conditioners": {
+        "filename": "Learning_Rates_for_Air_Conditioners.csv",
+        "use_weight": false,
+        "bound_correction": true,
+        "description": "This variable was originally created to input learning curve estimates for several different residential energy demand technologies, ranging from air conditioners to light fixtures and televisions, but the assumption was made to use 'Room Air Conditioners' as a proxy for smart thermostats, as both are modular devices used to control room temperature (space heating/cooling), and the retail prices (first cost) for room air conditioners are more comparable to those for smart thermostats than any of the other technologies.\n\nNOTE: individual sources instead cited from: Weiss, M., Junginger, M., Patel, M. K., & Blok, K. (2010). A review of experience curve analyses for energy demand technologies. Technological Forecasting and Social Change, 77(3), 411\u2013428. https://doi.org/10.1016/j.techfore.2009.10.009. "
+    },
+    "Energy Consumed for Space Heating per Functional Unit - CONVENTIONAL": {
+        "filename": "Energy_Consumed_for_Space_Heating_per_Functional_Unit_CONVENTIONAL.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "This variable lists weighted average values for total electricity consumed for space heating in the US, EU-27, and urban China. These values are taken from multiple sources. The weights for each input are applied by taking the percentage share of total households in each region (only out of these regions). "
+    },
+    "Electricity Consumed for Space Cooling per Functional Unit - CONVENTIONAL": {
+        "filename": "Electricity_Consumed_for_Space_Cooling_per_Functional_Unit_CONVENTIONAL.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "This variable lists weighted average values for total fuel consumed for space cooling in the US, EU-27, and urban China. These values are taken from multiple sources. The weights for each input are applied by taking the percentage share of total households in each region (only out of these regions)."
+    }
+}

@@ -1,8 +1,10 @@
 """Code shared by all integrations."""
 
 import os
+from io import StringIO
 import numpy as np
 import pandas as pd
+from model import integration
 from solution import factory
 from pathlib import Path
 
@@ -100,6 +102,24 @@ def load_testmode_snapshot(snapshot_name):
     return None
 
 # #######################################################################################################
+# 
+# Updating global data sources with versions
+# Does both these operations with the integration modifiers
+# 
+
+def update_to_version(filename_without_version, version, contents):
+    basestem = filename_without_version.stem
+
+    versioned_name = filename_without_version.with_stem(basestem + "_" + str(version))
+    versioned_name = integration.integration_alt_file(versioned_name)
+    versioned_name.write_text(contents, encoding='utf-8')
+
+    current_name = filename_without_version.with_stem(basestem + "_current")
+    current_name = integration.integration_alt_file(current_name)
+    current_name.write_text(contents, encoding="utf-8")
+
+
+# #######################################################################################################
 #
 # Audit logs
 
@@ -169,6 +189,10 @@ def df_isclose(df1, df2):
     """Return True if the dfs are within a tolerance of one another"""
     return np.allclose(df1.to_numpy(), df2.to_numpy(), atol=1e-06, equal_nan=True)
 
+def df_to_csv_string(df):
+    buffer = StringIO()
+    df.to_csv(buffer, line_terminator='\n')
+    return buffer.getvalue()
 
 def read_as_series( datadir, file ):
     return pd.read_csv(datadir/file, index_col="Year")['World']

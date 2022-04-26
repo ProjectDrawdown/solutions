@@ -1,0 +1,140 @@
+{
+    "Current Adoption": {
+        "filename": "Current_Adoption.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Greenroofs.com is noted as voluntary submission and non-comprehensive."
+    },
+    "CONVENTIONAL First Cost per Implementation Unit": {
+        "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Costs are adjusted for inflation and converted to a per m2 value."
+    },
+    "SOLUTION First Cost per Implementation Unit": {
+        "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Data is converted from sq. ft to sq. meters and inflation factors are applied as needed.\n\nCosts typical of \"extensive\" green roof\".  Intensive roofs cost $200-$400+/m2"
+    },
+    "CONVENTIONAL Lifetime Capacity": {
+        "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "SOLUTION Lifetime Capacity": {
+        "filename": "SOLUTION_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Very few data points exist in the literature describing the effective lifetime of green roofs.  "
+    },
+    "CONVENTIONAL Average Annual Use": {
+        "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The implementation unit is the same as the functional unit -  a square meter of roof provides 1 square meter of roof each year."
+    },
+    "SOLUTION Average Annual Use": {
+        "filename": "SOLUTION_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The implementation unit is the same as the functional unit -  a square meter of roof provides 1 square meter of roof each year."
+    },
+    "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Operating costs include operation and maintenance, storm water discharge penalties and energy  use.\nCalculated = VMA #27 + #29"
+    },
+    "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Operating costs are mostly presented as a savings or reduction of conventional operating costs.  A custom calculation is made on sheet 'Operating Cost Factoring' to account for the various components of operating costs.  \nCalculated = VAM #28 + #30 + #31"
+    },
+    "CONVENTIONAL Total Energy Used per Functional Unit": {
+        "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Cooling Electricity used by all stories of the building for \"Conventional \" cooling / m2 Roof Area\nValues are weighted  by adjusted Cool Roof TAM in each Climate Zone"
+    },
+    "SOLUTION Total Energy Used per Functional Unit": {
+        "filename": "SOLUTION_Total_Energy_Used_per_Functional_Unit.csv",
+        "use_weight": true,
+        "bound_correction": true,
+        "description": "Cooling Electricity used by all stories of the building for \"Solution\" cooling / m2 Roof Area.  \nValues are weighted  by adjusted Cool Roof TAM in each Climate Zone"
+    },
+    "CONVENTIONAL Fuel Consumed per Functional Unit": {
+        "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "VMA #15 is Heating fuel used by  all stories of the building by \"Conventional\" Technology / m2 Roof Area\nValues are weighted  by adjusted Green Roof TAM in each Climate Zone.\nVMA #16 below, Heating savings for green roofs (in cold climates), is calculated by taking the heating energy of all stories of the building and converting to TJ/square meter roof area per year\n"
+    },
+    "SOLUTION Fuel Efficiency Factor": {
+        "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This positive efficiency of is a benefit of green roofs insulation for reduced heating costs especially common in cool climates.  All original units are converted to TJ.  Values are weighted  by adjusted Green Roof TAM in each Climate Zone.\nThe heating benefit for green roofs, usually stated as % of top floor heating energy, is calculated here as % of all floor building heating energy in TJ/square meter roof area per year.  "
+    },
+    "Global Average Number of Floors Commercial Buildings": {
+        "filename": "Global_Average_Number_of_Floors_Commercial_Buildings.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Extracted from:  Drawdown analysis - BuildingSector_TAM_v0.5 (Integrated TAM Model) "
+    },
+    "Global Average Number of Floors Residential Buildings": {
+        "filename": "Global_Average_Number_of_Floors_Residential_Buildings.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "\n\nExtracted from:  Drawdown analysis - BuildingSector_TAM_v0.5 (Integrated TAM Model) "
+    },
+    "Operating and Maintenance Costs per m2 CONVENTIONAL": {
+        "filename": "Operating_and_Maintenance_Costs_per_m2_CONVENTIONAL.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This is standard roof maintenance. "
+    },
+    "Operating and Maintenance Costs per m2 SOLUTION": {
+        "filename": "Operating_and_Maintenance_Costs_per_m2_SOLUTION.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This is standard roof maintenance (for green roof).\nData inputs vary greatly.  "
+    },
+    "STORMWATER Related Costs CONVENTIONAL": {
+        "filename": "STORMWATER_Related_Costs_CONVENTIONAL.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "STORMWATER Related Costs SOLUTION": {
+        "filename": "STORMWATER_Related_Costs_SOLUTION.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "ENERGY RELATED Operating Cost Benefits SOLUTION (per m2)": {
+        "filename": "ENERGY_RELATED_Operating_Cost_Benefits_SOLUTION_per_m2.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "(-) Negative sign means energy cost savings."
+    },
+    "Discount Rate: Residential / Commercial / Government": {
+        "filename": "Discount_Rate_Residential_Commercial_Government.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": ""
+    },
+    "Residential Roof Area / Total Roof Area (2015) (%)": {
+        "filename": "Residential_Roof_Area_Total_Roof_Area_2015.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "Global Average Number of Floors All Buildings": {
+        "filename": "Global_Average_Number_of_Floors_All_Buildings.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    }
+}

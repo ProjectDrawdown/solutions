@@ -33,9 +33,7 @@ def load_scenario(solution, scenario=None):
     m = _load_module(solution)
     if isinstance(scenario, dict):
         scenario = ac.ac_from_dict(scenario, m.VMAs)
-    elif scenario in ['PDS1','PDS2','PDS3']:
-        md = {'PDS1': m.PDS1, 'PDS2': m.PDS2, 'PDS3': m.PDS3}
-        scenario = md[scenario]
+    scenario = pds_truename(solution,scenario)
     return m.Scenario(scenario)
 
 @lru_cache()
@@ -43,6 +41,15 @@ def _load_module(solution):
     """Return the Scenario class and list of scenarios."""
     importname = 'solution.' + solution
     m = importlib.import_module(importname)
+
+    # This reload is gratuitous for the first time you import a module m,
+    # but makes it possible to reload it if you've updated it, like so:
+    # 1. re-import this module (factory), which clears its lru cache but
+    #    not Python's internal cache of imported modules.
+    # 2. re-import m (using this method), which first calls import_module -
+    #    a no-op because Python remembers it - but then calls 'reload' below
+    #    which causes an actual reload.
+    importlib.reload(m)
     return m
 
 def all_solutions_scenarios():
@@ -51,6 +58,16 @@ def all_solutions_scenarios():
         everything[solution] = list_scenarios(solution)
     return everything
 
+def pds_scenarios(solution):
+    """Return the names of the PDS scenarios for a given solution"""
+    m = _load_module(solution)
+    return {'PDS1': m.PDS1, 'PDS2': m.PDS2, 'PDS3': m.PDS3}
+
+def pds_truename(solution, scenario_name):
+    """Return the true name of PDS1/2/3 scenarios"""
+    if scenario_name in ['PDS1','PDS2','PDS3']:
+        return pds_scenarios(solution)[scenario_name]
+    return scenario_name
 
 def solution_path(solution):
     """Return the root directory where solution is located"""
@@ -70,6 +87,7 @@ def find_solution_by_name(name):
     return try1
 
 
+    # These are names that have all come directly out of the integration spreadsheets
 _soln_name_dict = {
     "Afforestation": "afforestation",
     "Aircraft Fuel Efficiency": "airplanes",
@@ -78,6 +96,7 @@ _soln_name_dict = {
     "Bamboo": "bamboo",
     "Bicycle  Infrastructure": "bikeinfrastructure",
     "Biochar": "biochar",
+    "Biomass (perennial corps)": "biomass",
     "Biomass (Perennials)": "biomass",
     "Biomass and Waste": "biomass and waste",
     "Biomass Power (Perennial Crops) ": "biomass",
@@ -87,11 +106,10 @@ _soln_name_dict = {
     "Building Automation Systems": "buildingautomation",
     "Car Fuel Efficiency": "hybridcars",
     "Carpooling": "carpooling",
-    "CHP": "CHP",  #??
     "Clean and Improved Cookstoves (ICS)": "improvedcookstoves",
     "Coal": "coal",
-    "Commercial LEDs": "leds_commercial",
     "Commercial LED (Excludes Household LED)" : "leds_commercial",
+    "Commercial LEDs": "leds_commercial",
     "Composting": "composting",
     "Concentrated Solar Power (CSP)": "concentratedsolar",
     "Concentrated Solar Power": "concentratedsolar",
@@ -99,6 +117,7 @@ _soln_name_dict = {
     "Cookstoves": "cookstoves",
     "Cool Roofs": "coolroofs",
     "CoolRoofs": "coolroofs",
+    "Distributed Solar Photovoltaics": "solarpvroof",
     "Distributed Solar PV": "solarpvroof",
     "District Heating": "districtheating",
     "Electric Bicycles": "electricbikes",
@@ -112,7 +131,7 @@ _soln_name_dict = {
     "Grassland Protection": "grasslandprotection",
     "Green Roofs": "greenroofs",
     "GreenRoofs": "greenroofs",
-    "Health and Education": "",
+    "Health and Education": "????",
     "Heat Pumps": "heatpumps",
     "High Performance Glass (Commercial)": "commercialglass",
     "High Performance Glass (Residential)": "residentialglass",
@@ -121,11 +140,11 @@ _soln_name_dict = {
     "High Speed Rail": "highspeedrail",
     "Household and Commercial Recycling": "hcrecycling",
     "Hydroelectric": "large hydro",
-    "Improve Aquaculture": "",
-    "Improve Fishery Biomass": "",
-    "Improve Fishery Fuel Emissions": "",
+    "Improve Aquaculture": "????",
+    "Improve Fishery Biomass": "????",
+    "Improve Fishery Fuel Emissions": "????",
     "Improved Livestock Feed": "improvedcattlefeed",
-    "Improved Manure Management": "",
+    "Improved Manure Management": "????",
     "Improved Rice": "improvedrice",
     "Increasing Distribution Efficiency in WDSs": "waterdistribution",
     "Insulation (Residential Only)": "insulation",
@@ -135,6 +154,7 @@ _soln_name_dict = {
     "Landfill Methane Capture": "landfillmethane",
     "Large Biodigesters (Biogas)": "biogas",
     "Large Digesters": "biogas",
+    "Large Methane Digesters": "biogas",
     "LED Commercial Lighting": "leds_commercial",
     "Managed Grazing": "managedgrazing",
     "Mangrove Protection": "mangroveprotection",
@@ -143,6 +163,7 @@ _soln_name_dict = {
     "Methane Leak Management": "methaneleak",
     "Micro Wind": "microwind",
     "MicroWind Turbines": "microwind",
+    "Microwind": "microwind",
     "Multistrata Agroforestry": "multistrataagroforestry",
     "Natural gas": "natural gas",
     "Nuclear": "nuclear",
@@ -154,7 +175,7 @@ _soln_name_dict = {
     "Peatland Protection": "peatlands",
     "Peatland Restoration": "peatlandrestoration",
     "Perennial Bioenergy Crops": "perennialbioenergy",
-    "Plant-Rich Diet": "",
+    "Plant-Rich Diet": "????",
     "Protect Coastal Wetlands (Saltmarshes)": "saltmarshprotection",
     "Protect Coastal Wetlands (Seagrasses)": "seagrassprotection",
     "Protect Macroalgae": "macroalgaeprotection",
@@ -163,7 +184,7 @@ _soln_name_dict = {
     "Recycled Metals": "recycledmetals",
     "Recycled Paper": "recycledpaper",
     "Recycled Plastic": "recycledplastics",
-    "Reduced Food Waste": "",
+    "Reduced Food Waste": "????",
     "Refrigerant Management - HFC Replacement": "hfc_replacement",
     "Refrigerant Management": "refrigerants",
     "Regenerative Agriculture": "regenerativeagriculture",
@@ -178,6 +199,7 @@ _soln_name_dict = {
     "Seaweed Farming": "seaweedfarming",
     "Silvopasture": "silvopasture",
     "Small Biogas Digesters": "biogas_small",
+    "Small Hydro (Small Hydro)": "instreamhydro",
     "Small HydroPower <10MW": "instreamhydro",
     "Small Hydropower": "instreamhydro",
     "Smallholder Intensification": "womensmallholders",
@@ -199,14 +221,17 @@ _soln_name_dict = {
     "Tropical Forest Restoration": "tropicalforests",
     "Tropical Tree Staples": "tropicaltreestaples",
     "Truck Fuel Efficiency": "trucks",
+    "Utility Scale Solar Photovoltaics": "solarpvutil",
     "Utility Scale Solar PV": "solarpvutil",
-    "Videoconferencing": "telepresence",
     "Videoconferencing and Telepresence": "telepresence",
+    "Videoconferencing": "telepresence",
     "Walkable Cities": "walkablecities",
     "Waste to Energy": "wastetoenergy",
     "Water Distribution Efficiency": "waterdistribution",
     "Water Efficiency Measures (Showers and Faucets)": "waterefficiency",
     "Water Saving - Home (WaSH)": "waterefficiency",
+    "WIND OFFSHORE": "offshorewind",
     "Wind Offshore": "offshorewind",
+    "WIND ONSHORE": "onshorewind",
     "Wind Onshore": "onshorewind",
 }

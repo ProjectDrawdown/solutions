@@ -1,9 +1,7 @@
-"""Building Automation Systems solution model.
-     Excel filename: Drawdown-Building Automation Systems_RRS_v1.1_18Nov2018_PUBLIC.xlsm
-"""
+# Building Automation Systems solution model.
+# Originally exported from: BuildingAutomation_v1.1c_August2021.xlsm
 
-import pathlib
-
+from pathlib import Path
 import numpy as np
 import pandas as pd
 
@@ -11,6 +9,7 @@ from model import adoptiondata
 from model import advanced_controls as ac
 from model import ch4calcs
 from model import co2calcs
+from model import conversions
 from model import customadoption
 from model import dd
 from model import emissionsfactors
@@ -24,98 +23,9 @@ from model import vma
 from model import tam
 from solution import rrs
 
-DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
-THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {
-    'Current Adoption': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
-            use_weight=False),
-    'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv"),
-            use_weight=False),
-    'SOLUTION First Cost per Implementation Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
-            use_weight=True),
-    'CONVENTIONAL Lifetime Capacity': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Lifetime_Capacity.csv"),
-            use_weight=False),
-    'SOLUTION Lifetime Capacity': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Lifetime_Capacity.csv"),
-            use_weight=False),
-    'CONVENTIONAL Average Annual Use': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Average_Annual_Use.csv"),
-            use_weight=False),
-    'SOLUTION Average Annual Use': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Average_Annual_Use.csv"),
-            use_weight=False),
-    'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Fixed Operating Cost (FOM)': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Fixed Operating Cost (FOM)': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv"),
-            use_weight=False),
-    'SOLUTION Energy Efficiency Factor': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Energy_Efficiency_Factor.csv"),
-            use_weight=True),
-    'SOLUTION Total Energy Used per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Fuel Consumed per Functional Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv"),
-            use_weight=False),
-    'SOLUTION Fuel Efficiency Factor': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "SOLUTION_Fuel_Efficiency_Factor.csv"),
-            use_weight=True),
-    'CONVENTIONAL Direct Emissions per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Direct Emissions per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Indirect CO2 Emissions per Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'SOLUTION Indirect CO2 Emissions per Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'CH4-CO2eq Tons Reduced': vma.VMA(
-            filename=None, use_weight=False),
-    'N2O-CO2eq Tons Reduced': vma.VMA(
-            filename=None, use_weight=False),
-    'CONVENTIONAL Revenue per Functional Unit': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_Revenue_per_Functional_Unit.csv"),
-            use_weight=False),
-    'SOLUTION Revenue per Functional Unit': vma.VMA(
-            filename=None, use_weight=False),
-    'Commercial Building Energy Consumption (kWh/m2/yr) (Weighted Average by Region)': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Commercial_Building_Energy_Consumption_kWh_m2_yr_Weighted_Average_by_Region.csv"),
-            use_weight=True),
-    'Commercial Building Energy Consumption for Thermal Purposes (Heating and Cooling) (% of total)': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Commercial_Building_Energy_Consumption_for_Thermal_Purposes_Heating_and_Cooling_of_total.csv"),
-            use_weight=True),
-    'Commercial Building Energy Consumption for Non-Thermal Purposes (all other end-uses) (% of total)': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Commercial_Building_Energy_Consumption_for_Non_Thermal_Purposes_all_other_end_uses_of_total.csv"),
-            use_weight=True),
-    'Commercial Building Electricity Consumption for Space Heating (% of total)': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Commercial_Building_Electricity_Consumption_for_Space_Heating_of_total.csv"),
-            use_weight=True),
-    'Commercial Building Electricity Consumption for Cooling (% of total)': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Commercial_Building_Electricity_Consumption_for_Cooling_of_total.csv"),
-            use_weight=False),
-    'Commercial Building Fuel Consumption for Space Heating (% of total Space Heating/Cooling)': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Commercial_Building_Fuel_Consumption_for_Space_Heating_of_total_Space_Heating_Cooling.csv"),
-            use_weight=False),
-    'BAS Efficiency Factors for Non-Thermal Efficiency (Electricity End-Uses)': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "BAS_Efficiency_Factors_for_Non_Thermal_Efficiency_Electricity_End_Uses.csv"),
-            use_weight=True),
-    'BAS Efficiency Factors for Thermal Efficiency (Heating/Cooling End-Uses)': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "BAS_Efficiency_Factors_for_Thermal_Efficiency_Heating_Cooling_End_Uses.csv"),
-            use_weight=True),
-    'Discount Rates - Commercial': vma.VMA(
-            filename=THISDIR.joinpath("vma_data", "Discount_Rates_Commercial.csv"),
-            use_weight=False),
-}
-vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
+DATADIR = Path(__file__).parents[2]/'data'
+THISDIR = Path(__file__).parent
+VMAs = vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json')
 
 units = {
     "implementation unit": "Mm²",
@@ -127,14 +37,13 @@ units = {
 name = 'Building Automation Systems'
 solution_category = ac.SOLUTION_CATEGORY.REDUCTION
 
-scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
+scenarios = ac.load_scenarios_from_json(directory=THISDIR/'ac', vmas=VMAs)
 
 # These are the "default" scenarios to use for each of the drawdown categories.
 # They should be set to the most recent "official" set"
-PDS1 = "PDS1-51p2050-SCurve (Book Ed.1)"
-PDS2 = "PDS2-70p2050-Linear (Book Ed.1)"
-PDS3 = "PDS3-72p2050-Linear (Book Ed.1)"
-
+PDS1 = "PDS1-52p2050-Regional-SCurves-Integrated"
+PDS2 = "PDS2-76p2050-Regional-SCurves-Aggressive-Integrated"
+PDS3 = "PDS3-98p2050-Linear-Growth-100% Integrated"
 
 class Scenario(scenario.RRSScenario):
     name = name
@@ -142,151 +51,135 @@ class Scenario(scenario.RRSScenario):
     vmas = VMAs
     solution_category = solution_category
     module_name = THISDIR.stem
+    base_year = 2018
 
     def __init__(self, scen=None):
         # AC
         self.initialize_ac(scen, scenarios, PDS2)
 
         # TAM
-        self._ref_tam_sources = scenario.load_sources(THISDIR/'tam'/'tam_ref_sources.json','*')
-        self._pds_tam_sources = self._ref_tam_sources
+
+        # Instructions: Set TAM override parameters appropriately if any of these vary from the standard (then delete these comments):
+        # trend (3rd Poly): 2nd Poly 2nd Poly Exp 2nd Poly 2nd Poly 2nd Poly 2nd Poly 2nd Poly 2nd Poly 2nd Poly
+        # growth (medium): Medium Medium Medium Medium Medium Medium High High High High
+        # low_sd_mult (1.0): 1 1 1 1 1 1 1 1 1 1
+        # high_sd_mult (1.0): 1 1 1 1 1 1 1 1 1 1
+
         tam_config_values=[
+            ('trend',None,'2nd Poly'),
+            ('trend','Eastern Europe','Exp'),
             ('growth','China','High'),
             ('growth','India','High'),
             ('growth','EU','High'),
             ('growth','USA','High')
         ]
+        self._ref_tam_sources = scenario.load_sources(THISDIR/'tam/tam_ref_sources.json','*')
+        self._pds_tam_sources = self._ref_tam_sources
         self.set_tam(config_values=tam_config_values)
         ref_tam_per_region=self.tm.ref_tam_per_region()
         pds_tam_per_region=self.tm.pds_tam_per_region()
 
-        sconfig_list = [['region', 'base_year', 'last_year'],
-            ['World', 2014, 2050],
-            ['OECD90', 2014, 2050],
-            ['Eastern Europe', 2014, 2050],
-            ['Asia (Sans Japan)', 2014, 2050],
-            ['Middle East and Africa', 2014, 2050],
-            ['Latin America', 2014, 2050],
-            ['China', 2014, 2050],
-            ['India', 2014, 2050],
-            ['EU', 2014, 2050],
-            ['USA', 2014, 2050]]
-        sconfig = pd.DataFrame(sconfig_list[1:], columns=sconfig_list[0]).set_index('region')
-        sconfig['pds_tam_2050'] = pds_tam_per_region.loc[[2050]].T
-        sc_regions, sc_percentages = zip(*self.ac.pds_base_adoption)
-        sconfig['base_adoption'] = pd.Series(list(sc_percentages), index=list(sc_regions))
-        sconfig['base_percent'] = sconfig['base_adoption'] / pds_tam_per_region.loc[2014]
-        sc_regions, sc_percentages = zip(*self.ac.pds_adoption_final_percentage)
-        sconfig['last_percent'] = pd.Series(list(sc_percentages), index=list(sc_regions))
-        if self.ac.pds_adoption_s_curve_innovation is not None:
-            sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_innovation)
-            sconfig['innovation'] = pd.Series(list(sc_percentages), index=list(sc_regions))
-        if self.ac.pds_adoption_s_curve_imitation is not None:
-            sc_regions, sc_percentages = zip(*self.ac.pds_adoption_s_curve_imitation)
-            sconfig['imitation'] = pd.Series(list(sc_percentages), index=list(sc_regions))
-        self.sc = s_curve.SCurve(transition_period=16, sconfig=sconfig)
+        # ADOPTION
+        self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data/ca_pds_sources.json', 'filename')
+        (ref_adoption_data_per_region,
+         pds_adoption_data_per_region,
+         pds_adoption_trend_per_region,
+         pds_adoption_is_single_source) = self.initialize_adoption_bases()
 
-        self.initialize_adoption_bases()
-        ref_adoption_data_per_region = None
-
-        if False:
-            # One may wonder why this is here. This file was code generated.
-            # This 'if False' allows subsequent conditions to all be elif.
-            pass
-        elif self.ac.soln_pds_adoption_basis == 'Logistic S-Curve':
-            pds_adoption_data_per_region = None
-            pds_adoption_trend_per_region = self.sc.logistic_adoption()
-            pds_adoption_is_single_source = None
-        elif self.ac.soln_pds_adoption_basis == 'Bass Diffusion S-Curve':
-            pds_adoption_data_per_region = None
-            pds_adoption_trend_per_region = self.sc.bass_diffusion_adoption()
-            pds_adoption_is_single_source = None
-        elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
-            pds_adoption_data_per_region = self.ad.adoption_data_per_region()
-            pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
-            pds_adoption_is_single_source = self.ad.adoption_is_single_source()
-        elif self.ac.soln_pds_adoption_basis == 'Linear':
-            pds_adoption_data_per_region = None
-            pds_adoption_trend_per_region = None
-            pds_adoption_is_single_source = None
-
-        ht_ref_adoption_initial = pd.Series(
-            [16577.82591670033, 14915.99, 0.0, 1087.7709445216651, 0.0,
-             0.0, 1087.7709445216651, 0.0, 3622.85, 11293.14],
-             index=dd.REGIONS)
-        ht_ref_adoption_final = ref_tam_per_region.loc[2050] * (ht_ref_adoption_initial / ref_tam_per_region.loc[2014])
+        final_year=2050  # Currently fixed for all models; may be variable in the future.
+        ht_ref_adoption_initial = pd.Series(self.ac.ref_base_adoption)
+        ht_ref_adoption_final = (ref_tam_per_region.loc[final_year] * 
+            (ht_ref_adoption_initial / ref_tam_per_region.loc[self.base_year]))
         ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
-        ht_ref_datapoints.loc[2014] = ht_ref_adoption_initial
-        ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
+        ht_ref_datapoints.loc[self.base_year] = ht_ref_adoption_initial
+        ht_ref_datapoints.loc[final_year] = ht_ref_adoption_final
+        pds_initial_year = 2018  # sometimes, but rarely, different than self.base_year
+                                # Excel 'Helper Tables'!B85
         ht_pds_adoption_initial = ht_ref_adoption_initial
-        ht_regions, ht_percentages = zip(*self.ac.pds_adoption_final_percentage)
-        ht_pds_adoption_final_percentage = pd.Series(list(ht_percentages), index=list(ht_regions))
-        ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[2050]
+        ht_pds_adoption_final_percentage = pd.Series(self.ac.pds_adoption_final_percentage)
+        ht_pds_adoption_final = ht_pds_adoption_final_percentage * pds_tam_per_region.loc[final_year]
         ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
-        ht_pds_datapoints.loc[2014] = ht_pds_adoption_initial
-        ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
+        ht_pds_datapoints.loc[pds_initial_year] = ht_pds_adoption_initial
+        ht_pds_datapoints.loc[final_year] = ht_pds_adoption_final
         self.ht = helpertables.HelperTables(ac=self.ac,
-                ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
-                pds_adoption_data_per_region=pds_adoption_data_per_region,
-                ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-                pds_adoption_trend_per_region=pds_adoption_trend_per_region,
-                pds_adoption_is_single_source=pds_adoption_is_single_source,
-                use_first_ref_datapoint_main=True)
+            ref_datapoints=ht_ref_datapoints,
+            pds_datapoints=ht_pds_datapoints,
+            ref_adoption_data_per_region=ref_adoption_data_per_region,
+            pds_adoption_data_per_region=pds_adoption_data_per_region,
+            ref_adoption_limits=ref_tam_per_region,
+            pds_adoption_limits=pds_tam_per_region,
+            pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+            # Quirks Parameters.  The generator tries to guess these correctly, but can get
+            # it wrong.  See the documentation for HelperTables.__init__() to understand
+            # exactly what the paramaters do, and how to set them.
+            copy_pds_to_ref=False,
+            copy_ref_datapoint=False,
+            copy_pds_datapoint="Ref Table",
+            copy_pds_world_too=True,
+            pds_adoption_is_single_source=pds_adoption_is_single_source)
 
+        # DERIVED VALUES
+
+        # Emissions: if this is an older model, you may need to set a data version to make tests pass.
         self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
-                ref_total_adoption_units=ref_tam_per_region, pds_total_adoption_units=pds_tam_per_region,
-                soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
-                soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
-                repeated_cost_for_iunits=False,
-                bug_cfunits_double_count=False)
+            ref_total_adoption_units=ref_tam_per_region,
+            pds_total_adoption_units=pds_tam_per_region,
+            soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
+            soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
+            repeated_cost_for_iunits=False,
+            # Quirks parameters
+            replacement_period_offset=0,
+            bug_cfunits_double_count=False)
         soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
         soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
         conv_ref_tot_iunits = self.ua.conv_ref_tot_iunits()
         soln_net_annual_funits_adopted=self.ua.soln_net_annual_funits_adopted()
 
         self.fc = firstcost.FirstCost(ac=self.ac, pds_learning_increase_mult=2,
-                ref_learning_increase_mult=2, conv_learning_increase_mult=2,
-                soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
-                soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
-                conv_ref_tot_iunits=conv_ref_tot_iunits,
-                soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
-                soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
-                conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
-                fc_convert_iunit_factor=1000000.0)
+            ref_learning_increase_mult=2,
+            conv_learning_increase_mult=2,
+            soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
+            soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+            conv_ref_tot_iunits=conv_ref_tot_iunits,
+            soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
+            soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
+            conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
+            fc_convert_iunit_factor=1000000)
 
         self.oc = operatingcost.OperatingCost(ac=self.ac,
-                soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-                soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
-                soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
-                conv_ref_annual_tot_iunits=self.ua.conv_ref_annual_tot_iunits(),
-                soln_pds_annual_world_first_cost=self.fc.soln_pds_annual_world_first_cost(),
-                soln_ref_annual_world_first_cost=self.fc.soln_ref_annual_world_first_cost(),
-                conv_ref_annual_world_first_cost=self.fc.conv_ref_annual_world_first_cost(),
-                single_iunit_purchase_year=2017,
-                soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),
-                conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),
-                conversion_factor=1.0)
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
+            soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
+            conv_ref_annual_tot_iunits=self.ua.conv_ref_annual_tot_iunits(),
+            soln_pds_annual_world_first_cost=self.fc.soln_pds_annual_world_first_cost(),
+            soln_ref_annual_world_first_cost=self.fc.soln_ref_annual_world_first_cost(),
+            conv_ref_annual_world_first_cost=self.fc.conv_ref_annual_world_first_cost(),
+            single_iunit_purchase_year=2017,
+            soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),
+            conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),
+            conversion_factor=1)
 
         self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
-                soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted)
 
         self.c2 = co2calcs.CO2Calcs(ac=self.ac,
-                ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
-                soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
-                soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
-                soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),
-                soln_pds_direct_ch4_co2_emissions_saved=self.ua.soln_pds_direct_ch4_co2_emissions_saved(),
-                soln_pds_direct_n2o_co2_emissions_saved=self.ua.soln_pds_direct_n2o_co2_emissions_saved(),
-                soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
-                soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
-                conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
-                conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),
-                conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
-                soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
-                fuel_in_liters=False)
+            ch4_ppb_calculator=self.c4.ch4_ppb_calculator(),
+            soln_pds_net_grid_electricity_units_saved=self.ua.soln_pds_net_grid_electricity_units_saved(),
+            soln_pds_net_grid_electricity_units_used=self.ua.soln_pds_net_grid_electricity_units_used(),
+            soln_pds_direct_co2_emissions_saved=self.ua.soln_pds_direct_co2_emissions_saved(),
+            soln_pds_direct_ch4_co2_emissions_saved=self.ua.soln_pds_direct_ch4_co2_emissions_saved(),
+            soln_pds_direct_n2o_co2_emissions_saved=self.ua.soln_pds_direct_n2o_co2_emissions_saved(),
+            soln_pds_new_iunits_reqd=self.ua.soln_pds_new_iunits_reqd(),
+            soln_ref_new_iunits_reqd=self.ua.soln_ref_new_iunits_reqd(),
+            conv_ref_new_iunits=self.ua.conv_ref_new_iunits(),
+            conv_ref_grid_CO2_per_KWh=self.ef.conv_ref_grid_CO2_per_KWh(),
+            conv_ref_grid_CO2eq_per_KWh=self.ef.conv_ref_grid_CO2eq_per_KWh(),
+            soln_net_annual_funits_adopted=soln_net_annual_funits_adopted,
+            fuel_in_liters=False)
 
         self.r2s = rrs.RRS(total_energy_demand=ref_tam_per_region.loc[2014, 'World'],
-                soln_avg_annual_use=self.ac.soln_avg_annual_use,
-                conv_avg_annual_use=self.ac.conv_avg_annual_use)
+            soln_avg_annual_use=self.ac.soln_avg_annual_use,
+            conv_avg_annual_use=self.ac.conv_avg_annual_use)
+

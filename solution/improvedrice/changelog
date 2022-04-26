@@ -1,0 +1,5 @@
+Denton's Notes:
+Improved Rice
+Change the IFERROR value in Helper Tables for PDS and REF to 0.0. The symptom is that Unit Adoption Calculations Q252 
+is NaN in Excel and not NaN in Python.
+=IFERROR(MIN((IF($F$15=1,FORECAST($B28,D$21:D$22,$B$21:$B$22),'Custom REF Adoption'!C26*1)),'Unit Adoption Calculations'!C18),0)

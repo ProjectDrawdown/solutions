@@ -1,6 +1,6 @@
 
 from dataclasses import dataclass, field
-from importlib_metadata import metadata
+#from importlib_metadata import metadata
 
 import datetime
     

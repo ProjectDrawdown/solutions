@@ -1,3 +1,7 @@
+## Documentation
+
+https://projectdrawdown.github.io/solutions
+
 # Project Drawdown Model Engine
 
 [Project Drawdown](https://www.drawdown.org/) is the most comprehensive plan yet published for how to solve Global Warming. Project Drawdown entered the climate conversation with the [publication of the 2017 book](https://www.drawdown.org/the-book). With [The Drawdown Review in 2020](https://drawdown.org/drawdown-framework/drawdown-review-2020), the project continues its mission to inspire and communicate solutions.
@@ -61,11 +65,10 @@ A good way to explore the code is to start jupyter notebook
       $ jupyter notebook
 ```
 
-then click on `Start_Here.ipynb` to try out a few things.
-Also, be sure to check out some of the documentation in the [Documentation](Documentation) folder.
+then click on `Start_Here.ipynb` to try out a few things.   (Note: the use of jupyter notebook is not a requirement to use the system; use whatever python
+development environment is comfortable for you.)
 
-
-## Minimal Environment
+### Minimal Environment
 
 A more minimal environment is available for deployment using [pip](https://pip.pypa.io/en/stable/user_guide/).  This installs this project and its depencies in your current python environment, but no extra tools:
 
@@ -73,16 +76,21 @@ A more minimal environment is available for deployment using [pip](https://pip.p
       $ pip install -r requirements.txt
 ```
 
-Python 3.9 is recommended.
+Python 3.9 is required.
 
 
-## Using Project Drawdown Solutions as a package
+### Using Project Drawdown Solutions as a package
 
 If you would like to use this project as a dependency in _your_ code, you can do so by including the following line in your requirements.txt file:
 
 ```
       git+git://github.com/ProjectDrawdown/solutions@develop
 ```
+
+
+## Documentation
+
+The main code documentation can be found at [https://projectdrawdown.github.io/solutions](https://projectdrawdown.github.io/solutions).  Additional documentation and some examples are in the [Documentation](https://github.com/ProjectDrawdown/solutions/tree/develop/Documentation) folder.
 
 ---
 
@@ -98,7 +106,7 @@ questions you have.
 
 ## Contributing
 We would love to have your help.
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines for contributing to this project.
+Please see [CONTRIBUTING.md](https://github.com/ProjectDrawdown/solutions/blob/develop/CONTRIBUTING.md) for guidelines for contributing to this project.
 
 ## Acknowledgements
 

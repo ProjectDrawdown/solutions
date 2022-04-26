@@ -1,27 +1,42 @@
 [
-  {
-    "name": "PDS1 - Projected Based on Published and Estimated Rates of Refrigerant Recovery and Destruction (With HFC Sectors Summed)",
-    "include": true,
-    "filename": "custom_pds_ad_PDS1_Projected_based_on_Published_and_Estimated_Rates_of_Refrigerant_Recovery_and_Destru_80b1ed21.csv"
-  },
-  {
-    "name": "PDS2 - Projected Based on Published and Estimated Rates of Refrigerant Recovery and Destruction (With Averages for HFC Banks used)",
-    "include": true,
-    "filename": "custom_pds_ad_PDS2_Projected_based_on_Published_and_Estimated_Rates_of_Refrigerant_Recovery_and_Destru_ee48c99e.csv"
-  },
-  {
-    "name": "PDS3 - Same as PDS2 (Maximum Adoption Obtained)",
-    "include": true,
-    "filename": "custom_pds_ad_PDS3_Same_as_PDS2_Maximum_Adoption_Obtained.csv"
-  },
-  {
-    "name": "Drawdown Book Edition 1 Scenario 1",
-    "include": true,
-    "filename": "custom_pds_ad_Drawdown_Book_Edition_1_Scenario_1.csv"
-  },
-  {
-    "name": "Drawdown Book Edition 1 Scenario 2 and Scenario 3",
-    "include": true,
-    "filename": "custom_pds_ad_Drawdown_Book_Edition_1_Scenario_2_and_Scenario_3.csv"
-  }
+    {
+        "name": "PDS1 - Projected Based on Published and Estimated Rates of Refrigerant Recovery and Destruction (With HFC Sectors Summed)",
+        "filename": "ca_pds_PDS1_Projected_bon_b972f952.csv",
+        "description": "Taking the estimated \"banks\" of refrigerants globally in existence decadally from 2010 to 2050, we estimate the Global Warming Potential (GWP) of a \"Standardized Refrigerant\" using the refrigerant distribution of the most recently available data. This standardized refrigerant is used to convert between CO2 emissions and Refregerant emissions throughout the analysis. We combine estimates of Refrigerant banks with estimated leakage rates, potential replacement rates of \"overcharged\" banks, retirement-, recovery- and destruction-rates of refrigerants decadally, and sum the net reduction in CO2 emissions expected from these processes. The decadal results are interpolated in the Data Interpolator, mostly with S-Curve fits over the analysis period. Individual HFC sector bank estimates are used (Commercial, Domestic, Mobile and Stationary)."
+    },
+    {
+        "name": "PDS2 - Projected Based on Published and Estimated Rates of Refrigerant Recovery and Destruction (With Averages for HFC Banks used)",
+        "filename": "ca_pds_PDS2_Projected_bon_57b97235.csv",
+        "description": "Taking the estimated \"banks\" of refrigerants globally in existence decadally from 2010 to 2050, we estimate the Global Warming Potential (GWP) of a \"Standardized Refrigerant\" using the refrigerant distribution of the most recently available data. This standardized refrigerant is used to convert between CO2 emissions and Refregerant emissions throughout the analysis. We combine estimates of Refrigerant banks with estimated leakage rates, potential replacement rates of \"overcharged\" banks, retirement-, recovery- and destruction-rates of refrigerants decadally, and sum the net reduction in CO2 emissions expected from these processes. The decadal results are interpolated in the Data Interpolator, mostly with S-Curve fits over the analysis period. This scenario differs from the First in that average HFC bank estimates are used rather than individual sector estimates, which are lower."
+    },
+    {
+        "name": "PDS3 - Same as PDS2 (Maximum Adoption Obtained)",
+        "filename": "ca_pds_PDS3_Same_as_PDS2__d543b0d8.csv",
+        "description": "Same as PDS2 (Drawdown Scenario, as Maximum Market Reached)"
+    },
+    {
+        "name": "Drawdown Book Edition 1 Scenario 1",
+        "filename": "ca_pds_Drawdown_Book_Edit_d3f337c3.csv",
+        "description": "This scenario is similar to the updated PDS 1 scenario above, but was developed for the Drawdown book edition 1. As such the inputs used have in some cases been updated resulting in different results. The scenario is recorded here to enable the user to reload the models used for the book results. \nTaking the estimated \"banks\" of refrigerants globally in existence decadally from 2010 to 2050, we estimate the Global Warming Potential (GWP) of a \"Standardized Refrigerant\" using the refrigerant distribution of the most recently available data. This standardized refrigerant is used to convert between CO2 emissions and Refregerant emissions throughout the analysis. We combine estimates of Refrigerant banks with estimated leakage rates, potential replacement rates of \"overcharged\" banks, retirement-, recovery- and destruction-rates of refrigerants decadally, and sum the net reduction in CO2 emissions expected from these processes. The decadal results are interpolated in the Data Interpolator, mostly with S-Curve fits over the analysis period. Individual HFC sector bank estimates are used (Commercial, Domestic, Mobile and Stationary)."
+    },
+    {
+        "name": "Drawdown Book Edition 1 Scenario 2 and Scenario 3",
+        "filename": "ca_pds_Drawdown_Book_Edit_daae138d.csv",
+        "description": "This scenario is similar to the updated PDS 1 scenario above, but was developed for the Drawdown book edition 1. As such the inputs used have in some cases been updated resulting in different results. The scenario is recorded here to enable the user to reload the models used for the book results. \nTaking the estimated \"banks\" of refrigerants globally in existence decadally from 2010 to 2050, we estimate the Global Warming Potential (GWP) of a \"Standardized Refrigerant\" using the refrigerant distribution of the most recently available data. This standardized refrigerant is used to convert between CO2 emissions and Refregerant emissions throughout the analysis. We combine estimates of Refrigerant banks with estimated leakage rates, potential replacement rates of \"overcharged\" banks, retirement-, recovery- and destruction-rates of refrigerants decadally, and sum the net reduction in CO2 emissions expected from these processes. The decadal results are interpolated in the Data Interpolator, mostly with S-Curve fits over the analysis period. This scenario differs from the First in that average HFC bank estimates are used rather than individual sector estimates, which are lower."
+    },
+    {
+        "name": "Integrated Refrigerant Management PDS1",
+        "filename": "ca_pds_Integrated_Refrige_efb80ebf.csv",
+        "description": "[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED]"
+    },
+    {
+        "name": "[Type Scenario 7 Name Here...]",
+        "filename": "ca_pds_Type_Scenario_7_Na_5f3bb0ba.csv",
+        "description": "[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED]"
+    },
+    {
+        "name": "[Type Scenario 8 Name Here...]",
+        "filename": "ca_pds_Type_Scenario_8_Na_bf0e4c41.csv",
+        "description": "[PLEASE DESCRIBE IN DETAIL  THE METHODOLOGY YOU USED IN THIS ANALYSIS. BE SURE TO INCLUDE ANY ADDITIONAL EQUATIONS YOU UTILIZED]"
+    }
 ]

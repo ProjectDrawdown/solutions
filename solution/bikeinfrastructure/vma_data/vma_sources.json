@@ -1,0 +1,86 @@
+{
+    "Current Adoption": {
+        "filename": "Current_Adoption.csv",
+        "use_weight": false,
+        "bound_correction": true,
+        "description": "Values were derived based on backcasting from datasets starting in 2015 using Tool on Tab \"Data Interpolator\". Records of those interpolations are on that sheet. Click appropriate cell in \"Link\" column.\n"
+    },
+    "CONVENTIONAL First Cost per Implementation Unit": {
+        "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "These data show the range of costs of constructing one kilometer of roadway designed for use by motor vehicles throughout the world. The wide range of costs reflects the impact of labor costs, which vary throughout the world, and other harder to quantify costs such as inefficiencies and bureaucracy expenses. Raw data input is converted from currency/length of road constructed to US$2014/km."
+    },
+    "SOLUTION First Cost per Implementation Unit": {
+        "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Cost explanation from High Shift Cycling Scenario: \"Finally, for the infrastructure costs related to cycling we assumed that cities would spend US$100,000 per kilometer of new cycle routes in OECD and half this cost in non-OECD countries. This covers a wide range of situations from construction of new dedicated (or segregated) bike routes to re-striping of existing roads to provide bike lanes, and\nincluding secure bike parking facilities.\" Weights: 10% for separated bike lanes, 90% for bikes on road. 100% for unknown."
+    },
+    "CONVENTIONAL Lifetime Capacity": {
+        "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Raw data input represents the number of years that the infrastructure type, in this case a road, is expected to last. Typical lifespans of roads depend on the material, with asphalt lasting almost indefinitely and pavement requiring work in the range of every 20 years. The conversion calculation represents billion pkm per road km per year on roads without bike lanes. See Main Controls E107 for details on calculation. "
+    },
+    "SOLUTION Lifetime Capacity": {
+        "filename": "SOLUTION_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Raw data input represents the number of years that the infrastructure type, in this case a bike lane, is expected to last. Because bike lanes are made of the same materials as roadways, their longevity is the same. The conversion calculation represents billion bike pkm per bike lane km per year. "
+    },
+    "CONVENTIONAL Average Annual Use": {
+        "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "The installation of a new bike lane leads to a % increase in bike ridership on the road in question. This statistic was used to calculate previous bike ridership rates on that road. "
+    },
+    "SOLUTION Average Annual Use": {
+        "filename": "SOLUTION_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Costs of maintenance of roads, including paint and repair. "
+    },
+    "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+        "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "CONVENTIONAL Total Energy Used per Functional Unit": {
+        "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "These figures are for all road modes. Since w're dealing with replacing ICE Cars only, this should probably not be used in the model."
+    },
+    "CONVENTIONAL Fuel Consumed per Functional Unit": {
+        "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Average fuel consumption for a range of vehicular technologies which would be replaced."
+    },
+    "SOLUTION Fuel Efficiency Factor": {
+        "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "Average Annual Use Conversion Calculation": {
+        "filename": "Average_Annual_Use_Conversion_Calculation.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Most bike lane km built do not avoid building conventional roadways, but they do sometimes reduce the planned number of vehicle lanes, often from four to three (from two lanes in each direction to one lane in each direction with a shared left turn lane between), with the space for the extra lane converted to bike lanes. In these situations, bike lanes make up 25% of the cost of a new road kilometer. If 10% of new roadways swap out a vehicle lane for a bike lane, that makes the conversion factor for the conventional infrastructure as: .25 * .1 = 0.025"
+    },
+    "Discount Rate for Public Entities": {
+        "filename": "Discount_Rate_for_Public_Entities.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "The discount rates reported here are described as discount rates used for policy evaluation.  The rates reported are weighted by the relative % of GDP represented by the nation or region associated with the rate as reported with the idea that the majority of global investment will likely (at least for the early part of the Drawdown period of inquiry) by making the most sizeable investments and a weighted discount rate is most relevant for evaluating the financial return potentials of those investments.  These values here, for the most part, discount the 'social welfare' discounting criteria used in some recommendations for discounting for policy (Stern value as an exception).  These values are mostly used for evaluating a more purely financial rationale more based in observable market behavior.  These rates are probably most relevant to be used for Drawdown solutions where government, state utilities, public agencies and policy making bodies are involved in the decision-making with regard to investments.  These values represent a conservative case and, due to uncertainty, and the weighted lower and higher discounting rates (low and high by one standard deviation) should probably be used for sensitivity analysis."
+    }
+}

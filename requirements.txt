@@ -1,5 +1,7 @@
-fair
+fair>=1.6.4
 numpy-financial
 pandas==1.2.4
 openpyxl
 pytest
+pyyaml
+units-of-measure~=1.0

@@ -1,0 +1,20 @@
+"SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
+"16 Sources, Extracting: Zone 0A Extremely Hot Humid",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 0A,,(multiple),,0.019805357142857145,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True
+"16 Sources, Extracting: Zone 0B Extrememly Hot Dry",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 0B,,(multiple),,0.019805357142857145,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True
+"16 Sources, Extracting: Zone 1A Very Hot Humid",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 1A,,(multiple),,0.019805357142857145,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True
+"16 Sources, Extracting: Zone 1B Very Hot Dry",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 1B,,(multiple),,0.019805357142857145,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True
+"16 Sources, Extracting: Zone 2A Hot Humid",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 2A,,(multiple),,0.019805357142857145,Percent,,,,,
+"16 Sources, Extracting: Zone 2B Hot Dry",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 2B,,(multiple),,0.2939791080265077,Percent,,,,,
+"16 Sources, Extracting: Zone 3A Warm Humid",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 3A,,(multiple),,0.060216106143483404,Percent,,,,,
+"16 Sources, Extracting: Zone 3B Warm Dry",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 3B,,(multiple),,-0.025,Percent,,,,,
+"16 Sources, Extracting: Zone 3C Warm Marine",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 3C,,(multiple),,0.038657595407247884,Percent,,,,,
+"16 Sources, Extracting: Zone 4A Mixed Humid",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 4A,,(multiple),,0.07589046584767213,Percent,,,,,
+"16 Sources, Extracting: Zone 4B Mixed Dry",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 4B,,(multiple),,0.07589046584767213,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True
+"16 Sources, Extracting: Zone 4C Mixed Marine",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 4C,,(multiple),,0.07589046584767213,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True
+"16 Sources, Extracting: Zone 5A Cool Humid",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 5A,,(multiple),,0.03311670918367347,Percent,,,,,
+"16 Sources, Extracting: Zone 5B Cool Dry",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 5B,,(multiple),,0.08054399529042384,Percent,,,,,
+"16 Sources, Extracting: Zone 5C Cool Marine",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 5C,,(multiple),,0.05683035223704866,Percent,,,,,
+"16 Sources, Extracting: Zone 6A Cold Humid",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 6A,,(multiple),,0.08051984206679662,Percent,,,,,
+"16 Sources, Extracting: Zone 6B Cold Dry",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 6B,,(multiple),,0.08051984206679662,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True
+"16 Sources, Extracting: Zone 7 Very Cold",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 7 ,,(multiple),,0.06621902916982278,Percent,,,,,
+"16 Sources, Extracting: Zone 8 Subarctic/Arctic",EnergySavingsFactor,World,ASHRAE 169-2013 Climate Zone 8 ,,(multiple),,0.06621902916982278,Percent,,,,Excluded to not overweight - data is averaged across all climate zones,True

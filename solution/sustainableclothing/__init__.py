@@ -26,58 +26,7 @@ from solution import rrs
 
 DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {
-    'Current Adoption': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
-        use_weight=False),
-    'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION First Cost per Implementation Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Lifetime Capacity': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Lifetime Capacity': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Average Annual Use': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Average Annual Use': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Fixed Operating Cost (FOM)': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Fixed Operating Cost (FOM)': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Energy Efficiency Factor': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Total Energy Used per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Fuel Consumed per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Fuel Efficiency Factor': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Direct Emissions per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Direct Emissions per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Indirect CO2 Emissions per Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Indirect CO2 Emissions per Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'CH4-CO2eq Tons Reduced': vma.VMA(
-        filename=None, use_weight=False),
-    'N2O-CO2eq Tons Reduced': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Revenue per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Revenue per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-}
-vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
+VMAs = vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json')
 
 units = {
     "implementation unit": "1 Million Metric Ton Clothing",
@@ -162,9 +111,8 @@ class Scenario(scenario.RRSScenario):
             copy_pds_to_ref=False,
             copy_pds_datapoint=True,
             copy_ref_datapoint=True,
-            copy_datapoint_to_year=2014,
-            use_first_pds_datapoint_main=True,
-            use_first_ref_datapoint_main=True,
+            copy_pds_world_too=True,
+            copy_ref_world_too=True,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
@@ -178,7 +126,7 @@ class Scenario(scenario.RRSScenario):
         # # Fix the value for the 2014 World Data
         # self.ht.pds_adoption_data_per_region.loc[2014, "World"] = 0.050691647   
                 
-        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=1)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
             ref_total_adoption_units=ref_tam_per_region,

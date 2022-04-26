@@ -1,0 +1,121 @@
+{
+  "Current Adoption": {
+    "use_weight": true,
+    "bound_correction": false,
+    "description": "Using the definition of Ridesharing of \"at least x-riders sharing the same car or taxi or ride\" (whether one rider is also a driver or not, but driver is otherwise not included in rider count). The \"x\" is an additional variable entered on Advanced Controls. Note that this applies only to car rides, so we estimate the mode share for all car trips (~40%), and then apply the ratio. Weights used to help compare the estimates from the entire world to that using data only from the US and from EU28.",
+    "units": "passenger-km",
+    "filename": "Current_Adoption.csv"
+  },
+  "CONVENTIONAL Lifetime Capacity": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "The lifetime capacity refers to the total number of pass-km that an implementation unit can provide, that is, that a TRIP can provide. This therefore is just the total vehicle-km in a single trip of the Conventional type (single person ride).",
+    "units": "passenger-km/veh-trip",
+    "filename": "CONVENTIONAL_Lifetime_Capacity.csv"
+  },
+  "SOLUTION Lifetime Capacity": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "The lifetime capacity refers to the total number of pass-km that an implementation unit can provide, that is, that a TRIP can provide. This therefore is just the total pass-km in a single trip of the Solution type.",
+    "units": "passenger-km/veh-trip",
+    "filename": "SOLUTION_Lifetime_Capacity.csv"
+  },
+  "CONVENTIONAL Average Annual Use": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Lifetime Capacity is total number of pkm you get per implementation unit (trip) each year, hence: lifetime capacity is pkms per 1 trip. Lifetime Capacity and Average Annual Use (pkm/trip) are the same, because each trip can only be used once",
+    "units": "passenger-km/veh-trip/year",
+    "filename": "CONVENTIONAL_Average_Annual_Use.csv"
+  },
+  "SOLUTION Average Annual Use": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Lifetime Capacity is total number of pkm you get per implementation unit (trip) each year, hence: lifetime capacity is pkms per 1 trip. Lifetime Capacity and Average Annual Use (pkm/trip) are the same, because each trip can only be used once",
+    "units": "passenger-km/veh-trip/year",
+    "filename": "SOLUTION_Average_Annual_Use.csv"
+  },
+  "CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "AAA provides the average cost per mile of three differently sized sedans, minivans, and sport utility vehicles. Data here use the average driving costs (maintenance, and tires) of all size sedans, minivans, and SUVs. Conventional driving is single-occupancy driving. Excluded values represent older data points from sources that have been updated.",
+    "units": "US2014$/passenger-km",
+    "filename": "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Fu_1a410c96.csv"
+  },
+  "SOLUTION Variable Operating Cost (VOM) per Functional Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "AAA provides the average cost per mile of three differently sized sedans, minivans, and sport utility vehicles. Data here use the average driving costs (maintenance, and tires) of all size sedans, minivans, and SUVs. Conventional driving is single-occupancy driving. Excluded values represent older data points from sources that have been updated.",
+    "units": "US2014$/passenger-km",
+    "filename": "SOLUTION_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"
+  },
+  "CONVENTIONAL Fixed Operating Cost (FOM)": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "This is estimated insurance rates for cars. Exchange Rates obtained from www.xe.com on 16Jan2017. Monthly insurance converted by dividing by estimated average monthly pass-km travelled using data from ICCT (2012): 15,765 v-km per year average globally.",
+    "units": "US2014$/veh-trip",
+    "filename": "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv"
+  },
+  "SOLUTION Fixed Operating Cost (FOM)": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "This is estimated insurance rates for cars. Exchange Rates obtained from www.xe.com on 16Jan2017. Monthly insurance converted by dividing by estimated average monthly pass-km travelled using data from ICCT (2012): 15,765 v-km per year average globally.",
+    "units": "US2014$/veh-trip",
+    "filename": "SOLUTION_Fixed_Operating_Cost_FOM.csv"
+  },
+  "CONVENTIONAL Total Energy Used per Functional Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "TWh/passenger-km",
+    "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv"
+  },
+  "SOLUTION Energy Efficiency Factor": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "%",
+    "filename": "SOLUTION_Energy_Efficiency_Factor.csv"
+  },
+  "CONVENTIONAL Fuel Consumed per Functional Unit": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "For UMTRI, which tracks the sales weighted US fuel economy, we averaged the last 12 months available (until the latest data of May 2016). Atabani's work requires some interpretation. The Japanese figure is an estimate for 2015 by the Japanese car manufacturers association, but as the Japanese Government's fuel economy targets are mandatory, we can take this as given. The European figure is an average of 2006 performance range limits (9.8-16.4km/l). Note that it's appropriate to use an old source for some estimates if they are for \"new Car Sales\" in a region as the average age for a fleet ranges from around 5 (China) to 7.5 (EU) to 11 (USA). It's important to note that for this solution - Single Car Occupancy is the Conventional behavior.",
+    "units": "Liter/ passenger-km",
+    "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv"
+  },
+  "SOLUTION Fuel Efficiency Factor": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Fuel use /car trip is shared across all carpoolers, so the reduction is easy to calculate assuming that Conventional Behavior is Single Occupancy, and the Solution Behavior is a fixed number of persons in Carpool.",
+    "units": "%",
+    "filename": "SOLUTION_Fuel_Efficiency_Factor.csv"
+  },
+  "Average Ridesharing Car Occupancy": {
+    "use_weight": true,
+    "bound_correction": false,
+    "description": "This defines how many people are riding together to be considered \"Ridesharing\", and this excludes the driver (unless the driver is also a passenger - so a taxi driver is not included, but a driver driving colleagues to work is).",
+    "units": "",
+    "filename": "Average_Ridesharing_Car_Occupancy.csv"
+  },
+  "Average Car Lifetime": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "",
+    "units": "vehicle-km",
+    "filename": "Average_Car_Lifetime.csv"
+  },
+  "Discount Rates - Households": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "In some cases in the literature it is specifically indicated that a distinct discount rate is appropriate when applied to investment decisions made at a household level. The household level discount rate is directly related to decision-making at a household level and likely varies greatly across different regions of the world.  Taking the numbers found in the literature above comprises a conservative case.  Without distortions this discount rate would be equivalent to the interest rate afforded by alternative investments.  Discount rates reported in the literature that are used for policy decisions are not necessarily relevant for evaluating household level financial investment decisions.  These values represent a conservative case and, due to uncertainty, lower and higher discounting rates should probably be used for sensitivity analysis.",
+    "units": "",
+    "filename": "Discount_Rates_Households.csv"
+  },
+  "Current Average Car Occupancy": {
+    "use_weight": false,
+    "bound_correction": false,
+    "description": "Despite being old, the global car occupancy data represents a weighted average of several regions whereas the regional car occupancy data are not, so the regional data have been left in the table, but excluded from the statistical calculations via 0 weights.",
+    "units": "",
+    "filename": "Current_Average_Car_Occupancy.csv"
+  }
+}

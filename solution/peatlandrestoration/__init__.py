@@ -1,9 +1,7 @@
-"""Peatland Restoration solution model.
-   Excel filename: Drawdown_RRS-BIOSEQ_Model_v1.1d_MASTER_Peatland restoration_Jun2019.xlsm
-"""
+# Peatland Restoration solution model.
+# Originally exported from: Drawdown_RRS-BIOSEQ_Model_v1.1d_MASTER_Peatland restoration_Jun2019.xlsm
 
-import pathlib
-
+from pathlib import Path
 import numpy as np
 import pandas as pd
 
@@ -12,6 +10,7 @@ from model import advanced_controls as ac
 from model import aez
 from model import ch4calcs
 from model import co2calcs
+from model import conversions
 from model import customadoption
 from model import dd
 from model import emissionsfactors
@@ -25,60 +24,9 @@ from model import vma
 from model import tla
 from model import conversions
 
-DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
-THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {
-    'Current Adoption': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
-        use_weight=False),
-    'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION First Cost per Implementation Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Operating Cost per Functional Unit per Annum': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Operating Cost per Functional Unit per Annum': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Net Profit Margin per Functional Unit per Annum': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Net Profit Margin per Functional Unit per Annum': vma.VMA(
-        filename=None, use_weight=False),
-    'Yield from CONVENTIONAL Practice': vma.VMA(
-        filename=None, use_weight=False),
-    'Yield Gain (% Increase from CONVENTIONAL to SOLUTION)': vma.VMA(
-        filename=None, use_weight=False),
-    'Electricty Consumed per CONVENTIONAL Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Energy Efficiency Factor': vma.VMA(
-        filename=None, use_weight=False),
-    'Total Energy Used per SOLUTION functional unit': vma.VMA(
-        filename=None, use_weight=False),
-    'Fuel Consumed per CONVENTIONAL Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'Fuel Reduction Factor SOLUTION': vma.VMA(
-        filename=None, use_weight=False),
-    't CO2-eq (Aggregate emissions) Reduced per Land Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "t_CO2_eq_Aggregate_emissions_Reduced_per_Land_Unit.csv"),
-        use_weight=False),
-    't CO2 Reduced per Land Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "t_CO2_Reduced_per_Land_Unit.csv"),
-        use_weight=False),
-    't N2O-CO2-eq Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
-    't CH4-CO2-eq Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE': vma.VMA(
-        filename=None, use_weight=False),
-    'Indirect CO2 Emissions per SOLUTION Implementation Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'Sequestration Rates': vma.VMA(
-        filename=None, use_weight=False),
-    'Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing': vma.VMA(
-        filename=None, use_weight=False),
-    'Disturbance Rate': vma.VMA(
-        filename=None, use_weight=False),
-}
-vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
+DATADIR = Path(__file__).parents[2]/'data'
+THISDIR = Path(__file__).parent
+VMAs = vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json')
 
 units = {
     "implementation unit": None,
@@ -90,7 +38,7 @@ units = {
 name = 'Peatland Restoration'
 solution_category = ac.SOLUTION_CATEGORY.LAND
 
-scenarios = ac.load_scenarios_from_json(directory=THISDIR.joinpath('ac'), vmas=VMAs)
+scenarios = ac.load_scenarios_from_json(directory=THISDIR/'ac', vmas=VMAs)
 
 # These are the "default" scenarios to use for each of the drawdown categories.
 # They should be set to the most recent "official" set"
@@ -104,6 +52,7 @@ class Scenario(scenario.LandScenario):
     vmas = VMAs
     solution_category = solution_category
     module_name = THISDIR.stem
+    base_year = 2018
 
     def __init__(self, scen=None):
         # AC
@@ -112,62 +61,53 @@ class Scenario(scenario.LandScenario):
         # TLA
         self.ae = aez.AEZ(solution_name=self.name, cohort=2020,
                 regimes=dd.THERMAL_MOISTURE_REGIMES8)
-        if self.ac.use_custom_tla and self.ac.custom_tla_fixed_value is not None:
-            self.c_tla = tla.CustomTLA(fixed_value=self.ac.custom_tla_fixed_value)
-            custom_world_vals = self.c_tla.get_world_values()
-        elif self.ac.use_custom_tla:
-            self.c_tla = tla.CustomTLA(filename=THISDIR.joinpath('custom_tla_data.csv'))
-            custom_world_vals = self.c_tla.get_world_values()
-        else:
-            custom_world_vals = None
-        self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution(),
-            custom_world_values=custom_world_vals)
+        self.tla_per_region = tla.tla_per_region(self.ae.get_land_distribution())
 
         # ADOPTION
-        self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
-        self.initialize_adoption_bases()
-        ref_adoption_data_per_region = None
+       # CAUTION: Many Land solutions have highly customized custom adoption setups.
+       # Check older versions of this file, or similar solution types, to determine if
+       # this code must be replaced with completely custom code.
+        self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data/ca_pds_sources.json', 'filename')
+        (ref_adoption_data_per_region,
+         pds_adoption_data_per_region,
+         pds_adoption_trend_per_region,
+         pds_adoption_is_single_source) = self.initialize_adoption_bases()
 
-        if False:
-            # One may wonder why this is here. This file was code generated.
-            # This 'if False' allows subsequent conditions to all be elif.
-            pass
-        elif self.ac.soln_pds_adoption_basis == 'Fully Customized PDS':
-            pds_adoption_data_per_region = self.pds_ca.adoption_data_per_region()
-            pds_adoption_trend_per_region = self.pds_ca.adoption_trend_per_region()
-            pds_adoption_is_single_source = None
-        elif self.ac.soln_pds_adoption_basis == 'Existing Adoption Prognostications':
-            pds_adoption_data_per_region = self.ad.adoption_data_per_region()
-            pds_adoption_trend_per_region = self.ad.adoption_trend_per_region()
-            pds_adoption_is_single_source = self.ad.adoption_is_single_source()
-
-        ht_ref_adoption_initial = pd.Series(
-            list(self.ac.ref_base_adoption.values()), index=dd.REGIONS)
-        # even when the final_datapoint_year is 2018, the TAM initial year is usually hard-coded to 2014
-        # if that is wrong, change 2014 to 2018 below
-        ht_ref_adoption_final = self.tla_per_region.loc[2050] * (ht_ref_adoption_initial /
-            self.tla_per_region.loc[2014])
+        final_year=2050  # Currently fixed for all models; may be variable in the future.
+        ht_ref_adoption_initial = pd.Series(self.ac.ref_base_adoption)
+        ht_ref_adoption_final = (self.tla_per_region.loc[final_year] * 
+            (ht_ref_adoption_initial / self.tla_per_region.loc[self.base_year]))
         ht_ref_datapoints = pd.DataFrame(columns=dd.REGIONS)
-        ht_ref_datapoints.loc[2018] = ht_ref_adoption_initial
-        ht_ref_datapoints.loc[2050] = ht_ref_adoption_final.fillna(0.0)
+        ht_ref_datapoints.loc[self.base_year] = ht_ref_adoption_initial
+        ht_ref_datapoints.loc[final_year] = ht_ref_adoption_final
+        pds_initial_year = 2018  # sometimes, but rarely, different than self.base_year
+                                # Excel 'Helper Tables'!B85
         ht_pds_adoption_initial = ht_ref_adoption_initial
-        ht_pds_adoption_final_percentage = pd.Series(
-            list(self.ac.pds_adoption_final_percentage.values()),
-            index=list(self.ac.pds_adoption_final_percentage.keys()))
-        ht_pds_adoption_final = ht_pds_adoption_final_percentage * self.tla_per_region.loc[2050]
+        ht_pds_adoption_final_percentage = pd.Series(self.ac.pds_adoption_final_percentage)
+        ht_pds_adoption_final = ht_pds_adoption_final_percentage * self.tla_per_region.loc[final_year]
         ht_pds_datapoints = pd.DataFrame(columns=dd.REGIONS)
-        ht_pds_datapoints.loc[2018] = ht_pds_adoption_initial
-        ht_pds_datapoints.loc[2050] = ht_pds_adoption_final.fillna(0.0)
+        ht_pds_datapoints.loc[pds_initial_year] = ht_pds_adoption_initial
+        ht_pds_datapoints.loc[final_year] = ht_pds_adoption_final
         self.ht = helpertables.HelperTables(ac=self.ac,
-            ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
+            ref_datapoints=ht_ref_datapoints,
+            pds_datapoints=ht_pds_datapoints,
+            ref_adoption_data_per_region=ref_adoption_data_per_region,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
-            ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,
-            use_first_pds_datapoint_main=True,
-            adoption_base_year=2018,
-            copy_pds_to_ref=True,
+            ref_adoption_limits=self.tla_per_region,
+            pds_adoption_limits=self.tla_per_region,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
+            # Quirks Parameters.  The generator tries to guess these correctly, but can get
+            # it wrong.  See the documentation for HelperTables.__init__() to understand
+            # exactly what the paramaters do, and how to set them.
+            copy_ref_datapoint=True,
+            copy_ref_world_too=True,
+            copy_pds_datapoint=True,
+            copy_pds_world_too=True,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
+        # DERIVED VALUES
+
+        # Emissions: if this is an older model, you may need to set a data version to make tests pass.
         self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
@@ -176,6 +116,8 @@ class Scenario(scenario.LandScenario):
             electricity_unit_factor=1000000.0,
             soln_ref_funits_adopted=self.ht.soln_ref_funits_adopted(),
             soln_pds_funits_adopted=self.ht.soln_pds_funits_adopted(),
+            # Quirks parameters
+            replacement_period_offset=0,
             bug_cfunits_double_count=True)
         soln_pds_tot_iunits_reqd = self.ua.soln_pds_tot_iunits_reqd()
         soln_ref_tot_iunits_reqd = self.ua.soln_ref_tot_iunits_reqd()
@@ -183,7 +125,8 @@ class Scenario(scenario.LandScenario):
         soln_net_annual_funits_adopted=self.ua.soln_net_annual_funits_adopted()
 
         self.fc = firstcost.FirstCost(ac=self.ac, pds_learning_increase_mult=2,
-            ref_learning_increase_mult=2, conv_learning_increase_mult=2,
+            ref_learning_increase_mult=2,
+            conv_learning_increase_mult=2,
             soln_pds_tot_iunits_reqd=soln_pds_tot_iunits_reqd,
             soln_ref_tot_iunits_reqd=soln_ref_tot_iunits_reqd,
             conv_ref_tot_iunits=conv_ref_tot_iunits,
@@ -204,7 +147,7 @@ class Scenario(scenario.LandScenario):
             single_iunit_purchase_year=2017,
             soln_pds_install_cost_per_iunit=self.fc.soln_pds_install_cost_per_iunit(),
             conv_ref_install_cost_per_iunit=self.fc.conv_ref_install_cost_per_iunit(),
-            conversion_factor=conversions.mha_to_ha)
+            conversion_factor=conversions.mha_to_ha())
 
         self.c4 = ch4calcs.CH4Calcs(ac=self.ac,
             soln_pds_direct_ch4_co2_emissions_saved=self.ua.direct_ch4_co2_emissions_saved_land(),
@@ -227,3 +170,4 @@ class Scenario(scenario.LandScenario):
             annual_land_area_harvested=self.ua.soln_pds_annual_land_area_harvested(),
             regime_distribution=self.ae.get_land_distribution(),
             regimes=dd.THERMAL_MOISTURE_REGIMES8)
+

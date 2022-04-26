@@ -27,59 +27,7 @@ from model import conversions
 
 DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {
-    'Current Adoption': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION First Cost per Implementation Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Operating Cost per Functional Unit per Annum': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Operating Cost per Functional Unit per Annum': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Net Profit Margin per Functional Unit per Annum': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Net Profit Margin per Functional Unit per Annum': vma.VMA(
-        filename=None, use_weight=False),
-    'Yield from CONVENTIONAL Practice': vma.VMA(
-        filename=None, use_weight=False),
-    'Yield Gain (% Increase from CONVENTIONAL to SOLUTION)': vma.VMA(
-        filename=None, use_weight=False),
-    'Electricty Consumed per CONVENTIONAL Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Energy Efficiency Factor': vma.VMA(
-        filename=None, use_weight=False),
-    'Total Energy Used per SOLUTION functional unit': vma.VMA(
-        filename=None, use_weight=False),
-    'Fuel Consumed per CONVENTIONAL Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'Fuel Reduction Factor SOLUTION': vma.VMA(
-        filename=None, use_weight=False),
-    't CO2-eq (Aggregate emissions) Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
-    't CO2 Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
-    't N2O-CO2-eq Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
-    't CH4-CO2-eq Reduced per Land Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'Indirect CO2 Emissions per CONVENTIONAL Implementation OR functional Unit -- CHOOSE ONLY ONE': vma.VMA(
-        filename=None, use_weight=False),
-    'Indirect CO2 Emissions per SOLUTION Implementation Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'Sequestration Rates': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Sequestration_Rates.csv"),
-        use_weight=False),
-    'Sequestered Carbon NOT Emitted after Cyclical Harvesting/Clearing': vma.VMA(
-        filename=None, use_weight=False),
-    'Disturbance Rate': vma.VMA(
-        filename=None, use_weight=False),
-    'Percent of Degraded Land Suitable for Intact Temperate Forest Restoration': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Percent_of_Degraded_Land_Suitable_for_Intact_Temperate_Forest_Restoration.csv"),
-        use_weight=False),
-}
-vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
+VMAs = vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json')
 
 units = {
     "implementation unit": None,
@@ -340,13 +288,12 @@ class Scenario(scenario.LandScenario):
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
             ref_adoption_limits=self.tla_per_region, pds_adoption_limits=self.tla_per_region,
-            use_first_pds_datapoint_main=True,
-            adoption_base_year=2018,
+            copy_pds_world_too=True,
             copy_pds_to_ref=False,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 
-        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac)
+        self.ef = emissionsfactors.ElectricityGenOnGrid(ac=self.ac, grid_emissions_version=1)
 
         self.ua = unitadoption.UnitAdoption(ac=self.ac,
             ref_total_adoption_units=self.tla_per_region,

@@ -1,8 +1,9 @@
 """Project Drawdown Land Utilities for Solutions.
 There are three kinds of land divisions recognized within Project Drawdown:
- * Regions:  these are the geo-political regions such as OECD90 and Latin America
- * Thermal-Moisture Regimes, aka TMR: designations such as Boreal-Humid, etc.
- * AEZs: this is a custom PD analysis of land areas combining land type, soil quality and slope steepness
+
+* Regions:  these are the geo-political regions such as OECD90 and Latin America
+* Thermal-Moisture Regimes, aka TMR: designations such as Boreal-Humid, etc.
+* AEZs: this is a custom PD analysis of land areas combining land type, soil quality and slope steepness
  
 Geographical analysis to create a cross-correlation between these three dimensions has been done,
 and the original work is available at [https://github.com/ProjectDrawdown/spatial-aez].
@@ -44,40 +45,36 @@ class AEZ(DataHandler, object, metaclass=MetaclassCache):
     """The most granular version of land allocation.  A dictionary mapping TMR names to
     Dataframes, which themselves are indexed by region and have AEZ zones as columns,
     and allocations for this solution as values.
-
-    'AEZ Data'!D353:AG610
     """
-
+    # 'AEZ Data'!D353:AG610
+   
     soln_land_dist_df: pd.DataFrame = None
     """Land allocation broken down by TMR and AEZ.
-    
-    'AEZ Data'!A47:H58 in Cohort 2018
-    'AEZ Data'!A53:H64 in Cohort 2019
-    'AEZ Data'!A53:J64 in the 3/2020 update which split Temperate from Boreal to make 8 TMRs
     """
+    # 'AEZ Data'!A47:H58 in Cohort 2018
+    # 'AEZ Data'!A53:H64 in Cohort 2019
+    # 'AEZ Data'!A53:J64 in the 3/2020 update which split Temperate from Boreal to make 8 TMRs
 
     soln_land_alloc_df: pd.DataFrame = None
     """Land allocation broken down by region and TMR.  This is the result returned by `get_land_distribution` and
     commonly referred to as the TLA.
-
-    'AEZ Data'!A63:AD70   
     """
+    # 'AEZ Data'!A63:AD70   
 
     applicable_zones: list[str] = None
     """The AEZ zones in which this solution can be applied.  (Hard-coded list)
-
-    'AEZ Data'!A2:AD29
     """
-
+    # 'AEZ Data'!A2:AD29
 
     def __init__(self, solution_name, cohort=2018, regimes=dd.THERMAL_MOISTURE_REGIMES, max_tla=False):
             # TODO: check if these are the right defaults?  We need the Excel tests to pass, which would
             # need the data at that time, but in normal cases we also want the most "up to date" data possible.
         """
-        solution_name: full name of the solution (as returned by scenario.name)
-        cohort: which land allocation series to use, defaults to most recent
-        regimes: list of string names of thermal moisture regimes to use, defaults to standard
-        max_tla: If true, the maximum suitable land available is returned, instead of the allocated land
+        Args:
+            solution_name: full name of the solution (as returned by scenario.name)
+            cohort: which land allocation series to use, defaults to most recent
+            regimes: list of string names of thermal moisture regimes to use, defaults to standard
+            max_tla: If true, the maximum suitable land available is returned, instead of the allocated land
         """
         self.solution_name = solution_name
         self.cohort = cohort

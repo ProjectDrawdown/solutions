@@ -1,2 +1,12 @@
 "SOURCE ID: Author/Org, Date, Info",Link,World / Drawdown Region,Specific Geographic Location,Source Validation Code,Year / Date,License Code,Raw Data Input,Original Units,Conversion calculation,Common Units,Weight,Assumptions,Exclude Data?
-"Calculations and assumption on Lighting models, LED lamp",,,,,,,,,1000.0,Petalumen hours (Plmh)/Petalumens (Plm)/year,,,
+"IEA, 2006 Light’s labour’s lost: Policies for Energy-Efficient Lighting. ",https://doi.org/10.1787/9789264109520-en,OECD90,California,2 - Public Sector/ Multilateral Agency,2000,,3614.0,hours,,Hours,,,
+"IEA, 2006 Light’s labour’s lost: Policies for Energy-Efficient Lighting. ",https://doi.org/10.1787/9789264109520-en,OECD90,Canada,3 - Public Sector/ Multilateral Agency,2002,,4380.0,hours,,Hours,,,
+"IEA, 2006 Light’s labour’s lost: Policies for Energy-Efficient Lighting. ",https://doi.org/10.1787/9789264109520-en,OECD90,Japan,4 - Public Sector/ Multilateral Agency,2003,,3780.0,hours,,Hours,,,
+"IEA, 2006 Light’s labour’s lost: Policies for Energy-Efficient Lighting. ",https://doi.org/10.1787/9789264109520-en,OECD90,Europe,5 - Public Sector/ Multilateral Agency,2005,,1901.0,hours,,Hours,,,
+"IEA, 2006 Light’s labour’s lost: Policies for Energy-Efficient Lighting. ",https://doi.org/10.1787/9789264109520-en,OECD90,JapanKorea,6 - Public Sector/ Multilateral Agency,2000,,2583.0,hours,,Hours,,,
+"IEA, 2006 Light’s labour’s lost: Policies for Energy-Efficient Lighting. ",https://doi.org/10.1787/9789264109520-en,OECD90,Australia/NZ,7 - Public Sector/ Multilateral Agency,2000,,1924.0,hours,,Hours,,,
+"IEA, 2006 Light’s labour’s lost: Policies for Energy-Efficient Lighting. ",https://doi.org/10.1787/9789264109520-en,OECD90,North America,8 - Public Sector/ Multilateral Agency,2000,,3928.0,hours,,Hours,,,
+"IEA, 2006 Light’s labour’s lost: Policies for Energy-Efficient Lighting. ",https://doi.org/10.1787/9789264109520-en,OECD90,OECD Europe,9 - Public Sector/ Multilateral Agency,2000,,1781.0,hours,,Hours,,,
+"IEA, 2006 Light’s labour’s lost: Policies for Energy-Efficient Lighting. ",https://doi.org/10.1787/9789264109520-en,OECD90,OECD,10 - Public Sector/ Multilateral Agency,2000,,2867.0,hours,,Hours,,,
+"IEA, 2006 Light’s labour’s lost: Policies for Energy-Efficient Lighting. ",https://doi.org/10.1787/9789264109520-en,Eastern Europe,Russia,11 - Public Sector/ Multilateral Agency,2001,,1900.0,hours,,Hours,,,
+"IEA, 2006 Light’s labour’s lost: Policies for Energy-Efficient Lighting. ",https://doi.org/10.1787/9789264109520-en,Asia (Sans Japan),China,12 - Public Sector/ Multilateral Agency,2004,,2800.0,hours,,Hours,,,

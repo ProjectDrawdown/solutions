@@ -27,93 +27,8 @@ from solution import rrs
 
 DATADIR = pathlib.Path(__file__).parents[2].joinpath('data')
 THISDIR = pathlib.Path(__file__).parents[0]
-VMAs = {
-    'Current Adoption': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "Current_Adoption.csv"),
-        use_weight=False),
-    'CONVENTIONAL First Cost per Implementation Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv"),
-        use_weight=True),
-    'SOLUTION First Cost per Implementation Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_First_Cost_per_Implementation_Unit.csv"),
-        use_weight=False),
-    'CONVENTIONAL Lifetime Capacity': vma.VMA(
-        filename=DATADIR.joinpath('energy', "vma_data", "CONVENTIONAL_Lifetime_Capacity.csv"),
-        use_weight=True),
-    'SOLUTION Lifetime Capacity': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_Lifetime_Capacity.csv"),
-        use_weight=False),
-    'CONVENTIONAL Average Annual Use': vma.VMA(
-        filename=DATADIR.joinpath('energy', "vma_data", "CONVENTIONAL_Average_Annual_Use.csv"),
-        use_weight=True),
-    'SOLUTION Average Annual Use': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_Average_Annual_Use.csv"),
-        use_weight=False),
-    'CONVENTIONAL Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
-        filename=DATADIR.joinpath('energy', "vma_data", "CONVENTIONAL_Variable_Operating_Cost_VOM_per_Functional_Unit.csv"),
-        use_weight=True),
-    'SOLUTION Variable Operating Cost (VOM) per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Fixed Operating Cost (FOM)': vma.VMA(
-        filename=DATADIR.joinpath('energy', "vma_data", "CONVENTIONAL_Fixed_Operating_Cost_FOM.csv"),
-        use_weight=True),
-    'SOLUTION Fixed Operating Cost (FOM)': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_Fixed_Operating_Cost_FOM.csv"),
-        use_weight=False),
-    'CONVENTIONAL Total Energy Used per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Energy Efficiency Factor': vma.VMA(
-        filename=None, use_weight=False),
-    'Total Energy Used per SOLUTION functional unit': vma.VMA(
-        filename=None, use_weight=False),
-    'Fuel Consumed per CONVENTIONAL Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Fuel Efficiency Factor': vma.VMA(
-        filename=None, use_weight=False),
-    'CONVENTIONAL Direct Emissions per Functional Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Direct Emissions per Functional Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_Direct_Emissions_per_Functional_Unit.csv"),
-        use_weight=False),
-    'CONVENTIONAL Indirect CO2 Emissions per Unit': vma.VMA(
-        filename=None, use_weight=False),
-    'SOLUTION Indirect CO2 Emissions per Unit': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "SOLUTION_Indirect_CO2_Emissions_per_Unit.csv"),
-        use_weight=False),
-    'CH4-CO2eq Tons Reduced': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "CH4_CO2eq_Tons_Reduced.csv"),
-        use_weight=False),
-    'N2O-CO2eq Tons Reduced': vma.VMA(
-        filename=None, use_weight=False),
-    '2005-2014 Average CONVENTIONAL Fuel Price per functional unit': vma.VMA(
-        filename=DATADIR.joinpath('energy', "vma_data", "2005_2014_Average_CONVENTIONAL_Fuel_Price_per_functional_unit.csv"),
-        use_weight=True),
-    'Weighted Average CONVENTIONAL Plant Efficiency': vma.VMA(
-        filename=DATADIR.joinpath('energy', "vma_data", "Weighted_Average_CONVENTIONAL_Plant_Efficiency.csv"),
-        use_weight=True),
-    'Coal Plant Efficiency': vma.VMA(
-        filename=DATADIR.joinpath(*('energy', 'vma_Coal_Plant_Efficiency_2.csv')),
-        use_weight=False),
-    'Natural Gas Plant Efficiency': vma.VMA(
-        filename=DATADIR.joinpath('energy', "vma_data", "Natural_Gas_Plant_Efficiency.csv"),
-        use_weight=False),
-    'Oil Plant Efficiency': vma.VMA(
-        filename=DATADIR.joinpath(*('energy', 'vma_Oil_Plant_Efficiency_2.csv')),
-        use_weight=False),
-    'tCO2 from Landfill Gas Burning': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "tCO2_from_Landfill_Gas_Burning.csv"),
-        use_weight=False),
-    'tCH4-CO2-eq from Landfill Gas Burning': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "tCH4_CO2_eq_from_Landfill_Gas_Burning.csv"),
-        use_weight=False),
-    'tN2O-CO2-eq from Landfill Gas Burning': vma.VMA(
-        filename=THISDIR.joinpath("vma_data", "tN2O_CO2_eq_from_Landfill_Gas_Burning.csv"),
-        use_weight=False),
-    'Discount Rate: Commercial / Industry': vma.VMA(
-        filename=DATADIR.joinpath('energy', "vma_data", "Discount_Rate_Commercial_Industry.csv"),
-        use_weight=False),
-}
-vma.populate_fixed_summaries(vma_dict=VMAs, filename=THISDIR.joinpath('vma_data', 'VMA_info.csv'))
+VMAs = (vma.VMA.load_vma_directory(THISDIR/'vma_data/vma_sources.json') |
+        vma.VMA.load_vma_directory(DATADIR/'energy/vma_data/vma_sources.json'))
 
 units = {
     "implementation unit": "TW",
@@ -154,7 +69,6 @@ class Scenario(scenario.RRSScenario):
         # ADOPTION
         self._pds_ca_sources = scenario.load_sources(THISDIR/'ca_pds_data'/'ca_pds_sources.json', 'filename')
         self._pds_ad_sources = scenario.load_sources(THISDIR/'ad'/'ad_sources.json', '*')
-        self._pds_ad_settings['main_includes_regional'] = False
         self.initialize_adoption_bases()
         ref_adoption_data_per_region = None
 
@@ -187,8 +101,8 @@ class Scenario(scenario.RRSScenario):
             ref_datapoints=ht_ref_datapoints, pds_datapoints=ht_pds_datapoints,
             pds_adoption_data_per_region=pds_adoption_data_per_region,
             ref_adoption_limits=ref_tam_per_region, pds_adoption_limits=pds_tam_per_region,
-            use_first_pds_datapoint_main=False,
-            adoption_base_year=2018, copy_pds_to_ref=True,
+            copy_pds_world_too=False,
+            copy_through_year=2018, copy_pds_to_ref=True,
             pds_adoption_trend_per_region=pds_adoption_trend_per_region,
             pds_adoption_is_single_source=pds_adoption_is_single_source)
 

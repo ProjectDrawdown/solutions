@@ -1,0 +1,128 @@
+{
+    "Current Adoption": {
+        "filename": "Current_Adoption.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Current adoption for the U.S. is taken from the CBECS 2012 (U.S. EIA), and adoption for other regions are taken from \"Adoption Factoring,\" which explains the methodology (based on Sales by region) used to calculate these current adoption estimates. CBECS data for the US Commercial floor area adopted from 1999 to 2012 indicates 4.2% annual growth rate (CAGR) (and 6.1% for 1992-1999). Assuming the same reduction in CAGR continues (to 3.0%) the future global asoptions are estimated to 2018"
+    },
+    "CONVENTIONAL First Cost per Implementation Unit": {
+        "filename": "CONVENTIONAL_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Originally conventional First Cost was estimated with a customized calculation contained on \"First Cost Factoring\" sheet. This approach was taken due to a lack of reliable first cost estimates for conventional (pneumatic, electric) building control systems. The new approach involves the expansion of the technologies included under the 'Conventional BAS'- class C model according to EN 15232- and data from retailers on the cost of each technology. Most commercial buildings have the conventional solution, therefore we use the CBECS 2012 (U.S. EIA) as the main source to estimate conventional. We assume a 65% area that includes the conventional solution (31,000 MM2 commercial floor space).  We assume that each building would include a bundle of all these solutions acting together. "
+    },
+    "SOLUTION First Cost per Implementation Unit": {
+        "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Solution First Cost is estimated based on reports of existing BAS in commercial buildings, both large (>30,000 m2) and small/medium (<30,000m2). Standardized \"installed cost\" data for BAS was not reported widely in the literature, so individual cases of BAS projects (and several existing meta-analyses of BAS projects) were used as a proxy for the range of costs for BAS in both large and commercial buildings. The weights that are applied are used to differentiate the costs to small/medium and large commercial buildings. We assume 65% of commercial building floorspace is small/commercial buildings and 35% is large commercial buildings (see \"Floor Area Distribution\"). This estimate is specific to the U.S., but reliable estimates of the breakdown between small/large commercial buildings globally (or in other regions besides US) were not available. We include this assumption in the Technical Report. *Weighting: for all buildings <30,000 m2, we use the weight of .65 (divided equally among each of the five inputs for buildings that fit this size). For all buildings >30,000 m2, we use the weight of .35 (divided equally among each of the 15 inputs for buildings that fit this size). Weights are distributed across all entries of same type to preserve shares and 100% total."
+    },
+    "CONVENTIONAL Lifetime Capacity": {
+        "filename": "CONVENTIONAL_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Lifetime Capacity data for the Conventional technology is taken from two sources and is specific to older HVAC controls (specifically pneumatic controls). A detailed explanation of lifetime expectancies is contained in the Technical Report. "
+    },
+    "SOLUTION Lifetime Capacity": {
+        "filename": "SOLUTION_Lifetime_Capacity.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Standard Estimated Useful Life (EUL) or life expectancies for newer building automation technologies are not available, especially since BAS comprise a number of different technologies with different lifespans (e.g. sensors, controls, etc). The sources above are individual (and unverifiable) reports of Direct Digital Controls (DDC)  lifespans from an HVAC industry forum HVAC-talk.com. Because lifetime expectancy estimates for BAS were not found in any peer-reviewed literature, these estimates are included here, but in the Technical Report we explain why we have chosen a lower estimate for our model."
+    },
+    "CONVENTIONAL Average Annual Use": {
+        "filename": "CONVENTIONAL_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Average Annual Use variable is set to 1 by default because the implementation unit and functional unit in this model are the same. "
+    },
+    "SOLUTION Average Annual Use": {
+        "filename": "SOLUTION_Average_Annual_Use.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Average Annual Use variable is set to 1 by default because the implementation unit and functional unit in this model are the same. "
+    },
+    "CONVENTIONAL Total Energy Used per Functional Unit": {
+        "filename": "CONVENTIONAL_Total_Energy_Used_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Electricity consumed per functional unit is based on a calculation that uses several other model variables. The weighted average energy intensity for commercial buildings is first multiplied by the percentage of electricity used for non-thermal purposes to get the total electricity intensity for non-thermal end-uses. Then, the total energy intensity is multiplied by the percentage for space heating and cooling to get the total amount of energy used for thermal purposes, and finally this total is multiplied by the percent of electricity used for space heating. These totals are added together to get the total electricity intensity for commercial buildings for both thermal and non-thermal purposes."
+    },
+    "Electrical Efficiency Factor - SOLUTION": {
+        "filename": "Electrical_Efficiency_Factor_SOLUTION.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Electrical Efficiency factor is based on data from Siemens (2009) and is separated into efficiencies for electrical (non-thermal) end-uses and efficiencies for thermal end-uses. These two variables are listed below. Because electricity is used for both thermal and non-thermal purposes (some space heating from electricity), both of these efficiency factors are included above. Then, these are weighted by the share of commercial energy intensity consumption for thermal and non-thermal purposes (see variables below)"
+    },
+    "CONVENTIONAL Fuel Consumed per Functional Unit": {
+        "filename": "CONVENTIONAL_Fuel_Consumed_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "Fuel consumed per functional unit is based on a calculation to determine the percentage of total energy intensity that is used for thermal purposes  and then this is multiplied by the share of fuel for those thermal purposes."
+    },
+    "SOLUTION Fuel Efficiency Factor": {
+        "filename": "SOLUTION_Fuel_Efficiency_Factor.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "Fuel efficiency factor is taken direct from Siemens (2009) and an additional variable below. Both the \"high\" and \"advanced\" range estimates for efficiency factors are included, and these are weighted by the share of each building type (Note: each weight is divided by two because for each building type their are two entries). The weighting methodology can be found on \"Floor Area Distribution\". Weight adjusted to ensure shares remain consistent and that total sums to 100%."
+    },
+    "CONVENTIONAL Revenue per Functional Unit": {
+        "filename": "CONVENTIONAL_Revenue_per_Functional_Unit.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": ""
+    },
+    "Commercial Building Energy Consumption (kWh/m2/yr) (Weighted Average by Region)": {
+        "filename": "Commercial_Building_Energy_Consumption_kWh_m2_yr_Weighted_Average_by_Region.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "These energy intensity values are taken from two separate sources listed on the additional sheet titled \"Commercial Energy Consumption\". The weights are applied based on the total share of global commercial floor space in each region. Weight  are adjusted so that the relative share of each region remains constant (total always sums to 100%)."
+    },
+    "Commercial Building Energy Consumption for Thermal Purposes (Heating and Cooling) (% of total)": {
+        "filename": "Commercial_Building_Energy_Consumption_for_Thermal_Purposes_Heating_and_Cooling_of_total.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "This data is taken from the additional sheet titled \"Commercial Energy Consumption\" and the weights are based on the share of total global commercial floor space in each region."
+    },
+    "Commercial Building Energy Consumption for Non-Thermal Purposes (all other end-uses) (% of total)": {
+        "filename": "Commercial_Building_Energy_Consumption_for_Non_Thermal_Purposes_all_other_end_uses_of_total.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "This data is taken from the additional sheet titled \"Commercial Energy Consumption\" and the weights are based on the share of total global commercial floor space in each region"
+    },
+    "Commercial Building Electricity Consumption for Space Heating (% of total)": {
+        "filename": "Commercial_Building_Electricity_Consumption_for_Space_Heating_of_total.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "This data is taken from the additional sheet titled \"Commercial Energy Consumption\" and the weights are based on the share of total global commercial floor space in each region.  Weights adjusted so that the relative share of each building type remains constant (total always sums to 100%)."
+    },
+    "Commercial Building Electricity Consumption for Cooling (% of total)": {
+        "filename": "Commercial_Building_Electricity_Consumption_for_Cooling_of_total.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This input is based on the assumption that 100% of cooling demand is met with electricity in commercial buildings (see Technical Report). "
+    },
+    "Commercial Building Fuel Consumption for Space Heating (% of total Space Heating/Cooling)": {
+        "filename": "Commercial_Building_Fuel_Consumption_for_Space_Heating_of_total_Space_Heating_Cooling.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "This variable is calculated by subtracting the percentage of electricity used for space heating from 1.00 to get a total percentage of fuel used for space heating. This data point also assumes that all non-electric space heating is from natural gas. "
+    },
+    "BAS Efficiency Factors for Non-Thermal Efficiency (Electricity End-Uses)": {
+        "filename": "BAS_Efficiency_Factors_for_Non_Thermal_Efficiency_Electricity_End_Uses.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "BAS Efficiency factors for non-thermal (electrical) efficiency are taken from Siemens (2009) and are included on the sheet titled \"BAS Energy Efficiency Factors\". The weights are based on the weighting methodology explained on \"Floor Area Distribution\"  and adjusted so that the relative share of each building type remains constant (total always sums to 100%)"
+    },
+    "BAS Efficiency Factors for Thermal Efficiency (Heating/Cooling End-Uses)": {
+        "filename": "BAS_Efficiency_Factors_for_Thermal_Efficiency_Heating_Cooling_End_Uses.csv",
+        "use_weight": true,
+        "bound_correction": false,
+        "description": "BAS Efficiency factors for thermal efficiency are taken from Siemens (2009) and are included on the sheet titled \"BAS Energy Efficiency Factors\". The weights are based on the weighting methodology explained on \"Floor Area Distribution\" and adjusted so that the relative share of each building type remains constant (total always sums to 100%)"
+    },
+    "Discount Rates - Commercial": {
+        "filename": "Discount_Rates_Commercial.csv",
+        "use_weight": false,
+        "bound_correction": false,
+        "description": "In some cases in the literature it is specifically indicated that a distinct discount rate is appropriate when applied to investment decisions made at a Commercial / Industrial level. The Commercial / Industrial level discount rate is directly related to decision-making at a Commercial / Industrial level and likely varies greatly across different regions of the world.  Taking the numbers found in the literature above comprises a conservative case.  Without distortions this discount rate would be equivalent to the interest rate afforded by alternative investments available to larger commercial / industrial entities such as multinational corporations or corporate utility enterprises.  Discount rates reported in the literature that are used for policy decisions are not necessarily equivalent to Commercial / Industrial level financial investment decisions, but oftentimes are not distinguished and may be conflated.  These values represent a conservative case and, due to uncertainty, lower and higher discounting rates should probably be used for sensitivity analysis."
+    }
+}

@@ -1,0 +1,110 @@
+{
+  "Current Adoption": {
+    "title": "Current Adoption",
+    "filename": "Current_Adoption.csv",
+    "stat_correction": true,
+    "units": "million hectares"
+  },
+  "SOLUTION First Cost per Implementation Unit": {
+    "title": "SOLUTION First Cost per Implementation Unit",
+    "filename": "SOLUTION_First_Cost_per_Implementation_Unit.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha"
+  },
+  "CONVENTIONAL Operating Cost per Functional Unit per Annum": {
+    "title": "CONVENTIONAL Operating Cost per Functional Unit per Annum",
+    "filename": "CONVENTIONAL_Operating_Cost_per_Functional_Unit_per_Annum.csv",
+    "use_weight": true,
+    "units": "US$2014/ha/yr"
+  },
+  "SOLUTION Operating Cost per Functional Unit per Annum": {
+    "title": "SOLUTION Operating Cost per Functional Unit per Annum",
+    "filename": "SOLUTION_Operating_Cost_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "CONVENTIONAL Net Profit Margin per Functional Unit per Annum": {
+    "title": "CONVENTIONAL Net Profit Margin per Functional Unit per Annum",
+    "filename": "CONVENTIONAL_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "SOLUTION Net Profit Margin per Functional Unit per Annum": {
+    "title": "SOLUTION Net Profit Margin per Functional Unit per Annum",
+    "filename": "SOLUTION_Net_Profit_Margin_per_Functional_Unit_per_Annum.csv",
+    "stat_correction": true,
+    "units": "US$2014/ha/yr"
+  },
+  "Yield from CONVENTIONAL Practice": {
+    "title": "Yield from CONVENTIONAL Practice",
+    "filename": "Yield_from_CONVENTIONAL_Practice.csv",
+    "use_weight": true,
+    "units": "DM tons fodder/ha/yr"
+  },
+  "Yield Gain (% Increase from CONVENTIONAL to SOLUTION)": {
+    "title": "Yield Gain (% Increase from CONVENTIONAL to SOLUTION)",
+    "filename": "Yield_Gain_Increase_from_CONVENTIONAL_to_SOLUTION.csv",
+    "stat_correction": true,
+    "units": "%"
+  },
+  "t CH4-CO2-eq Reduced per Land Unit": {
+    "title": "t CH4-CO2-eq Reduced per Land Unit",
+    "filename": "t_CH4_CO2_eq_Reduced_per_Land_Unit.csv",
+    "stat_correction": true,
+    "units": "t CH4-CO2-eq/ha/yr"
+  },
+  "Sequestration Rates": {
+    "title": "Sequestration Rates",
+    "filename": "Sequestration_Rates.csv",
+    "use_weight": true,
+    "units": "t C/ha/yr"
+  },
+  "Percent silvopasture area to the total grassland area (including potential)": {
+    "title": "Percent silvopasture area to the total grassland area (including potential)",
+    "filename": "Percent_silvopasture_area_to_the_total_grassland_area_including_potential.csv",
+    "stat_correction": true,
+    "units": "% of grazing land"
+  },
+  "Above-ground biomass (AGB)": {
+    "title": "Above-ground biomass (AGB)",
+    "filename": "Above_ground_biomass_AGB.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Below-ground biomass (BGB)": {
+    "title": "Below-ground biomass (BGB)",
+    "filename": "Below_ground_biomass_BGB.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Soil organic carbon (SOC)": {
+    "title": "Soil organic carbon (SOC)",
+    "filename": "Soil_organic_carbon_SOC.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Total C sequestration CONVENTIONAL (degraded pasture / pasture no trees)": {
+    "title": "Total C sequestration CONVENTIONAL (degraded pasture / pasture no trees)",
+    "filename": "Total_C_sequestration_CONVENTIONAL_degraded_pasture_pasture_no_trees.csv",
+    "stat_correction": true,
+    "units": "t C/ha/yr"
+  },
+  "Total Pasture/Grazing Area": {
+    "title": "Total Pasture/Grazing Area",
+    "filename": "Total_Pasture_Grazing_Area.csv",
+    "stat_correction": true,
+    "units": "Mha"
+  },
+  "Total Silvopasture Area": {
+    "title": "Total Silvopasture Area",
+    "filename": "Total_Silvopasture_Area.csv",
+    "stat_correction": true,
+    "units": "Mha"
+  },
+  "Percent silvopasture area to the total pasture/grazing land area": {
+    "title": "Percent silvopasture area to the total pasture/grazing land area",
+    "filename": "Percent_silvopasture_area_to_the_total_pasture_grazing_land_area.csv",
+    "stat_correction": true,
+    "units": "% of grazing land"
+  }
+}
