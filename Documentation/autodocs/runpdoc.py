@@ -62,7 +62,7 @@ if __name__ == "__main__":
         ('Top', root/'Documentation/Top.md', 'index.html'),
         ('Main Readme', root/'README.md', 'drawdown_solutions.html'),
         ('Concepts', root/'Documentation/Concepts.md', "concepts.html"),
-        ('Code', root/'Documentation/Code_Top.md', 'code_top.html')
+        ('Code', root/'Documentation/Code_Top.md', 'code_top.html'),
         ('Tools Readme', root/"tools/_README.md", 'tools.html'),
     ]
 
