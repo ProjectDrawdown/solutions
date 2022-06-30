@@ -19,26 +19,25 @@ def all_solutions():
 
 def list_scenarios(solution):
     """Return a list of scenarios for this solution"""
-    m = _load_module(solution)
+    m = load_solution(solution)
     return list(m.scenarios.keys())
 
 def load_scenario(solution, scenario=None):
     """Load a scenario for the requested solution.  Scenario may be one of the following:
-     * None (the default): return the PDS2 scenario for this solution
-     * `PDS`, `PDS2` or `PDS3`:  get the most recent scenario of the requested type
-     * a scenario name:  load the scenario with that name
-     * an AdvancedControl object: load a scenario with completely custom values
-     * a json dictionary representing an AdvancedControl object:  load a completely custom scenario based on the data in the object
-     * the format should be the same as the sceanrios stored with the solution."""
-    m = _load_module(solution)
+     *  None (the default): return the PDS2 scenario for this solution
+     *  `PDS`, `PDS2` or `PDS3`:  get the most recent scenario of the requested type
+     *  a scenario name:  load the scenario with that name
+     *  an AdvancedControl object: create a scenario with these values
+     *  a dictionary representing an AdvancedControl object (e.g. its serialized form):  create a scenario with these values."""
+    m = load_solution(solution)
     if isinstance(scenario, dict):
         scenario = ac.ac_from_dict(scenario, m.VMAs)
     scenario = pds_truename(solution,scenario)
     return m.Scenario(scenario)
 
 @lru_cache()
-def _load_module(solution):
-    """Return the Scenario class and list of scenarios."""
+def load_solution(solution):
+    """Return the python module containing the Scenario class and attributes of this solution"""
     importname = 'solution.' + solution
     m = importlib.import_module(importname)
 
@@ -60,7 +59,7 @@ def all_solutions_scenarios():
 
 def pds_scenarios(solution):
     """Return the names of the PDS scenarios for a given solution"""
-    m = _load_module(solution)
+    m = load_solution(solution)
     return {'PDS1': m.PDS1, 'PDS2': m.PDS2, 'PDS3': m.PDS3}
 
 def pds_truename(solution, scenario_name):
@@ -75,7 +74,7 @@ def solution_path(solution):
 
 
 def solution_vma(solution, vma_title) -> vma.VMA:
-    m = _load_module(solution)
+    m = load_solution(solution)
     return m.VMAs.get(vma_title,None)
 
 
