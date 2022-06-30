@@ -61,7 +61,8 @@ if __name__ == "__main__":
     doc_list = [
         ('Top', root/'Documentation/Top.md', 'index.html'),
         ('Main Readme', root/'README.md', 'drawdown_solutions.html'),
-        ('FAQ', root/'Documentation/Solution_Model_FAQ.md', "faq.html"),
+        ('Concepts', root/'Documentation/Concepts.md', "concepts.html"),
+        ('Code', root/'Documentation/Code_Top.md', 'code_top.html')
         ('Tools Readme', root/"tools/_README.md", 'tools.html'),
     ]
 

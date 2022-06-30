@@ -1010,11 +1010,11 @@ class AdvancedControls:
             if v and not pd.isna(v.avg_high_low(key='mean')):
                 break
         else:
-            if len(vma_titles) == 1:
-                needed = repr(vma_titles[0])
-            else:
-                needed = f"one of {', '.join([repr(t) for t in vma_titles])}"
-            warnings.warn(f"Expected non-empty VMA {needed}")
+            # if len(vma_titles) == 1:
+            #     needed = repr(vma_titles[0])
+            # else:
+            #     needed = f"one of {', '.join([repr(t) for t in vma_titles])}"
+            # warnings.warn(f"Expected non-empty VMA {needed}")
             return raw_val_from_excel
 
 
