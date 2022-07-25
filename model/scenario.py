@@ -69,8 +69,25 @@ class Scenario:
     """The base ref adoption, if this scenario uses a Fully Customized reference adoption (otherwise None)"""
     sc: s_curve.SCurve = None
     """The base s-curve adoption, if this scenario uses an s-curve adoption (otherwise None)."""
+   
+    key_parameters = [
+        "pds_2014_cost", 
+        "soln_lifetime_capacity",
+        "soln_avg_annual_use", 
+        "soln_fixed_oper_cost_per_iunit",
+        "soln_var_oper_cost_per_funit",
+        "soln_energy_efficiency_factor",
+        "soln_fuel_efficiency_factor",
+        "soln_emissions_per_funit",
+        "soln_indirect_co2_per_iunit"
+    ];
+    """AC scalar parameters that are most important for defining this scenario.  
+    (Excludes adoption-related parameters.)"""
+    # Can be overridden by the solutions if they use parameters differently.
 
-    
+    def key_inputs(self):
+        return { x: self.ac[x] for x in self.key_parameters };
+
     ##############################################################################################################
     # Initialize AC
 
@@ -490,6 +507,17 @@ class LandScenario(Scenario):
     tla_per_region: pd.DataFrame = None
     """Total land area per region, by year.
     (Land area remains constant over time; this format is used because it is consistent with TAM)"""
+
+    key_parameters = [
+        "soln_expected_lifetime",
+        "yield_gain_from_conv_to_soln",
+        "tco2eq_reduced_per_land_unit",
+        "tco2_reduced_per_land_unit",
+        "tch4_co2_reduced_per_land_unit",   
+        "tn2o_co2_reduced_per_land_unit",
+        "land_annual_emissons_lifetime",
+        "seq_rate_global"
+    ]; 
 
     def adoption_limit(self):
         return self.tla_per_region

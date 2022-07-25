@@ -21,6 +21,7 @@ from model.decorators import data_func
 from model.units import map_to_unit, Mt
 
 C_TO_CO2EQ = 3.666
+"""Conversion factor from grams Carbon to grams CO2, used to calculate CO2 reduction from Carbon sequestration"""
 # Note: a different value of 3.64 is sometimes used for certain results in Excel
 # Here we will always use this value for consistency
 

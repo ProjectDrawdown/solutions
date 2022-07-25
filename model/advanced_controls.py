@@ -65,7 +65,7 @@ class AdvancedControls:
     vma_values: typing.Dict = None
     
     # For _all_ VMA fields, this dictionary will hold the name of the statistic used to
-    # determine the field value, if it is used.  Kye is field name or VMA Title.
+    # determine the field value, if it is used.  Key is field name or VMA Title.
     # This field is set during initialization to enable round-trip saving of 
     # advanced control objects, and should _not_ be set by the user.
     vma_statistics: typing.Dict = None
@@ -84,6 +84,7 @@ class AdvancedControls:
 
     # jsfile: the filename containing the JSON (if known)
     jsfile: str = None
+
 
     # pds_2014_cost: US$2014 cost to acquire + install, per implementation
     #   unit (ex: kW for energy scenarios), for the Project Drawdown Solution (PDS)
@@ -862,6 +863,20 @@ class AdvancedControls:
                 d['vma_values'][name] = { 'value': val, 'statistic': stat }
         return d
 
+
+    # convenience function: access a parameter with [key]
+    def __getitem__(self, key):
+        return getattr(self, key);
+
+    def explain_parameter(self, parameter_name):
+        """Return an explanation of a parameter, given its key"""
+        all_fields = dataclasses.fields(self);
+        for f in all_fields:
+            if (f.name == parameter_name):
+                meta = f.metadata;
+                if 'tooltip' in meta:
+                    return meta['tooltip'];
+        return "";
 
     def __str__(self):
         return "AdvancedControls(**" + str(self.as_dict()) + ")"
