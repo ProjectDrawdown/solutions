@@ -5,6 +5,7 @@ Overview/index of documentation:
 * The first place to start is the [Main Readme](drawdown_solutions.html), which contains both an overview of the project and instructions for getting, installing and starting to use the PDME.
 * [Concepts](concepts.html) contains some high-level concepts and vocabulary that are useful for understanding what models are and how they work.
 * [Code](code_top.html)  Notes and concepts specifically about the code.
+* The 'Start_Here' Jupyter Notebook (in the root directory of the code) is an interactive introduction to using the PDME.
 * The *API Documentation* is the main content of this website, accessible from the menu at left.
 
 The contents of this repository are organized into the following folders:
