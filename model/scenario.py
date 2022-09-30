@@ -185,7 +185,7 @@ class Scenario:
 
         # handle the inline-override case 
         if self.ac.pds_adoption_custom_source:
-            sources = [ {'name': 'Inline PDS Adoption', 'include': True, 'filename': self.ac.ref_adoption_custom_source}],
+            sources = [ {'name': 'Inline PDS Adoption', 'include': True, 'filename': self.ac.pds_adoption_custom_source}]
             self.pds_ca = customadoption.CustomAdoption(
                data_sources = sources,
                soln_adoption_custom_name = 'Inline PDS Adoption',
@@ -458,8 +458,7 @@ class RRSScenario(Scenario):
             name = 'Inline Tam'
             ref_data_sources = { 'Custom Cases' : { 
                     name : self.ac.ref_tam_custom_source,
-                    name + 'dup' : self.ac.ref_tam_custom_source,
-                    'include': True
+                    name + 'dup' : self.ac.ref_tam_custom_source
                 }}
             # set 'source_after_2014' for 'World' and all regions (everything except 'PDS World')
             pdsworld = tamconfig.loc['source_after_2014', 'PDS World']
@@ -469,8 +468,7 @@ class RRSScenario(Scenario):
             name = 'Inline Tam'
             pds_data_sources = { 'Custom Cases' : { 
                     name : self.ac.pds_tam_custom_source,
-                    name + 'dup' : self.ac.pds_tam_custom_source,
-                    'include': True
+                    name + 'dup' : self.ac.pds_tam_custom_source
                 }}
             tamconfig.loc['source_after_2014','PDS World'] = 'Custom Cases'
 
