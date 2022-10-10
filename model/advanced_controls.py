@@ -1075,7 +1075,7 @@ class AdvancedControls:
         d = self.as_dict()
         d['creation_date'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         d.update(mods)
-        return ac_from_dict(d, self.vmas)
+        return ac_from_dict(d, self.vmas, cls=self.__class__)
 
     def write_to_json_file(self, newname=None):
         newname = newname or self.jsfile
@@ -1108,22 +1108,22 @@ def fill_missing_regions_from_world(data):
         return data
 
 
-def load_scenarios_from_json(directory, vmas):
+def load_scenarios_from_json(directory, vmas, cls=AdvancedControls):
     """Load scenarios from JSON files in directory."""
     result = {}
     for filename in glob.glob(str(directory.joinpath('*.json'))):
         with open(filename, 'r') as fid:
             jd = json.loads(fid.read())
-            a = ac_from_dict(jd, vmas, filename)
+            a = ac_from_dict(jd, vmas, filename, cls)
             result[a.name] = a
     return result
 
-def ac_from_dict(data: dict, vmas, filename="") -> AdvancedControls:
+def ac_from_dict(data: dict, vmas, filename="", cls=AdvancedControls) -> AdvancedControls:
     """Create an AdvancedControls object from a dictionary of values, as retrieved from a scenario json file."""
     d = data.copy()
     d['vmas'] = vmas
     d['jsfile'] = str(filename)
-    return AdvancedControls(**d)
+    return cls(**d)
 
 
 def get_vma_for_param(param):
@@ -1132,8 +1132,8 @@ def get_vma_for_param(param):
             return field.metadata.get('vma_titles', [])
     return []
 
-def get_param_for_vma_name(name):
-    for field in dataclasses.fields(AdvancedControls):
+def get_param_for_vma_name(name, cls=AdvancedControls):
+    for field in dataclasses.fields(cls):
         for vma_name in field.metadata.get('vma_titles', []):
             if name == vma_name:
                 return field.name
