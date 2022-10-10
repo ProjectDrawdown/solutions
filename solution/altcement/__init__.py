@@ -22,6 +22,7 @@ from model import unitadoption
 from model import vma
 from model import tam
 from solution import rrs
+import dataclasses
 
 DATADIR = Path(__file__).parents[2]/'data'
 THISDIR = Path(__file__).parent
@@ -37,7 +38,15 @@ units = {
 name = 'Alternative Cements'
 solution_category = ac.SOLUTION_CATEGORY.REDUCTION
 
-scenarios = ac.load_scenarios_from_json(directory=THISDIR/'ac', vmas=VMAs)
+ # CUSTOMIZE SECTION
+ # BE SURE TO IMPORT DATACLASSES ABOVE
+@dataclasses.dataclass(eq=True, frozen=True)
+class CementAC(ac.AdvancedControls):
+    clinker_to_cement_ratio : float = dataclasses.field(default=0.1, metadata={
+        'vma_titles': ['Clinker to Cement Ratio in Year 2']})
+
+scenarios = ac.load_scenarios_from_json(directory=THISDIR/'ac', vmas=VMAs, cls=CementAC)
+# END CUSTOMIZE SECTION
 
 # These are the "default" scenarios to use for each of the drawdown categories.
 # They should be set to the most recent "official" set"
@@ -56,6 +65,17 @@ class Scenario(scenario.RRSScenario):
     def __init__(self, scen=None):
         # AC
         self.initialize_ac(scen, scenarios, PDS2)
+
+        # CUSTOMIZE SECTION
+        # Somehow use ac.clinker_to_cement_ratio in the code.  Let's assume, for sake of example, that the clinker ratio
+        # affects the emissions of the cement.  You would update the AC to have the correct value for emissions like this
+        # (obviously I'm just making up the equation):
+        
+        self.ac = self.ac.with_modifications(
+            soln_emissions_per_funit=(self.ac.conv_emissions_per_funit * self.ac.clinker_to_cement_ratio))
+        
+        # You could use also ac.clinker_to_cement_ratio anywhere in the code below as well, for example to customize adoption.
+        # END CUSTOMIZE SECTION
 
         # TAM
 

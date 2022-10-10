@@ -6,6 +6,7 @@
     "description": "Updated using updated population data",
     "report_start_year": 2020,
     "report_end_year": 2050,
+    "clinker_to_cement_ratio": 0.5,
     "conv_2014_cost": 74790999.4544158,
     "conv_first_cost_efficiency_rate": 0.0,
     "conv_lifetime_capacity": 30.0,
