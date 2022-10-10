@@ -1,0 +1,3349 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="pdoc 12.2.0"/>
+    <title>model.units API documentation</title>
+            <link rel="icon" href="images/favicon.png"/>
+
+    <style>/*! * Bootstrap Reboot v5.0.0 (https://getbootstrap.com/) * Copyright 2011-2021 The Bootstrap Authors * Copyright 2011-2021 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE) * Forked from Normalize.css, licensed MIT (https://github.com/necolas/normalize.css/blob/master/LICENSE.md) */*,::after,::before{box-sizing:border-box}@media (prefers-reduced-motion:no-preference){:root{scroll-behavior:smooth}}body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;color:#212529;background-color:#fff;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}hr{margin:1rem 0;color:inherit;background-color:currentColor;border:0;opacity:.25}hr:not([size]){height:1px}h1,h2,h3,h4,h5,h6{margin-top:0;margin-bottom:.5rem;font-weight:500;line-height:1.2}h1{font-size:calc(1.375rem + 1.5vw)}@media (min-width:1200px){h1{font-size:2.5rem}}h2{font-size:calc(1.325rem + .9vw)}@media (min-width:1200px){h2{font-size:2rem}}h3{font-size:calc(1.3rem + .6vw)}@media (min-width:1200px){h3{font-size:1.75rem}}h4{font-size:calc(1.275rem + .3vw)}@media (min-width:1200px){h4{font-size:1.5rem}}h5{font-size:1.25rem}h6{font-size:1rem}p{margin-top:0;margin-bottom:1rem}abbr[data-bs-original-title],abbr[title]{-webkit-text-decoration:underline dotted;text-decoration:underline dotted;cursor:help;-webkit-text-decoration-skip-ink:none;text-decoration-skip-ink:none}address{margin-bottom:1rem;font-style:normal;line-height:inherit}ol,ul{padding-left:2rem}dl,ol,ul{margin-top:0;margin-bottom:1rem}ol ol,ol ul,ul ol,ul ul{margin-bottom:0}dt{font-weight:700}dd{margin-bottom:.5rem;margin-left:0}blockquote{margin:0 0 1rem}b,strong{font-weight:bolder}small{font-size:.875em}mark{padding:.2em;background-color:#fcf8e3}sub,sup{position:relative;font-size:.75em;line-height:0;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}a{color:#0d6efd;text-decoration:underline}a:hover{color:#0a58ca}a:not([href]):not([class]),a:not([href]):not([class]):hover{color:inherit;text-decoration:none}code,kbd,pre,samp{font-family:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;font-size:1em;direction:ltr;unicode-bidi:bidi-override}pre{display:block;margin-top:0;margin-bottom:1rem;overflow:auto;font-size:.875em}pre code{font-size:inherit;color:inherit;word-break:normal}code{font-size:.875em;color:#d63384;word-wrap:break-word}a>code{color:inherit}kbd{padding:.2rem .4rem;font-size:.875em;color:#fff;background-color:#212529;border-radius:.2rem}kbd kbd{padding:0;font-size:1em;font-weight:700}figure{margin:0 0 1rem}img,svg{vertical-align:middle}table{caption-side:bottom;border-collapse:collapse}caption{padding-top:.5rem;padding-bottom:.5rem;color:#6c757d;text-align:left}th{text-align:inherit;text-align:-webkit-match-parent}tbody,td,tfoot,th,thead,tr{border-color:inherit;border-style:solid;border-width:0}label{display:inline-block}button{border-radius:0}button:focus:not(:focus-visible){outline:0}button,input,optgroup,select,textarea{margin:0;font-family:inherit;font-size:inherit;line-height:inherit}button,select{text-transform:none}[role=button]{cursor:pointer}select{word-wrap:normal}select:disabled{opacity:1}[list]::-webkit-calendar-picker-indicator{display:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button}[type=button]:not(:disabled),[type=reset]:not(:disabled),[type=submit]:not(:disabled),button:not(:disabled){cursor:pointer}::-moz-focus-inner{padding:0;border-style:none}textarea{resize:vertical}fieldset{min-width:0;padding:0;margin:0;border:0}legend{float:left;width:100%;padding:0;margin-bottom:.5rem;font-size:calc(1.275rem + .3vw);line-height:inherit}@media (min-width:1200px){legend{font-size:1.5rem}}legend+*{clear:left}::-webkit-datetime-edit-day-field,::-webkit-datetime-edit-fields-wrapper,::-webkit-datetime-edit-hour-field,::-webkit-datetime-edit-minute,::-webkit-datetime-edit-month-field,::-webkit-datetime-edit-text,::-webkit-datetime-edit-year-field{padding:0}::-webkit-inner-spin-button{height:auto}[type=search]{outline-offset:-2px;-webkit-appearance:textfield}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-color-swatch-wrapper{padding:0}::file-selector-button{font:inherit}::-webkit-file-upload-button{font:inherit;-webkit-appearance:button}output{display:inline-block}iframe{border:0}summary{display:list-item;cursor:pointer}progress{vertical-align:baseline}[hidden]{display:none!important}</style>
+    <style>/*! syntax-highlighting.css */pre{line-height:125%;}span.linenos{color:inherit; background-color:transparent; padding-left:5px; padding-right:20px;}.pdoc-code .hll{background-color:#ffffcc}.pdoc-code{background:#f8f8f8;}.pdoc-code .c{color:#3D7B7B; font-style:italic}.pdoc-code .err{border:1px solid #FF0000}.pdoc-code .k{color:#008000; font-weight:bold}.pdoc-code .o{color:#666666}.pdoc-code .ch{color:#3D7B7B; font-style:italic}.pdoc-code .cm{color:#3D7B7B; font-style:italic}.pdoc-code .cp{color:#9C6500}.pdoc-code .cpf{color:#3D7B7B; font-style:italic}.pdoc-code .c1{color:#3D7B7B; font-style:italic}.pdoc-code .cs{color:#3D7B7B; font-style:italic}.pdoc-code .gd{color:#A00000}.pdoc-code .ge{font-style:italic}.pdoc-code .gr{color:#E40000}.pdoc-code .gh{color:#000080; font-weight:bold}.pdoc-code .gi{color:#008400}.pdoc-code .go{color:#717171}.pdoc-code .gp{color:#000080; font-weight:bold}.pdoc-code .gs{font-weight:bold}.pdoc-code .gu{color:#800080; font-weight:bold}.pdoc-code .gt{color:#0044DD}.pdoc-code .kc{color:#008000; font-weight:bold}.pdoc-code .kd{color:#008000; font-weight:bold}.pdoc-code .kn{color:#008000; font-weight:bold}.pdoc-code .kp{color:#008000}.pdoc-code .kr{color:#008000; font-weight:bold}.pdoc-code .kt{color:#B00040}.pdoc-code .m{color:#666666}.pdoc-code .s{color:#BA2121}.pdoc-code .na{color:#687822}.pdoc-code .nb{color:#008000}.pdoc-code .nc{color:#0000FF; font-weight:bold}.pdoc-code .no{color:#880000}.pdoc-code .nd{color:#AA22FF}.pdoc-code .ni{color:#717171; font-weight:bold}.pdoc-code .ne{color:#CB3F38; font-weight:bold}.pdoc-code .nf{color:#0000FF}.pdoc-code .nl{color:#767600}.pdoc-code .nn{color:#0000FF; font-weight:bold}.pdoc-code .nt{color:#008000; font-weight:bold}.pdoc-code .nv{color:#19177C}.pdoc-code .ow{color:#AA22FF; font-weight:bold}.pdoc-code .w{color:#bbbbbb}.pdoc-code .mb{color:#666666}.pdoc-code .mf{color:#666666}.pdoc-code .mh{color:#666666}.pdoc-code .mi{color:#666666}.pdoc-code .mo{color:#666666}.pdoc-code .sa{color:#BA2121}.pdoc-code .sb{color:#BA2121}.pdoc-code .sc{color:#BA2121}.pdoc-code .dl{color:#BA2121}.pdoc-code .sd{color:#BA2121; font-style:italic}.pdoc-code .s2{color:#BA2121}.pdoc-code .se{color:#AA5D1F; font-weight:bold}.pdoc-code .sh{color:#BA2121}.pdoc-code .si{color:#A45A77; font-weight:bold}.pdoc-code .sx{color:#008000}.pdoc-code .sr{color:#A45A77}.pdoc-code .s1{color:#BA2121}.pdoc-code .ss{color:#19177C}.pdoc-code .bp{color:#008000}.pdoc-code .fm{color:#0000FF}.pdoc-code .vc{color:#19177C}.pdoc-code .vg{color:#19177C}.pdoc-code .vi{color:#19177C}.pdoc-code .vm{color:#19177C}.pdoc-code .il{color:#666666}</style>
+    <style>/*! theme.css */:root{--pdoc-background:#fff;}.pdoc{--text:#212529;--muted:#6c757d;--link:#3660a5;--link-hover:#1659c5;--code:#f8f8f8;--active:#fff598;--accent:#eee;--accent2:#c1c1c1;--nav-hover:rgba(255, 255, 255, 0.5);--name:#0066BB;--def:#008800;--annotation:#007020;}</style>
+    <style>/*! layout.css */html, body{width:100%;height:100%;}html, main{scroll-behavior:smooth;}body{background-color:var(--pdoc-background);}@media (max-width:769px){#navtoggle{cursor:pointer;position:absolute;width:50px;height:40px;top:1rem;right:1rem;border-color:var(--text);color:var(--text);display:flex;opacity:0.8;}#navtoggle:hover{opacity:1;}#togglestate + div{display:none;}#togglestate:checked + div{display:inherit;}main, header{padding:2rem 3vw;}header + main{margin-top:-3rem;}.git-button{display:none !important;}nav input[type="search"]{max-width:77%;}nav input[type="search"]:first-child{margin-top:-6px;}nav input[type="search"]:valid ~ *{display:none !important;}}@media (min-width:770px){:root{--sidebar-width:clamp(12.5rem, 28vw, 22rem);}nav{position:fixed;overflow:auto;height:100vh;width:var(--sidebar-width);}main, header{padding:3rem 2rem 3rem calc(var(--sidebar-width) + 3rem);width:calc(54rem + var(--sidebar-width));max-width:100%;}header + main{margin-top:-4rem;}#navtoggle{display:none;}}#togglestate{position:absolute;height:0;opacity:0;}nav.pdoc{--pad:clamp(0.5rem, 2vw, 1.75rem);--indent:1.5rem;background-color:var(--accent);border-right:1px solid var(--accent2);box-shadow:0 0 20px rgba(50, 50, 50, .2) inset;padding:0 0 0 var(--pad);overflow-wrap:anywhere;scrollbar-width:thin; scrollbar-color:var(--accent2) transparent }nav.pdoc::-webkit-scrollbar{width:.4rem; }nav.pdoc::-webkit-scrollbar-thumb{background-color:var(--accent2); }nav.pdoc > div{padding:var(--pad) 0;}nav.pdoc .module-list-button{display:inline-flex;align-items:center;color:var(--text);border-color:var(--muted);margin-bottom:1rem;}nav.pdoc .module-list-button:hover{border-color:var(--text);}nav.pdoc input[type=search]{display:block;outline-offset:0;width:calc(100% - var(--pad));}nav.pdoc .logo{max-width:calc(100% - var(--pad));max-height:35vh;display:block;margin:0 auto 1rem;transform:translate(calc(-.5 * var(--pad)), 0);}nav.pdoc ul{list-style:none;padding-left:0;}nav.pdoc > div > ul{margin-left:calc(0px - var(--pad));}nav.pdoc li a{padding:.2rem 0 .2rem calc(var(--pad) + var(--indent));}nav.pdoc > div > ul > li > a{padding-left:var(--pad);}nav.pdoc li{transition:all 100ms;}nav.pdoc li:hover{background-color:var(--nav-hover);}nav.pdoc a, nav.pdoc a:hover{color:var(--text);}nav.pdoc a{display:block;}nav.pdoc > h2:first-of-type{margin-top:1.5rem;}nav.pdoc .class:before{content:"class ";color:var(--muted);}nav.pdoc .function:after{content:"()";color:var(--muted);}nav.pdoc footer:before{content:"";display:block;width:calc(100% - var(--pad));border-top:solid var(--accent2) 1px;margin-top:1.5rem;padding-top:.5rem;}nav.pdoc footer{font-size:small;}</style>
+    <style>/*! content.css */.pdoc{color:var(--text);box-sizing:border-box;line-height:1.5;background:none;}.pdoc .pdoc-button{display:inline-block;border:solid black 1px;border-radius:2px;font-size:.75rem;padding:calc(0.5em - 1px) 1em;transition:100ms all;}.pdoc .pdoc-alert{padding:1rem 1rem 1rem calc(1.5rem + 24px);border:1px solid transparent;border-radius:.25rem;background-repeat:no-repeat;background-position:1rem center;margin-bottom:1rem;}.pdoc .pdoc-alert > *:last-child{margin-bottom:0;}.pdoc .pdoc-alert-note {color:#084298;background-color:#cfe2ff;border-color:#b6d4fe;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23084298%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8%2016A8%208%200%201%200%208%200a8%208%200%200%200%200%2016zm.93-9.412-1%204.705c-.07.34.029.533.304.533.194%200%20.487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703%200-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381%202.29-.287zM8%205.5a1%201%200%201%201%200-2%201%201%200%200%201%200%202z%22/%3E%3C/svg%3E");}.pdoc .pdoc-alert-warning{color:#664d03;background-color:#fff3cd;border-color:#ffecb5;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23664d03%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M8.982%201.566a1.13%201.13%200%200%200-1.96%200L.165%2013.233c-.457.778.091%201.767.98%201.767h13.713c.889%200%201.438-.99.98-1.767L8.982%201.566zM8%205c.535%200%20.954.462.9.995l-.35%203.507a.552.552%200%200%201-1.1%200L7.1%205.995A.905.905%200%200%201%208%205zm.002%206a1%201%200%201%201%200%202%201%201%200%200%201%200-2z%22/%3E%3C/svg%3E");}.pdoc .pdoc-alert-danger{color:#842029;background-color:#f8d7da;border-color:#f5c2c7;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23842029%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20d%3D%22M5.52.359A.5.5%200%200%201%206%200h4a.5.5%200%200%201%20.474.658L8.694%206H12.5a.5.5%200%200%201%20.395.807l-7%209a.5.5%200%200%201-.873-.454L6.823%209.5H3.5a.5.5%200%200%201-.48-.641l2.5-8.5z%22/%3E%3C/svg%3E");}.pdoc .visually-hidden{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0, 0, 0, 0) !important;white-space:nowrap !important;border:0 !important;}.pdoc h1, .pdoc h2, .pdoc h3{font-weight:300;margin:.3em 0;padding:.2em 0;}.pdoc > section:not(.module-info) h1{font-size:1.5rem;font-weight:500;}.pdoc > section:not(.module-info) h2{font-size:1.4rem;font-weight:500;}.pdoc > section:not(.module-info) h3{font-size:1.3rem;font-weight:500;}.pdoc > section:not(.module-info) h4{font-size:1.2rem;}.pdoc > section:not(.module-info) h5{font-size:1.1rem;}.pdoc a{text-decoration:none;color:var(--link);}.pdoc a:hover{color:var(--link-hover);}.pdoc blockquote{margin-left:2rem;}.pdoc pre{border-top:1px solid var(--accent2);border-bottom:1px solid var(--accent2);margin-top:0;margin-bottom:1em;padding:.5rem 0 .5rem .5rem;overflow-x:auto;background-color:var(--code);}.pdoc code{color:var(--text);padding:.2em .4em;margin:0;font-size:85%;background-color:var(--code);border-radius:6px;}.pdoc a > code{color:inherit;}.pdoc pre > code{display:inline-block;font-size:inherit;background:none;border:none;padding:0;}.pdoc > section:not(.module-info){margin-bottom:1.5rem;}.pdoc .modulename{margin-top:0;font-weight:bold;}.pdoc .modulename a{color:var(--link);transition:100ms all;}.pdoc .git-button{float:right;border:solid var(--link) 1px;}.pdoc .git-button:hover{background-color:var(--link);color:var(--pdoc-background);}.view-source-toggle-state,.view-source-toggle-state ~ .pdoc-code{display:none;}.view-source-toggle-state:checked ~ .pdoc-code{display:block;}.view-source-button{display:inline-block;float:right;font-size:.75rem;line-height:1.5rem;color:var(--muted);padding:0 .4rem 0 1.3rem;cursor:pointer;text-indent:-2px;}.view-source-button > span{visibility:hidden;}.module-info .view-source-button{float:none;display:flex;justify-content:flex-end;margin:-1.2rem .4rem -.2rem 0;}.view-source-button::before{position:absolute;content:"View Source";display:list-item;list-style-type:disclosure-closed;}.view-source-toggle-state:checked ~ .attr .view-source-button::before,.view-source-toggle-state:checked ~ .view-source-button::before{list-style-type:disclosure-open;}.pdoc .docstring{margin-bottom:1.5rem;}.pdoc section:not(.module-info) .docstring{margin-left:clamp(0rem, 5vw - 2rem, 1rem);}.pdoc .docstring .pdoc-code{margin-left:1em;margin-right:1em;}.pdoc h1:target,.pdoc h2:target,.pdoc h3:target,.pdoc h4:target,.pdoc h5:target,.pdoc h6:target,.pdoc .pdoc-code > pre > span:target{background-color:var(--active);box-shadow:-1rem 0 0 0 var(--active);}.pdoc .pdoc-code > pre > span:target{display:block;}.pdoc div:target > .attr,.pdoc section:target > .attr,.pdoc dd:target > a{background-color:var(--active);}.pdoc *{scroll-margin:2rem;}.pdoc .pdoc-code .linenos{user-select:none;}.pdoc .attr:hover{filter:contrast(0.95);}.pdoc section, .pdoc .classattr{position:relative;}.pdoc .headerlink{--width:clamp(1rem, 3vw, 2rem);position:absolute;top:0;left:calc(0rem - var(--width));transition:all 100ms ease-in-out;opacity:0;}.pdoc .headerlink::before{content:"#";display:block;text-align:center;width:var(--width);height:2.3rem;line-height:2.3rem;font-size:1.5rem;}.pdoc .attr:hover ~ .headerlink,.pdoc *:target > .headerlink,.pdoc .headerlink:hover{opacity:1;}.pdoc .attr{display:block;margin:.5rem 0 .5rem;padding:.4rem .4rem .4rem 1rem;background-color:var(--accent);overflow-x:auto;}.pdoc .classattr{margin-left:2rem;}.pdoc .name{color:var(--name);font-weight:bold;}.pdoc .def{color:var(--def);font-weight:bold;}.pdoc .signature{background-color:transparent;}.pdoc .param, .pdoc .return-annotation{white-space:pre;}.pdoc .signature.multiline .param{display:block;}.pdoc .signature.condensed .param{display:inline-block;}.pdoc .annotation{color:var(--annotation);}.pdoc .inherited{margin-left:2rem;}.pdoc .inherited dt{font-weight:700;}.pdoc .inherited dt, .pdoc .inherited dd{display:inline;margin-left:0;margin-bottom:.5rem;}.pdoc .inherited dd:not(:last-child):after{content:", ";}.pdoc .inherited .class:before{content:"class ";}.pdoc .inherited .function a:after{content:"()";}.pdoc .search-result .docstring{overflow:auto;max-height:25vh;}.pdoc .search-result.focused > .attr{background-color:var(--active);}.pdoc .attribution{margin-top:2rem;display:block;opacity:0.5;transition:all 200ms;filter:grayscale(100%);}.pdoc .attribution:hover{opacity:1;filter:grayscale(0%);}.pdoc .attribution img{margin-left:5px;height:35px;vertical-align:middle;width:70px;transition:all 200ms;}.pdoc table{display:block;width:max-content;max-width:100%;overflow:auto;margin-bottom:1rem;}.pdoc table th{font-weight:600;}.pdoc table th, .pdoc table td{padding:6px 13px;border:1px solid var(--accent2);}</style>
+    <style>/*! custom.css */</style>
+    <style> .pdoc{--kw:#1659c5;}nav.pdoc h2{font-size:140%;}nav.pdoc ul.doclist{white-space:nowrap;line-height:110%;margin-left:0.5em;font-weight:bold;}nav.pdoc ul.memberlist{white-space:nowrap;line-height:110%;}nav.pdoc .module{font-weight:bold;}nav.pdoc a{display:inline !important;}nav.pdoc li span.class::before{content:"" !important;}nav.pdoc .class a::before{content:"class ";color:var(--kw);}nav.pdoc .enum a::before{content:"enum ";color:var(--kw);}nav.pdoc li > .spacer::before{content:"";display:inline-block;width:0.5em;}nav.pdoc li.closable > .spacer.closebutton::before{content:"-";cursor:pointer;}nav.pdoc li.closable[closed] > .spacer.closebutton::before{content:"+";cursor:pointer;}nav.pdoc li.closable[closed] > ul{display:none;}nav.pdoc .allbuttons{margin-top:1em;margin-left:0.4em;}nav.pdoc .allbuttons button{background-color:transparent;border:none;}nav.pdoc .allbuttons button:hover{background-color:var(--nav-hover);}</style>
+    <style> .pdoc{--code:#fff;}@media (min-width:770px){.docstring{margin-left:1rem;}.pdoc pre{margin-left:1.5rem;margin-right:1.5rem;}.attr.class > .name{font-size:125%;}}main.pdoc > section:first-of-type > .docstring{margin-left:0;border-bottom:2px solid var(--accent2);}.pdoc pre{overflow-wrap:normal;}</style></head>
+<body>
+    <nav class="pdoc">
+        <label id="navtoggle" for="togglestate" class="pdoc-button"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'><path stroke-linecap='round' stroke="currentColor" stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg></label>
+        <input id="togglestate" type="checkbox" aria-hidden="true" tabindex="-1">
+        <div>        <div>
+<a href="https://projectdrawdown.github.io/solutions/">                <img src="https://projectdrawdown.github.io/solutions/images/tree.svg" class="logo" alt="project logo"/>
+</a>
+        <h2> Overview Documentation </h2>
+        <ul class="doclist">
+                <li><a href="        ../index.html
+">Top</a></li>
+                <li><a href="        ../drawdown_solutions.html
+">Main Readme</a></li>
+                <li><a href="        ../concepts.html
+">Concepts</a></li>
+                <li><a href="        ../code_top.html
+">Code</a></li>
+                <li><a href="        ../tools.html
+">Tools Readme</a></li>
+        </ul>
+
+        <h2> API Documentation </h2>
+                <input type="search" placeholder="Search API..." role="searchbox" aria-label="search"
+                        pattern=".+" required>
+
+        <div class='allbuttons'>
+            <button onclick="closeAll()" aria-label="show sublists">((-))</button>
+            <button onclick="openAll()" aria-label="hide sublists">((+))</button>
+        </div>
+        <ul class="memberlist">
+                <li class="closable" id="i1">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="adoptiondata.html">model.adoptiondata</a></span>
+            <ul>
+                    <li class="" id="i2">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="adoptiondata.html#make_adoption_config">make_adoption_config</a></span>
+        </li>
+
+                    <li class="closable" id="i3">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="adoptiondata.html#AdoptionData">AdoptionData</a></span>
+                <ul>
+                        <li class="" id="i4">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="adoptiondata.html#AdoptionData.adoption_sources">adoption_sources</a></span>
+            </li>
+
+                        <li class="" id="i5">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="adoptiondata.html#AdoptionData.adoption_data_per_region">adoption_data_per_region</a></span>
+            </li>
+
+                        <li class="" id="i6">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="adoptiondata.html#AdoptionData.adoption_min_max_sd">adoption_min_max_sd</a></span>
+            </li>
+
+                        <li class="" id="i7">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="adoptiondata.html#AdoptionData.adoption_low_med_high">adoption_low_med_high</a></span>
+            </li>
+
+                        <li class="" id="i8">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="adoptiondata.html#AdoptionData.adoption_trend">adoption_trend</a></span>
+            </li>
+
+                        <li class="" id="i9">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="adoptiondata.html#AdoptionData.adoption_is_single_source">adoption_is_single_source</a></span>
+            </li>
+
+                        <li class="" id="i10">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="adoptiondata.html#AdoptionData.adoption_trend_per_region">adoption_trend_per_region</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i11">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="advanced_controls.html">model.advanced_controls</a></span>
+            <ul>
+                    <li class="" id="i12">
+                <span class="spacer"></span>
+                <span class="navitem enum"><a href="advanced_controls.html#SOLUTION_CATEGORY">SOLUTION_CATEGORY</a></span>
+        </li>
+
+                    <li class="closable" id="i13">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="advanced_controls.html#AdvancedControls">AdvancedControls</a></span>
+                <ul>
+                        <li class="" id="i14">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.solution_category">solution_category</a></span>
+            </li>
+
+                        <li class="" id="i15">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.vmas">vmas</a></span>
+            </li>
+
+                        <li class="" id="i16">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.vma_values">vma_values</a></span>
+            </li>
+
+                        <li class="" id="i17">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.vma_statistics">vma_statistics</a></span>
+            </li>
+
+                        <li class="" id="i18">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.name">name</a></span>
+            </li>
+
+                        <li class="" id="i19">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.description">description</a></span>
+            </li>
+
+                        <li class="" id="i20">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.creation_date">creation_date</a></span>
+            </li>
+
+                        <li class="" id="i21">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.jsfile">jsfile</a></span>
+            </li>
+
+                        <li class="" id="i22">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.pds_2014_cost">pds_2014_cost</a></span>
+            </li>
+
+                        <li class="" id="i23">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.ref_2014_cost">ref_2014_cost</a></span>
+            </li>
+
+                        <li class="" id="i24">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_2014_cost">conv_2014_cost</a></span>
+            </li>
+
+                        <li class="" id="i25">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_first_cost_efficiency_rate">soln_first_cost_efficiency_rate</a></span>
+            </li>
+
+                        <li class="" id="i26">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_first_cost_efficiency_rate">conv_first_cost_efficiency_rate</a></span>
+            </li>
+
+                        <li class="" id="i27">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_first_cost_below_conv">soln_first_cost_below_conv</a></span>
+            </li>
+
+                        <li class="" id="i28">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_energy_efficiency_factor">soln_energy_efficiency_factor</a></span>
+            </li>
+
+                        <li class="" id="i29">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_annual_energy_used">conv_annual_energy_used</a></span>
+            </li>
+
+                        <li class="" id="i30">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_annual_energy_used">soln_annual_energy_used</a></span>
+            </li>
+
+                        <li class="" id="i31">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_fuel_consumed_per_funit">conv_fuel_consumed_per_funit</a></span>
+            </li>
+
+                        <li class="" id="i32">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_fuel_efficiency_factor">soln_fuel_efficiency_factor</a></span>
+            </li>
+
+                        <li class="" id="i33">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_fuel_emissions_factor">conv_fuel_emissions_factor</a></span>
+            </li>
+
+                        <li class="" id="i34">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_fuel_emissions_factor">soln_fuel_emissions_factor</a></span>
+            </li>
+
+                        <li class="" id="i35">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_emissions_per_funit">conv_emissions_per_funit</a></span>
+            </li>
+
+                        <li class="" id="i36">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_emissions_per_funit">soln_emissions_per_funit</a></span>
+            </li>
+
+                        <li class="" id="i37">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.ch4_is_co2eq">ch4_is_co2eq</a></span>
+            </li>
+
+                        <li class="" id="i38">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.n2o_is_co2eq">n2o_is_co2eq</a></span>
+            </li>
+
+                        <li class="" id="i39">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.co2eq_conversion_source">co2eq_conversion_source</a></span>
+            </li>
+
+                        <li class="" id="i40">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.ch4_co2_per_funit">ch4_co2_per_funit</a></span>
+            </li>
+
+                        <li class="" id="i41">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.n2o_co2_per_funit">n2o_co2_per_funit</a></span>
+            </li>
+
+                        <li class="" id="i42">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_indirect_co2_per_iunit">soln_indirect_co2_per_iunit</a></span>
+            </li>
+
+                        <li class="" id="i43">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_indirect_co2_per_unit">conv_indirect_co2_per_unit</a></span>
+            </li>
+
+                        <li class="" id="i44">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_indirect_co2_is_iunits">conv_indirect_co2_is_iunits</a></span>
+            </li>
+
+                        <li class="" id="i45">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_lifetime_capacity">soln_lifetime_capacity</a></span>
+            </li>
+
+                        <li class="" id="i46">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_avg_annual_use">soln_avg_annual_use</a></span>
+            </li>
+
+                        <li class="" id="i47">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_lifetime_capacity">conv_lifetime_capacity</a></span>
+            </li>
+
+                        <li class="" id="i48">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_avg_annual_use">conv_avg_annual_use</a></span>
+            </li>
+
+                        <li class="" id="i49">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.report_start_year">report_start_year</a></span>
+            </li>
+
+                        <li class="" id="i50">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.report_end_year">report_end_year</a></span>
+            </li>
+
+                        <li class="" id="i51">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_var_oper_cost_per_funit">soln_var_oper_cost_per_funit</a></span>
+            </li>
+
+                        <li class="" id="i52">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_fixed_oper_cost_per_iunit">soln_fixed_oper_cost_per_iunit</a></span>
+            </li>
+
+                        <li class="" id="i53">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_fuel_cost_per_funit">soln_fuel_cost_per_funit</a></span>
+            </li>
+
+                        <li class="" id="i54">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_var_oper_cost_per_funit">conv_var_oper_cost_per_funit</a></span>
+            </li>
+
+                        <li class="" id="i55">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_fixed_oper_cost_per_iunit">conv_fixed_oper_cost_per_iunit</a></span>
+            </li>
+
+                        <li class="" id="i56">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_fuel_cost_per_funit">conv_fuel_cost_per_funit</a></span>
+            </li>
+
+                        <li class="" id="i57">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.npv_discount_rate">npv_discount_rate</a></span>
+            </li>
+
+                        <li class="" id="i58">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.emissions_use_co2eq">emissions_use_co2eq</a></span>
+            </li>
+
+                        <li class="" id="i59">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.emissions_grid_source">emissions_grid_source</a></span>
+            </li>
+
+                        <li class="" id="i60">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.emissions_grid_range">emissions_grid_range</a></span>
+            </li>
+
+                        <li class="" id="i61">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_ref_adoption_regional_data">soln_ref_adoption_regional_data</a></span>
+            </li>
+
+                        <li class="" id="i62">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_pds_adoption_regional_data">soln_pds_adoption_regional_data</a></span>
+            </li>
+
+                        <li class="" id="i63">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_ref_adoption_basis">soln_ref_adoption_basis</a></span>
+            </li>
+
+                        <li class="" id="i64">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_ref_adoption_custom_name">soln_ref_adoption_custom_name</a></span>
+            </li>
+
+                        <li class="" id="i65">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_pds_adoption_basis">soln_pds_adoption_basis</a></span>
+            </li>
+
+                        <li class="" id="i66">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_pds_adoption_custom_name">soln_pds_adoption_custom_name</a></span>
+            </li>
+
+                        <li class="" id="i67">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_pds_adoption_scenarios_included">soln_pds_adoption_scenarios_included</a></span>
+            </li>
+
+                        <li class="" id="i68">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_pds_adoption_custom_high_sd_mult">soln_pds_adoption_custom_high_sd_mult</a></span>
+            </li>
+
+                        <li class="" id="i69">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_pds_adoption_custom_low_sd_mult">soln_pds_adoption_custom_low_sd_mult</a></span>
+            </li>
+
+                        <li class="" id="i70">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_pds_adoption_prognostication_source">soln_pds_adoption_prognostication_source</a></span>
+            </li>
+
+                        <li class="" id="i71">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_pds_adoption_prognostication_trend">soln_pds_adoption_prognostication_trend</a></span>
+            </li>
+
+                        <li class="" id="i72">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_pds_adoption_prognostication_growth">soln_pds_adoption_prognostication_growth</a></span>
+            </li>
+
+                        <li class="" id="i73">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.pds_source_post_2014">pds_source_post_2014</a></span>
+            </li>
+
+                        <li class="" id="i74">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.ref_source_post_2014">ref_source_post_2014</a></span>
+            </li>
+
+                        <li class="" id="i75">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.source_until_2014">source_until_2014</a></span>
+            </li>
+
+                        <li class="" id="i76">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.ref_adoption_use_pds_years">ref_adoption_use_pds_years</a></span>
+            </li>
+
+                        <li class="" id="i77">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.pds_adoption_use_ref_years">pds_adoption_use_ref_years</a></span>
+            </li>
+
+                        <li class="" id="i78">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.ref_base_adoption">ref_base_adoption</a></span>
+            </li>
+
+                        <li class="" id="i79">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.pds_adoption_final_percentage">pds_adoption_final_percentage</a></span>
+            </li>
+
+                        <li class="" id="i80">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.pds_adoption_s_curve_innovation">pds_adoption_s_curve_innovation</a></span>
+            </li>
+
+                        <li class="" id="i81">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.pds_adoption_s_curve_imitation">pds_adoption_s_curve_imitation</a></span>
+            </li>
+
+                        <li class="" id="i82">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.tco2eq_reduced_per_land_unit">tco2eq_reduced_per_land_unit</a></span>
+            </li>
+
+                        <li class="" id="i83">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.tco2eq_rplu_rate">tco2eq_rplu_rate</a></span>
+            </li>
+
+                        <li class="" id="i84">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.tco2_rplu_rate">tco2_rplu_rate</a></span>
+            </li>
+
+                        <li class="" id="i85">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.tn2o_co2_rplu_rate">tn2o_co2_rplu_rate</a></span>
+            </li>
+
+                        <li class="" id="i86">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.tch4_co2_rplu_rate">tch4_co2_rplu_rate</a></span>
+            </li>
+
+                        <li class="" id="i87">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.tco2_reduced_per_land_unit">tco2_reduced_per_land_unit</a></span>
+            </li>
+
+                        <li class="" id="i88">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.tn2o_co2_reduced_per_land_unit">tn2o_co2_reduced_per_land_unit</a></span>
+            </li>
+
+                        <li class="" id="i89">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.tch4_co2_reduced_per_land_unit">tch4_co2_reduced_per_land_unit</a></span>
+            </li>
+
+                        <li class="" id="i90">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.emissions_use_agg_co2eq">emissions_use_agg_co2eq</a></span>
+            </li>
+
+                        <li class="" id="i91">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.seq_rate_global">seq_rate_global</a></span>
+            </li>
+
+                        <li class="" id="i92">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.seq_rate_per_regime">seq_rate_per_regime</a></span>
+            </li>
+
+                        <li class="" id="i93">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.degradation_rate">degradation_rate</a></span>
+            </li>
+
+                        <li class="" id="i94">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.disturbance_rate">disturbance_rate</a></span>
+            </li>
+
+                        <li class="" id="i95">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.global_multi_for_regrowth">global_multi_for_regrowth</a></span>
+            </li>
+
+                        <li class="" id="i96">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_expected_lifetime">soln_expected_lifetime</a></span>
+            </li>
+
+                        <li class="" id="i97">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_expected_lifetime">conv_expected_lifetime</a></span>
+            </li>
+
+                        <li class="" id="i98">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.yield_from_conv_practice">yield_from_conv_practice</a></span>
+            </li>
+
+                        <li class="" id="i99">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.yield_gain_from_conv_to_soln">yield_gain_from_conv_to_soln</a></span>
+            </li>
+
+                        <li class="" id="i100">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.use_custom_tla">use_custom_tla</a></span>
+            </li>
+
+                        <li class="" id="i101">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.custom_tla_fixed_value">custom_tla_fixed_value</a></span>
+            </li>
+
+                        <li class="" id="i102">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.harvest_frequency">harvest_frequency</a></span>
+            </li>
+
+                        <li class="" id="i103">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.carbon_not_emitted_after_harvesting">carbon_not_emitted_after_harvesting</a></span>
+            </li>
+
+                        <li class="" id="i104">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.avoided_deforest_with_intensification">avoided_deforest_with_intensification</a></span>
+            </li>
+
+                        <li class="" id="i105">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.delay_protection_1yr">delay_protection_1yr</a></span>
+            </li>
+
+                        <li class="" id="i106">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.delay_regrowth_1yr">delay_regrowth_1yr</a></span>
+            </li>
+
+                        <li class="" id="i107">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.include_unprotected_land_in_regrowth_calcs">include_unprotected_land_in_regrowth_calcs</a></span>
+            </li>
+
+                        <li class="" id="i108">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.land_annual_emissons_lifetime">land_annual_emissons_lifetime</a></span>
+            </li>
+
+                        <li class="" id="i109">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.tC_storage_in_protected_land_type">tC_storage_in_protected_land_type</a></span>
+            </li>
+
+                        <li class="" id="i110">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.ref_tam_custom_source">ref_tam_custom_source</a></span>
+            </li>
+
+                        <li class="" id="i111">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.pds_tam_custom_source">pds_tam_custom_source</a></span>
+            </li>
+
+                        <li class="" id="i112">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.ref_adoption_custom_source">ref_adoption_custom_source</a></span>
+            </li>
+
+                        <li class="" id="i113">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.pds_adoption_custom_source">pds_adoption_custom_source</a></span>
+            </li>
+
+                        <li class="" id="i114">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="advanced_controls.html#AdvancedControls.as_dict">as_dict</a></span>
+            </li>
+
+                        <li class="" id="i115">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="advanced_controls.html#AdvancedControls.explain_parameter">explain_parameter</a></span>
+            </li>
+
+                        <li class="" id="i116">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.yield_coeff">yield_coeff</a></span>
+            </li>
+
+                        <li class="" id="i117">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.has_var_costs">has_var_costs</a></span>
+            </li>
+
+                        <li class="" id="i118">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_first_cost_learning_rate">soln_first_cost_learning_rate</a></span>
+            </li>
+
+                        <li class="" id="i119">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_first_cost_learning_rate">conv_first_cost_learning_rate</a></span>
+            </li>
+
+                        <li class="" id="i120">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_fuel_learning_rate">soln_fuel_learning_rate</a></span>
+            </li>
+
+                        <li class="" id="i121">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_lifetime_replacement">soln_lifetime_replacement</a></span>
+            </li>
+
+                        <li class="" id="i122">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.soln_lifetime_replacement_rounded">soln_lifetime_replacement_rounded</a></span>
+            </li>
+
+                        <li class="" id="i123">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_lifetime_replacement">conv_lifetime_replacement</a></span>
+            </li>
+
+                        <li class="" id="i124">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="advanced_controls.html#AdvancedControls.conv_lifetime_replacement_rounded">conv_lifetime_replacement_rounded</a></span>
+            </li>
+
+                        <li class="" id="i125">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="advanced_controls.html#AdvancedControls.lookup_vma">lookup_vma</a></span>
+            </li>
+
+                        <li class="" id="i126">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="advanced_controls.html#AdvancedControls.with_modifications">with_modifications</a></span>
+            </li>
+
+                        <li class="" id="i127">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="advanced_controls.html#AdvancedControls.write_to_json_file">write_to_json_file</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+                    <li class="" id="i128">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="advanced_controls.html#fill_missing_regions_from_world">fill_missing_regions_from_world</a></span>
+        </li>
+
+                    <li class="" id="i129">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="advanced_controls.html#load_scenarios_from_json">load_scenarios_from_json</a></span>
+        </li>
+
+                    <li class="" id="i130">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="advanced_controls.html#ac_from_dict">ac_from_dict</a></span>
+        </li>
+
+                    <li class="" id="i131">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="advanced_controls.html#get_vma_for_param">get_vma_for_param</a></span>
+        </li>
+
+                    <li class="" id="i132">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="advanced_controls.html#get_param_for_vma_name">get_param_for_vma_name</a></span>
+        </li>
+
+                    <li class="" id="i133">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="advanced_controls.html#mangle_name_to_filename">mangle_name_to_filename</a></span>
+        </li>
+
+                    <li class="" id="i134">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="advanced_controls.html#solution_category_to_string">solution_category_to_string</a></span>
+        </li>
+
+                    <li class="" id="i135">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="advanced_controls.html#string_to_solution_category">string_to_solution_category</a></span>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i136">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="aez.html">model.aez</a></span>
+            <ul>
+                    <li class="closable" id="i137">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="aez.html#AEZ">AEZ</a></span>
+                <ul>
+                        <li class="" id="i138">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="aez.html#AEZ.world_land_alloc_dict">world_land_alloc_dict</a></span>
+            </li>
+
+                        <li class="" id="i139">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="aez.html#AEZ.soln_land_dist_df">soln_land_dist_df</a></span>
+            </li>
+
+                        <li class="" id="i140">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="aez.html#AEZ.soln_land_alloc_df">soln_land_alloc_df</a></span>
+            </li>
+
+                        <li class="" id="i141">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="aez.html#AEZ.applicable_zones">applicable_zones</a></span>
+            </li>
+
+                        <li class="" id="i142">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="aez.html#AEZ.get_land_distribution">get_land_distribution</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i143">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="ch4calcs.html">model.ch4calcs</a></span>
+            <ul>
+                    <li class="closable" id="i144">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="ch4calcs.html#CH4Calcs">CH4Calcs</a></span>
+                <ul>
+                        <li class="" id="i145">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ch4calcs.html#CH4Calcs.ch4_co2eq_tons_reduced">ch4_co2eq_tons_reduced</a></span>
+            </li>
+
+                        <li class="" id="i146">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ch4calcs.html#CH4Calcs.ch4_tons_reduced">ch4_tons_reduced</a></span>
+            </li>
+
+                        <li class="" id="i147">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ch4calcs.html#CH4Calcs.avoided_direct_emissions_ch4_co2eq_land">avoided_direct_emissions_ch4_co2eq_land</a></span>
+            </li>
+
+                        <li class="" id="i148">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ch4calcs.html#CH4Calcs.avoided_direct_emissions_ch4_land">avoided_direct_emissions_ch4_land</a></span>
+            </li>
+
+                        <li class="" id="i149">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ch4calcs.html#CH4Calcs.ch4_megatons_avoided_or_reduced">ch4_megatons_avoided_or_reduced</a></span>
+            </li>
+
+                        <li class="" id="i150">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ch4calcs.html#CH4Calcs.ch4_ppb_calculator">ch4_ppb_calculator</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i151">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="co2calcs.html">model.co2calcs</a></span>
+            <ul>
+                    <li class="" id="i152">
+                <span class="spacer"></span>
+                <span class="navitem variable"><a href="co2calcs.html#C_TO_CO2EQ">C_TO_CO2EQ</a></span>
+        </li>
+
+                    <li class="closable" id="i153">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="co2calcs.html#NumpyEncoder">NumpyEncoder</a></span>
+                <ul>
+                        <li class="" id="i154">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#NumpyEncoder.default">default</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+                    <li class="" id="i155">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="co2calcs.html#fair_scm_cached">fair_scm_cached</a></span>
+        </li>
+
+                    <li class="" id="i156">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="co2calcs.html#fair_scm">fair_scm</a></span>
+        </li>
+
+                    <li class="" id="i157">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="co2calcs.html#co2_ppm_calculator_cached">co2_ppm_calculator_cached</a></span>
+        </li>
+
+                    <li class="closable" id="i158">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="co2calcs.html#CO2Calcs">CO2Calcs</a></span>
+                <ul>
+                        <li class="" id="i159">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2_mmt_reduced">co2_mmt_reduced</a></span>
+            </li>
+
+                        <li class="" id="i160">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2eq_mmt_reduced">co2eq_mmt_reduced</a></span>
+            </li>
+
+                        <li class="" id="i161">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2only_mmt_reduced">co2only_mmt_reduced</a></span>
+            </li>
+
+                        <li class="" id="i162">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2_sequestered_global">co2_sequestered_global</a></span>
+            </li>
+
+                        <li class="" id="i163">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2_ppm_calculator">co2_ppm_calculator</a></span>
+            </li>
+
+                        <li class="" id="i164">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2eq_ppm_calculator">co2eq_ppm_calculator</a></span>
+            </li>
+
+                        <li class="" id="i165">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2_reduced_grid_emissions">co2_reduced_grid_emissions</a></span>
+            </li>
+
+                        <li class="" id="i166">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2_replaced_grid_emissions">co2_replaced_grid_emissions</a></span>
+            </li>
+
+                        <li class="" id="i167">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2_increased_grid_usage_emissions">co2_increased_grid_usage_emissions</a></span>
+            </li>
+
+                        <li class="" id="i168">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2eq_reduced_grid_emissions">co2eq_reduced_grid_emissions</a></span>
+            </li>
+
+                        <li class="" id="i169">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2eq_replaced_grid_emissions">co2eq_replaced_grid_emissions</a></span>
+            </li>
+
+                        <li class="" id="i170">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2eq_increased_grid_usage_emissions">co2eq_increased_grid_usage_emissions</a></span>
+            </li>
+
+                        <li class="" id="i171">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2eq_direct_reduced_emissions">co2eq_direct_reduced_emissions</a></span>
+            </li>
+
+                        <li class="" id="i172">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2only_direct_reduced_emissions">co2only_direct_reduced_emissions</a></span>
+            </li>
+
+                        <li class="" id="i173">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2eq_reduced_fuel_emissions">co2eq_reduced_fuel_emissions</a></span>
+            </li>
+
+                        <li class="" id="i174">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.co2eq_net_indirect_emissions">co2eq_net_indirect_emissions</a></span>
+            </li>
+
+                        <li class="" id="i175">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.direct_emissions_from_harvesting">direct_emissions_from_harvesting</a></span>
+            </li>
+
+                        <li class="" id="i176">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.FaIR_CFT_baseline_co2eq">FaIR_CFT_baseline_co2eq</a></span>
+            </li>
+
+                        <li class="" id="i177">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.FaIR_CFT_Drawdown_co2eq">FaIR_CFT_Drawdown_co2eq</a></span>
+            </li>
+
+                        <li class="" id="i178">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.FaIR_CFT_baseline_RCP3">FaIR_CFT_baseline_RCP3</a></span>
+            </li>
+
+                        <li class="" id="i179">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.FaIR_CFT_baseline_RCP45">FaIR_CFT_baseline_RCP45</a></span>
+            </li>
+
+                        <li class="" id="i180">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.FaIR_CFT_baseline_RCP6">FaIR_CFT_baseline_RCP6</a></span>
+            </li>
+
+                        <li class="" id="i181">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.FaIR_CFT_baseline_RCP85">FaIR_CFT_baseline_RCP85</a></span>
+            </li>
+
+                        <li class="" id="i182">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.ghg_emissions_reductions_global_annual">ghg_emissions_reductions_global_annual</a></span>
+            </li>
+
+                        <li class="" id="i183">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.ghg_emissions_reductions_global_cumulative">ghg_emissions_reductions_global_cumulative</a></span>
+            </li>
+
+                        <li class="" id="i184">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.FaIR_CFT_Drawdown_RCP3">FaIR_CFT_Drawdown_RCP3</a></span>
+            </li>
+
+                        <li class="" id="i185">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.FaIR_CFT_Drawdown_RCP45">FaIR_CFT_Drawdown_RCP45</a></span>
+            </li>
+
+                        <li class="" id="i186">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.FaIR_CFT_Drawdown_RCP6">FaIR_CFT_Drawdown_RCP6</a></span>
+            </li>
+
+                        <li class="" id="i187">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="co2calcs.html#CO2Calcs.FaIR_CFT_Drawdown_RCP85">FaIR_CFT_Drawdown_RCP85</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+                    <li class="" id="i188">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="co2calcs.html#co2_rf">co2_rf</a></span>
+        </li>
+
+                    <li class="" id="i189">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="co2calcs.html#f">f</a></span>
+        </li>
+
+                    <li class="" id="i190">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="co2calcs.html#ch4_rf">ch4_rf</a></span>
+        </li>
+
+                    <li class="" id="i191">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="co2calcs.html#co2eq_ppm">co2eq_ppm</a></span>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i192">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="conversions.html">model.conversions</a></span>
+            <ul>
+                    <li class="" id="i193">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="conversions.html#mha_to_ha">mha_to_ha</a></span>
+        </li>
+
+                    <li class="" id="i194">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="conversions.html#terawatt_to_kilowatt">terawatt_to_kilowatt</a></span>
+        </li>
+
+                    <li class="closable" id="i195">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="conversions.html#EnergyConversion">EnergyConversion</a></span>
+                <ul>
+                        <li class="" id="i196">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="conversions.html#EnergyConversion.accepted_names">accepted_names</a></span>
+            </li>
+
+                        <li class="" id="i197">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="conversions.html#EnergyConversion.conversion_rates">conversion_rates</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+                    <li class="closable" id="i198">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="conversions.html#VolumeConversion">VolumeConversion</a></span>
+                <ul>
+                        <li class="" id="i199">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="conversions.html#VolumeConversion.accepted_names">accepted_names</a></span>
+            </li>
+
+                        <li class="" id="i200">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="conversions.html#VolumeConversion.conversion_rates">conversion_rates</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+                    <li class="closable" id="i201">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="conversions.html#MassConversion">MassConversion</a></span>
+                <ul>
+                        <li class="" id="i202">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="conversions.html#MassConversion.accepted_names">accepted_names</a></span>
+            </li>
+
+                        <li class="" id="i203">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="conversions.html#MassConversion.conversion_rates">conversion_rates</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+                    <li class="closable" id="i204">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="conversions.html#DistanceConversion">DistanceConversion</a></span>
+                <ul>
+                        <li class="" id="i205">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="conversions.html#DistanceConversion.accepted_names">accepted_names</a></span>
+            </li>
+
+                        <li class="" id="i206">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="conversions.html#DistanceConversion.conversion_rates">conversion_rates</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i207">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="customadoption.html">model.customadoption</a></span>
+            <ul>
+                    <li class="" id="i208">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="customadoption.html#generate_df_template">generate_df_template</a></span>
+        </li>
+
+                    <li class="" id="i209">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="customadoption.html#inflate_csv_data">inflate_csv_data</a></span>
+        </li>
+
+                    <li class="closable" id="i210">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="customadoption.html#CustomAdoption">CustomAdoption</a></span>
+                <ul>
+                        <li class="" id="i211">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="customadoption.html#CustomAdoption.adoption_data_per_region">adoption_data_per_region</a></span>
+            </li>
+
+                        <li class="" id="i212">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="customadoption.html#CustomAdoption.adoption_trend_per_region">adoption_trend_per_region</a></span>
+            </li>
+
+                        <li class="" id="i213">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="customadoption.html#CustomAdoption.report">report</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i214">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="data_handler.html">model.data_handler</a></span>
+            <ul>
+                    <li class="closable" id="i215">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="data_handler.html#DataHandler">DataHandler</a></span>
+                <ul>
+                        <li class="" id="i216">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="data_handler.html#DataHandler.clean_nan">clean_nan</a></span>
+            </li>
+
+                        <li class="" id="i217">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="data_handler.html#DataHandler.to_json">to_json</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="" id="i218">
+            <span class="spacer"></span>
+            <span class="navitem module"><a href="dd.html">model.dd</a></span>
+    </li>
+
+                <li class="closable" id="i219">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="decorators.html">model.decorators</a></span>
+            <ul>
+                    <li class="" id="i220">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="decorators.html#data_func">data_func</a></span>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i221">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="dez.html">model.dez</a></span>
+            <ul>
+                    <li class="closable" id="i222">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="dez.html#DEZ">DEZ</a></span>
+                <ul>
+                        <li class="" id="i223">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="dez.html#DEZ.get_ocean_distribution">get_ocean_distribution</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i224">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="emissionsfactors.html">model.emissionsfactors</a></span>
+            <ul>
+                    <li class="" id="i225">
+                <span class="spacer"></span>
+                <span class="navitem enum"><a href="emissionsfactors.html#CO2EQ_SOURCE">CO2EQ_SOURCE</a></span>
+        </li>
+
+                    <li class="" id="i226">
+                <span class="spacer"></span>
+                <span class="navitem enum"><a href="emissionsfactors.html#GRID_SOURCE">GRID_SOURCE</a></span>
+        </li>
+
+                    <li class="" id="i227">
+                <span class="spacer"></span>
+                <span class="navitem enum"><a href="emissionsfactors.html#GRID_RANGE">GRID_RANGE</a></span>
+        </li>
+
+                    <li class="" id="i228">
+                <span class="spacer"></span>
+                <span class="navitem class"><a href="emissionsfactors.html#CO2Equiv">CO2Equiv</a></span>
+        </li>
+
+                    <li class="" id="i229">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="emissionsfactors.html#string_to_conversion_source">string_to_conversion_source</a></span>
+        </li>
+
+                    <li class="" id="i230">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="emissionsfactors.html#string_to_emissions_grid_source">string_to_emissions_grid_source</a></span>
+        </li>
+
+                    <li class="" id="i231">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="emissionsfactors.html#string_to_emissions_grid_range">string_to_emissions_grid_range</a></span>
+        </li>
+
+                    <li class="closable" id="i232">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="emissionsfactors.html#ElectricityGenOnGrid">ElectricityGenOnGrid</a></span>
+                <ul>
+                        <li class="" id="i233">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="emissionsfactors.html#ElectricityGenOnGrid.conv_ref_grid_CO2eq_per_KWh">conv_ref_grid_CO2eq_per_KWh</a></span>
+            </li>
+
+                        <li class="" id="i234">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="emissionsfactors.html#ElectricityGenOnGrid.conv_ref_grid_CO2_per_KWh">conv_ref_grid_CO2_per_KWh</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+                    <li class="" id="i235">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="emissionsfactors.html#get_grid_emissions_data">get_grid_emissions_data</a></span>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i236">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="excel_math.html">model.excel_math</a></span>
+            <ul>
+                    <li class="" id="i237">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="excel_math.html#round_away">round_away</a></span>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i238">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="fairutil.html">model.fairutil</a></span>
+            <ul>
+                    <li class="" id="i239">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="fairutil.html#baseline_emissions">baseline_emissions</a></span>
+        </li>
+
+                    <li class="" id="i240">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="fairutil.html#fair_scm_kwargs">fair_scm_kwargs</a></span>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i241">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="firstcost.html">model.firstcost</a></span>
+            <ul>
+                    <li class="closable" id="i242">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="firstcost.html#FirstCost">FirstCost</a></span>
+                <ul>
+                        <li class="" id="i243">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="firstcost.html#FirstCost.soln_pds_install_cost_per_iunit">soln_pds_install_cost_per_iunit</a></span>
+            </li>
+
+                        <li class="" id="i244">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="firstcost.html#FirstCost.conv_ref_install_cost_per_iunit">conv_ref_install_cost_per_iunit</a></span>
+            </li>
+
+                        <li class="" id="i245">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="firstcost.html#FirstCost.soln_ref_install_cost_per_iunit">soln_ref_install_cost_per_iunit</a></span>
+            </li>
+
+                        <li class="" id="i246">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="firstcost.html#FirstCost.soln_pds_annual_world_first_cost">soln_pds_annual_world_first_cost</a></span>
+            </li>
+
+                        <li class="" id="i247">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="firstcost.html#FirstCost.soln_ref_annual_world_first_cost">soln_ref_annual_world_first_cost</a></span>
+            </li>
+
+                        <li class="" id="i248">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="firstcost.html#FirstCost.conv_ref_annual_world_first_cost">conv_ref_annual_world_first_cost</a></span>
+            </li>
+
+                        <li class="" id="i249">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="firstcost.html#FirstCost.soln_pds_cumulative_install">soln_pds_cumulative_install</a></span>
+            </li>
+
+                        <li class="" id="i250">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="firstcost.html#FirstCost.ref_cumulative_install">ref_cumulative_install</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i251">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="helpertables.html">model.helpertables</a></span>
+            <ul>
+                    <li class="closable" id="i252">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="helpertables.html#HelperTables">HelperTables</a></span>
+                <ul>
+                        <li class="" id="i253">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="helpertables.html#HelperTables.ref_adoption_type">ref_adoption_type</a></span>
+            </li>
+
+                        <li class="" id="i254">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="helpertables.html#HelperTables.pds_adoption_type">pds_adoption_type</a></span>
+            </li>
+
+                        <li class="" id="i255">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="helpertables.html#HelperTables.soln_ref_funits_adopted">soln_ref_funits_adopted</a></span>
+            </li>
+
+                        <li class="" id="i256">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="helpertables.html#HelperTables.soln_pds_funits_adopted">soln_pds_funits_adopted</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i257">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="integration.html">model.integration</a></span>
+            <ul>
+                    <li class="" id="i258">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="integration.html#integration_alt_file">integration_alt_file</a></span>
+        </li>
+
+                    <li class="" id="i259">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="integration.html#integration_alt_name">integration_alt_name</a></span>
+        </li>
+
+                    <li class="" id="i260">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="integration.html#integration_clean">integration_clean</a></span>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i261">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="interpolation.html">model.interpolation</a></span>
+            <ul>
+                    <li class="" id="i262">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="interpolation.html#linear_trend">linear_trend</a></span>
+        </li>
+
+                    <li class="" id="i263">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="interpolation.html#poly_degree2_trend">poly_degree2_trend</a></span>
+        </li>
+
+                    <li class="" id="i264">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="interpolation.html#poly_degree3_trend">poly_degree3_trend</a></span>
+        </li>
+
+                    <li class="" id="i265">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="interpolation.html#exponential_trend">exponential_trend</a></span>
+        </li>
+
+                    <li class="" id="i266">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="interpolation.html#single_trend">single_trend</a></span>
+        </li>
+
+                    <li class="" id="i267">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="interpolation.html#trend_algorithm">trend_algorithm</a></span>
+        </li>
+
+                    <li class="" id="i268">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="interpolation.html#matching_data_sources">matching_data_sources</a></span>
+        </li>
+
+                    <li class="" id="i269">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="interpolation.html#is_group_name">is_group_name</a></span>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i270">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="metaclass_cache.html">model.metaclass_cache</a></span>
+            <ul>
+                    <li class="closable" id="i271">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="metaclass_cache.html#MetaclassCache">MetaclassCache</a></span>
+                <ul>
+                        <li class="" id="i272">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="metaclass_cache.html#MetaclassCache.cache">cache</a></span>
+            </li>
+
+                        <li class="" id="i273">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="metaclass_cache.html#MetaclassCache.hash_item">hash_item</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i274">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="n2ocalcs.html">model.n2ocalcs</a></span>
+            <ul>
+                    <li class="closable" id="i275">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="n2ocalcs.html#N2OCalcs">N2OCalcs</a></span>
+                <ul>
+                        <li class="" id="i276">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="n2ocalcs.html#N2OCalcs.n2o_tons_reduced">n2o_tons_reduced</a></span>
+            </li>
+
+                        <li class="" id="i277">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="n2ocalcs.html#N2OCalcs.avoided_direct_emissions_n2o_land">avoided_direct_emissions_n2o_land</a></span>
+            </li>
+
+                        <li class="" id="i278">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="n2ocalcs.html#N2OCalcs.n2o_megatons_avoided_or_reduced">n2o_megatons_avoided_or_reduced</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i279">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="new_unit_adoption.html">model.new_unit_adoption</a></span>
+            <ul>
+                    <li class="closable" id="i280">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="new_unit_adoption.html#NewUnitAdoption">NewUnitAdoption</a></span>
+                <ul>
+                        <li class="" id="i281">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="new_unit_adoption.html#NewUnitAdoption.description">description</a></span>
+            </li>
+
+                        <li class="" id="i282">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="new_unit_adoption.html#NewUnitAdoption.disturbance_rate">disturbance_rate</a></span>
+            </li>
+
+                        <li class="" id="i283">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="new_unit_adoption.html#NewUnitAdoption.sequestration_rate_all_ocean">sequestration_rate_all_ocean</a></span>
+            </li>
+
+                        <li class="" id="i284">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_area_units">get_area_units</a></span>
+            </li>
+
+                        <li class="" id="i285">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_skeleton">get_skeleton</a></span>
+            </li>
+
+                        <li class="" id="i286">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_units_adopted">get_units_adopted</a></span>
+            </li>
+
+                        <li class="" id="i287">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.annual_breakout">annual_breakout</a></span>
+            </li>
+
+                        <li class="" id="i288">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_operating_cost">get_operating_cost</a></span>
+            </li>
+
+                        <li class="" id="i289">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_incremental_units_per_period">get_incremental_units_per_period</a></span>
+            </li>
+
+                        <li class="" id="i290">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_install_cost_per_land_unit">get_install_cost_per_land_unit</a></span>
+            </li>
+
+                        <li class="" id="i291">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_annual_world_first_cost">get_annual_world_first_cost</a></span>
+            </li>
+
+                        <li class="" id="i292">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_lifetime_operating_savings">get_lifetime_operating_savings</a></span>
+            </li>
+
+                        <li class="" id="i293">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_lifetime_cashflow_npv">get_lifetime_cashflow_npv</a></span>
+            </li>
+
+                        <li class="" id="i294">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_net_profit_margin">get_net_profit_margin</a></span>
+            </li>
+
+                        <li class="" id="i295">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.set_area_units_linear">set_area_units_linear</a></span>
+            </li>
+
+                        <li class="" id="i296">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.apply_linear_regression">apply_linear_regression</a></span>
+            </li>
+
+                        <li class="" id="i297">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.apply_clip">apply_clip</a></span>
+            </li>
+
+                        <li class="" id="i298">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_cumulative_degraded_unprotected_area">get_cumulative_degraded_unprotected_area</a></span>
+            </li>
+
+                        <li class="" id="i299">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_total_at_risk_area">get_total_at_risk_area</a></span>
+            </li>
+
+                        <li class="" id="i300">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_cumulative_degraded_area_under_protection">get_cumulative_degraded_area_under_protection</a></span>
+            </li>
+
+                        <li class="" id="i301">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_total_undegraded_area">get_total_undegraded_area</a></span>
+            </li>
+
+                        <li class="" id="i302">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_annual_reduction_in_total_degraded_area">get_annual_reduction_in_total_degraded_area</a></span>
+            </li>
+
+                        <li class="" id="i303">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_emissions_reduction_series">get_emissions_reduction_series</a></span>
+            </li>
+
+                        <li class="" id="i304">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="new_unit_adoption.html#NewUnitAdoption.get_carbon_sequestration">get_carbon_sequestration</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i305">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="ocean_scenario.html">model.ocean_scenario</a></span>
+            <ul>
+                    <li class="closable" id="i306">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="ocean_scenario.html#OceanScenario">OceanScenario</a></span>
+                <ul>
+                        <li class="" id="i307">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.scenario_timestamp">scenario_timestamp</a></span>
+            </li>
+
+                        <li class="" id="i308">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.scenario_description">scenario_description</a></span>
+            </li>
+
+                        <li class="" id="i309">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.conventional_first_cost">conventional_first_cost</a></span>
+            </li>
+
+                        <li class="" id="i310">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.conventional_lifetime_capacity">conventional_lifetime_capacity</a></span>
+            </li>
+
+                        <li class="" id="i311">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.conventional_average_annual_use">conventional_average_annual_use</a></span>
+            </li>
+
+                        <li class="" id="i312">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.conventional_operating_cost">conventional_operating_cost</a></span>
+            </li>
+
+                        <li class="" id="i313">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.conventional_net_profit_margin">conventional_net_profit_margin</a></span>
+            </li>
+
+                        <li class="" id="i314">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.conventional_expected_lifetime">conventional_expected_lifetime</a></span>
+            </li>
+
+                        <li class="" id="i315">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.solution_first_cost">solution_first_cost</a></span>
+            </li>
+
+                        <li class="" id="i316">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.solution_lifetime_capacity">solution_lifetime_capacity</a></span>
+            </li>
+
+                        <li class="" id="i317">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.solution_average_annual_use">solution_average_annual_use</a></span>
+            </li>
+
+                        <li class="" id="i318">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.solution_operating_cost">solution_operating_cost</a></span>
+            </li>
+
+                        <li class="" id="i319">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.solution_net_profit_margin">solution_net_profit_margin</a></span>
+            </li>
+
+                        <li class="" id="i320">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.solution_expected_lifetime">solution_expected_lifetime</a></span>
+            </li>
+
+                        <li class="" id="i321">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.unit_converting_factor">unit_converting_factor</a></span>
+            </li>
+
+                        <li class="" id="i322">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.npv_discount_rate">npv_discount_rate</a></span>
+            </li>
+
+                        <li class="" id="i323">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.emissions_reduced_per_unit_area">emissions_reduced_per_unit_area</a></span>
+            </li>
+
+                        <li class="" id="i324">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.direct_emissions_are_annual">direct_emissions_are_annual</a></span>
+            </li>
+
+                        <li class="" id="i325">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.conventional_direct_emissions">conventional_direct_emissions</a></span>
+            </li>
+
+                        <li class="" id="i326">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.conventional_indirect_emissions">conventional_indirect_emissions</a></span>
+            </li>
+
+                        <li class="" id="i327">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.solution_direct_emissions">solution_direct_emissions</a></span>
+            </li>
+
+                        <li class="" id="i328">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.solution_indirect_emissions">solution_indirect_emissions</a></span>
+            </li>
+
+                        <li class="" id="i329">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.conventional_fuel_consumed">conventional_fuel_consumed</a></span>
+            </li>
+
+                        <li class="" id="i330">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.conventional_fuel_emissions_factor">conventional_fuel_emissions_factor</a></span>
+            </li>
+
+                        <li class="" id="i331">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.solution_fuel_emissions_factor">solution_fuel_emissions_factor</a></span>
+            </li>
+
+                        <li class="" id="i332">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.solution_fuel_efficiency_factor">solution_fuel_efficiency_factor</a></span>
+            </li>
+
+                        <li class="" id="i333">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.use_aggregate_CO2_equivalent_instead_of_individual_GHG">use_aggregate_CO2_equivalent_instead_of_individual_GHG</a></span>
+            </li>
+
+                        <li class="" id="i334">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.sequestration_rate_all_ocean">sequestration_rate_all_ocean</a></span>
+            </li>
+
+                        <li class="" id="i335">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.growth_rate_of_ocean_degradation">growth_rate_of_ocean_degradation</a></span>
+            </li>
+
+                        <li class="" id="i336">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.disturbance_rate">disturbance_rate</a></span>
+            </li>
+
+                        <li class="" id="i337">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.carbon_storage_in_protected_area_type">carbon_storage_in_protected_area_type</a></span>
+            </li>
+
+                        <li class="" id="i338">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.delay_impact_of_protection_by_one_year">delay_impact_of_protection_by_one_year</a></span>
+            </li>
+
+                        <li class="" id="i339">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.delay_regrowth_of_degraded_land_by_one_year">delay_regrowth_of_degraded_land_by_one_year</a></span>
+            </li>
+
+                        <li class="" id="i340">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.use_adoption_for_carbon_sequestration_calculation">use_adoption_for_carbon_sequestration_calculation</a></span>
+            </li>
+
+                        <li class="" id="i341">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.current_area_world">current_area_world</a></span>
+            </li>
+
+                        <li class="" id="i342">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.future_ref_area">future_ref_area</a></span>
+            </li>
+
+                        <li class="" id="i343">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.future_pds_area">future_pds_area</a></span>
+            </li>
+
+                        <li class="" id="i344">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.total_area_as_of_period">total_area_as_of_period</a></span>
+            </li>
+
+                        <li class="" id="i345">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.change_per_period">change_per_period</a></span>
+            </li>
+
+                        <li class="" id="i346">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.current_adoption_world">current_adoption_world</a></span>
+            </li>
+
+                        <li class="" id="i347">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.pds_scenario_name">pds_scenario_name</a></span>
+            </li>
+
+                        <li class="" id="i348">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_scenario.html#OceanScenario.ref_scenario_name">ref_scenario_name</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i349">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="ocean_solution.html">model.ocean_solution</a></span>
+            <ul>
+                    <li class="closable" id="i350">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="ocean_solution.html#OceanSolution">OceanSolution</a></span>
+                <ul>
+                        <li class="" id="i351">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_solution.html#OceanSolution.scenario">scenario</a></span>
+            </li>
+
+                        <li class="" id="i352">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_solution.html#OceanSolution.has_tam">has_tam</a></span>
+            </li>
+
+                        <li class="" id="i353">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="ocean_solution.html#OceanSolution.has_grid_emissions_factors">has_grid_emissions_factors</a></span>
+            </li>
+
+                        <li class="" id="i354">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.set_up_area_units">set_up_area_units</a></span>
+            </li>
+
+                        <li class="" id="i355">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.load_scenario">load_scenario</a></span>
+            </li>
+
+                        <li class="" id="i356">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_scenario_names">get_scenario_names</a></span>
+            </li>
+
+                        <li class="" id="i357">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_loaded_scenario_name">get_loaded_scenario_name</a></span>
+            </li>
+
+                        <li class="" id="i358">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_adoption_unit_increase_pds_vs_ref_final_year">get_adoption_unit_increase_pds_vs_ref_final_year</a></span>
+            </li>
+
+                        <li class="" id="i359">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_adoption_unit_increase_pds_final_year">get_adoption_unit_increase_pds_final_year</a></span>
+            </li>
+
+                        <li class="" id="i360">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_global_percent_adoption_base_year">get_global_percent_adoption_base_year</a></span>
+            </li>
+
+                        <li class="" id="i361">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_percent_adoption_start_year">get_percent_adoption_start_year</a></span>
+            </li>
+
+                        <li class="" id="i362">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_percent_adoption_end_year">get_percent_adoption_end_year</a></span>
+            </li>
+
+                        <li class="" id="i363">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_annual_world_first_cost_series">get_annual_world_first_cost_series</a></span>
+            </li>
+
+                        <li class="" id="i364">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_marginal_first_cost">get_marginal_first_cost</a></span>
+            </li>
+
+                        <li class="" id="i365">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_cumulative_first_cost_solution">get_cumulative_first_cost_solution</a></span>
+            </li>
+
+                        <li class="" id="i366">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_operating_cost_series">get_operating_cost_series</a></span>
+            </li>
+
+                        <li class="" id="i367">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_operating_cost">get_operating_cost</a></span>
+            </li>
+
+                        <li class="" id="i368">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_lifetime_operating_savings">get_lifetime_operating_savings</a></span>
+            </li>
+
+                        <li class="" id="i369">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_lifetime_cashflow_npv_single_series">get_lifetime_cashflow_npv_single_series</a></span>
+            </li>
+
+                        <li class="" id="i370">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_lifetime_cashflow_npv_single">get_lifetime_cashflow_npv_single</a></span>
+            </li>
+
+                        <li class="" id="i371">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_lifetime_cashflow_npv_series">get_lifetime_cashflow_npv_series</a></span>
+            </li>
+
+                        <li class="" id="i372">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_lifetime_cashflow_npv_all">get_lifetime_cashflow_npv_all</a></span>
+            </li>
+
+                        <li class="" id="i373">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_payback_period_solution_only">get_payback_period_solution_only</a></span>
+            </li>
+
+                        <li class="" id="i374">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_payback_period_solution_only_npv">get_payback_period_solution_only_npv</a></span>
+            </li>
+
+                        <li class="" id="i375">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_payback_period_solution_vs_conventional">get_payback_period_solution_vs_conventional</a></span>
+            </li>
+
+                        <li class="" id="i376">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_payback_period_solution_vs_conventional_npv">get_payback_period_solution_vs_conventional_npv</a></span>
+            </li>
+
+                        <li class="" id="i377">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_abatement_cost">get_abatement_cost</a></span>
+            </li>
+
+                        <li class="" id="i378">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_net_profit_margin_series">get_net_profit_margin_series</a></span>
+            </li>
+
+                        <li class="" id="i379">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_net_profit_margin">get_net_profit_margin</a></span>
+            </li>
+
+                        <li class="" id="i380">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_lifetime_profit_margin">get_lifetime_profit_margin</a></span>
+            </li>
+
+                        <li class="" id="i381">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_emissions_reduction_series">get_emissions_reduction_series</a></span>
+            </li>
+
+                        <li class="" id="i382">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_total_emissions_reduction">get_total_emissions_reduction</a></span>
+            </li>
+
+                        <li class="" id="i383">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_max_annual_emissions_reduction">get_max_annual_emissions_reduction</a></span>
+            </li>
+
+                        <li class="" id="i384">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_emissions_reduction_final_year">get_emissions_reduction_final_year</a></span>
+            </li>
+
+                        <li class="" id="i385">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_carbon_sequestration_series">get_carbon_sequestration_series</a></span>
+            </li>
+
+                        <li class="" id="i386">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_total_co2_sequestered">get_total_co2_sequestered</a></span>
+            </li>
+
+                        <li class="" id="i387">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_max_annual_co2_sequestered">get_max_annual_co2_sequestered</a></span>
+            </li>
+
+                        <li class="" id="i388">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_co2_sequestered_final_year">get_co2_sequestered_final_year</a></span>
+            </li>
+
+                        <li class="" id="i389">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_change_in_ppm_equivalent_series">get_change_in_ppm_equivalent_series</a></span>
+            </li>
+
+                        <li class="" id="i390">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_change_in_ppm_equivalent">get_change_in_ppm_equivalent</a></span>
+            </li>
+
+                        <li class="" id="i391">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_change_in_ppm_equivalent_final_year">get_change_in_ppm_equivalent_final_year</a></span>
+            </li>
+
+                        <li class="" id="i392">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_reduced_area_degradation">get_reduced_area_degradation</a></span>
+            </li>
+
+                        <li class="" id="i393">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_carbon_under_protection_final_year">get_carbon_under_protection_final_year</a></span>
+            </li>
+
+                        <li class="" id="i394">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.get_co2_under_protection_final_year">get_co2_under_protection_final_year</a></span>
+            </li>
+
+                        <li class="" id="i395">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_solution.html#OceanSolution.key_results">key_results</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i396">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="ocean_tam.html">model.ocean_tam</a></span>
+            <ul>
+                    <li class="closable" id="i397">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="ocean_tam.html#OceanTam">OceanTam</a></span>
+                <ul>
+                        <li class="" id="i398">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_tam.html#OceanTam.set_tam_linear">set_tam_linear</a></span>
+            </li>
+
+                        <li class="" id="i399">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_tam.html#OceanTam.apply_linear_regression">apply_linear_regression</a></span>
+            </li>
+
+                        <li class="" id="i400">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_tam.html#OceanTam.apply_3d_poly">apply_3d_poly</a></span>
+            </li>
+
+                        <li class="" id="i401">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_tam.html#OceanTam.apply_clip">apply_clip</a></span>
+            </li>
+
+                        <li class="" id="i402">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="ocean_tam.html#OceanTam.get_tam_series">get_tam_series</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i403">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="operatingcost.html">model.operatingcost</a></span>
+            <ul>
+                    <li class="" id="i404">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="operatingcost.html#annual_breakout">annual_breakout</a></span>
+        </li>
+
+                    <li class="closable" id="i405">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="operatingcost.html#OperatingCost">OperatingCost</a></span>
+                <ul>
+                        <li class="" id="i406">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_pds_annual_operating_cost">soln_pds_annual_operating_cost</a></span>
+            </li>
+
+                        <li class="" id="i407">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_pds_cumulative_operating_cost">soln_pds_cumulative_operating_cost</a></span>
+            </li>
+
+                        <li class="" id="i408">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.conv_ref_annual_operating_cost">conv_ref_annual_operating_cost</a></span>
+            </li>
+
+                        <li class="" id="i409">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.conv_ref_cumulative_operating_cost">conv_ref_cumulative_operating_cost</a></span>
+            </li>
+
+                        <li class="" id="i410">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.marginal_annual_operating_cost">marginal_annual_operating_cost</a></span>
+            </li>
+
+                        <li class="" id="i411">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_pds_new_funits_per_year">soln_pds_new_funits_per_year</a></span>
+            </li>
+
+                        <li class="" id="i412">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_pds_net_annual_iunits_reqd">soln_pds_net_annual_iunits_reqd</a></span>
+            </li>
+
+                        <li class="" id="i413">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_pds_new_annual_iunits_reqd">soln_pds_new_annual_iunits_reqd</a></span>
+            </li>
+
+                        <li class="" id="i414">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_pds_annual_breakout">soln_pds_annual_breakout</a></span>
+            </li>
+
+                        <li class="" id="i415">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_pds_annual_breakout_core">soln_pds_annual_breakout_core</a></span>
+            </li>
+
+                        <li class="" id="i416">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.conv_ref_new_annual_iunits_reqd">conv_ref_new_annual_iunits_reqd</a></span>
+            </li>
+
+                        <li class="" id="i417">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.conv_ref_annual_breakout">conv_ref_annual_breakout</a></span>
+            </li>
+
+                        <li class="" id="i418">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.conv_ref_annual_breakout_core">conv_ref_annual_breakout_core</a></span>
+            </li>
+
+                        <li class="" id="i419">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_marginal_first_cost">soln_marginal_first_cost</a></span>
+            </li>
+
+                        <li class="" id="i420">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_marginal_operating_cost_savings">soln_marginal_operating_cost_savings</a></span>
+            </li>
+
+                        <li class="" id="i421">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_net_cash_flow">soln_net_cash_flow</a></span>
+            </li>
+
+                        <li class="" id="i422">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_net_present_value">soln_net_present_value</a></span>
+            </li>
+
+                        <li class="" id="i423">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_vs_conv_single_iunit_cashflow">soln_vs_conv_single_iunit_cashflow</a></span>
+            </li>
+
+                        <li class="" id="i424">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_vs_conv_single_iunit_npv">soln_vs_conv_single_iunit_npv</a></span>
+            </li>
+
+                        <li class="" id="i425">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_vs_conv_single_iunit_payback">soln_vs_conv_single_iunit_payback</a></span>
+            </li>
+
+                        <li class="" id="i426">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_vs_conv_single_iunit_payback_discounted">soln_vs_conv_single_iunit_payback_discounted</a></span>
+            </li>
+
+                        <li class="" id="i427">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_only_single_iunit_cashflow">soln_only_single_iunit_cashflow</a></span>
+            </li>
+
+                        <li class="" id="i428">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_only_single_iunit_npv">soln_only_single_iunit_npv</a></span>
+            </li>
+
+                        <li class="" id="i429">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_only_single_iunit_payback">soln_only_single_iunit_payback</a></span>
+            </li>
+
+                        <li class="" id="i430">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="operatingcost.html#OperatingCost.soln_only_single_iunit_payback_discounted">soln_only_single_iunit_payback_discounted</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i431">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="s_curve.html">model.s_curve</a></span>
+            <ul>
+                    <li class="" id="i432">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="s_curve.html#make_scurve_config">make_scurve_config</a></span>
+        </li>
+
+                    <li class="closable" id="i433">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="s_curve.html#SCurve">SCurve</a></span>
+                <ul>
+                        <li class="" id="i434">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="s_curve.html#SCurve.logistic_adoption">logistic_adoption</a></span>
+            </li>
+
+                        <li class="" id="i435">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="s_curve.html#SCurve.bass_diffusion_adoption">bass_diffusion_adoption</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i436">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="scenario.html">model.scenario</a></span>
+            <ul>
+                    <li class="closable" id="i437">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="scenario.html#Scenario">Scenario</a></span>
+                <ul>
+                        <li class="" id="i438">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="scenario.html#Scenario.name">name</a></span>
+            </li>
+
+                        <li class="" id="i439">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="scenario.html#Scenario.module_name">module_name</a></span>
+            </li>
+
+                        <li class="" id="i440">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="scenario.html#Scenario.scenario">scenario</a></span>
+            </li>
+
+                        <li class="" id="i441">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="scenario.html#Scenario.base_year">base_year</a></span>
+            </li>
+
+                        <li class="" id="i442">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="scenario.html#Scenario.ac">ac</a></span>
+            </li>
+
+                        <li class="" id="i443">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="scenario.html#Scenario.ht">ht</a></span>
+            </li>
+
+                        <li class="" id="i444">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="scenario.html#Scenario.ad">ad</a></span>
+            </li>
+
+                        <li class="" id="i445">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="scenario.html#Scenario.pds_ca">pds_ca</a></span>
+            </li>
+
+                        <li class="" id="i446">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="scenario.html#Scenario.ref_ca">ref_ca</a></span>
+            </li>
+
+                        <li class="" id="i447">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="scenario.html#Scenario.sc">sc</a></span>
+            </li>
+
+                        <li class="" id="i448">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="scenario.html#Scenario.key_parameters">key_parameters</a></span>
+            </li>
+
+                        <li class="" id="i449">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.key_inputs">key_inputs</a></span>
+            </li>
+
+                        <li class="" id="i450">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.initialize_ac">initialize_ac</a></span>
+            </li>
+
+                        <li class="" id="i451">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.pds_ca_overrides">pds_ca_overrides</a></span>
+            </li>
+
+                        <li class="" id="i452">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.pds_ad_overrides">pds_ad_overrides</a></span>
+            </li>
+
+                        <li class="" id="i453">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.pds_sc_overrides">pds_sc_overrides</a></span>
+            </li>
+
+                        <li class="" id="i454">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.initialize_adoption_bases">initialize_adoption_bases</a></span>
+            </li>
+
+                        <li class="" id="i455">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.adoption_limit">adoption_limit</a></span>
+            </li>
+
+                        <li class="" id="i456">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.adoption_unit_increase">adoption_unit_increase</a></span>
+            </li>
+
+                        <li class="" id="i457">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.marginal_first_cost">marginal_first_cost</a></span>
+            </li>
+
+                        <li class="" id="i458">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.net_operating_savings">net_operating_savings</a></span>
+            </li>
+
+                        <li class="" id="i459">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.lifetime_operating_savings">lifetime_operating_savings</a></span>
+            </li>
+
+                        <li class="" id="i460">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.cumulative_emissions_reduced">cumulative_emissions_reduced</a></span>
+            </li>
+
+                        <li class="" id="i461">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.soln_net_energy_grid_impact">soln_net_energy_grid_impact</a></span>
+            </li>
+
+                        <li class="" id="i462">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.total_energy_saving">total_energy_saving</a></span>
+            </li>
+
+                        <li class="" id="i463">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.scenario_path">scenario_path</a></span>
+            </li>
+
+                        <li class="" id="i464">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.update_ac">update_ac</a></span>
+            </li>
+
+                        <li class="" id="i465">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#Scenario.update_adoptions">update_adoptions</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+                    <li class="closable" id="i466">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="scenario.html#RRSScenario">RRSScenario</a></span>
+                <ul>
+                        <li class="" id="i467">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="scenario.html#RRSScenario.tm">tm</a></span>
+            </li>
+
+                        <li class="" id="i468">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#RRSScenario.set_tam">set_tam</a></span>
+            </li>
+
+                        <li class="" id="i469">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#RRSScenario.adoption_limit">adoption_limit</a></span>
+            </li>
+
+                        <li class="" id="i470">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#RRSScenario.get_key_results">get_key_results</a></span>
+            </li>
+
+                        <li class="" id="i471">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#RRSScenario.implementation_unit_adoption_increase">implementation_unit_adoption_increase</a></span>
+            </li>
+
+                        <li class="" id="i472">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#RRSScenario.functional_unit_adoption_increase">functional_unit_adoption_increase</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+                    <li class="closable" id="i473">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="scenario.html#LandScenario">LandScenario</a></span>
+                <ul>
+                        <li class="" id="i474">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="scenario.html#LandScenario.tla_per_region">tla_per_region</a></span>
+            </li>
+
+                        <li class="" id="i475">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="scenario.html#LandScenario.key_parameters">key_parameters</a></span>
+            </li>
+
+                        <li class="" id="i476">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#LandScenario.adoption_limit">adoption_limit</a></span>
+            </li>
+
+                        <li class="" id="i477">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#LandScenario.get_key_results">get_key_results</a></span>
+            </li>
+
+                        <li class="" id="i478">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="scenario.html#LandScenario.total_additional_co2eq_sequestered">total_additional_co2eq_sequestered</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+                    <li class="" id="i479">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="scenario.html#load_sources">load_sources</a></span>
+        </li>
+
+                    <li class="" id="i480">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="scenario.html#write_sources">write_sources</a></span>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i481">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="solution.html">model.solution</a></span>
+            <ul>
+                    <li class="" id="i482">
+                <span class="spacer"></span>
+                <span class="navitem class"><a href="solution.html#Solution">Solution</a></span>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i483">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="tam.html">model.tam</a></span>
+            <ul>
+                    <li class="" id="i484">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="tam.html#make_tam_config">make_tam_config</a></span>
+        </li>
+
+                    <li class="closable" id="i485">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="tam.html#TAM">TAM</a></span>
+                <ul>
+                        <li class="" id="i486">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="tam.html#TAM.forecast_data">forecast_data</a></span>
+            </li>
+
+                        <li class="" id="i487">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="tam.html#TAM.forecast_min_max_sd">forecast_min_max_sd</a></span>
+            </li>
+
+                        <li class="" id="i488">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="tam.html#TAM.forecast_low_med_high">forecast_low_med_high</a></span>
+            </li>
+
+                        <li class="" id="i489">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="tam.html#TAM.forecast_trend">forecast_trend</a></span>
+            </li>
+
+                        <li class="" id="i490">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="tam.html#TAM.ref_tam_per_region">ref_tam_per_region</a></span>
+            </li>
+
+                        <li class="" id="i491">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="tam.html#TAM.pds_tam_per_region">pds_tam_per_region</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i492">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="tla.html">model.tla</a></span>
+            <ul>
+                    <li class="" id="i493">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="tla.html#tla_per_region">tla_per_region</a></span>
+        </li>
+
+                    <li class="closable" id="i494">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="tla.html#CustomTLA">CustomTLA</a></span>
+                <ul>
+                        <li class="" id="i495">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="tla.html#CustomTLA.get_world_values">get_world_values</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i496">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="toa.html">model.toa</a></span>
+            <ul>
+                    <li class="" id="i497">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="toa.html#toa_per_region">toa_per_region</a></span>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i498">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="unitadoption.html">model.unitadoption</a></span>
+            <ul>
+                    <li class="" id="i499">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="unitadoption.html#cumulative_degraded_land">cumulative_degraded_land</a></span>
+        </li>
+
+                    <li class="closable" id="i500">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="unitadoption.html#UnitAdoption">UnitAdoption</a></span>
+                <ul>
+                        <li class="" id="i501">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.ref_population">ref_population</a></span>
+            </li>
+
+                        <li class="" id="i502">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.ref_gdp">ref_gdp</a></span>
+            </li>
+
+                        <li class="" id="i503">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.ref_gdp_per_capita">ref_gdp_per_capita</a></span>
+            </li>
+
+                        <li class="" id="i504">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.ref_tam_per_capita">ref_tam_per_capita</a></span>
+            </li>
+
+                        <li class="" id="i505">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.ref_tam_per_gdp_per_capita">ref_tam_per_gdp_per_capita</a></span>
+            </li>
+
+                        <li class="" id="i506">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.ref_tam_growth">ref_tam_growth</a></span>
+            </li>
+
+                        <li class="" id="i507">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.pds_population">pds_population</a></span>
+            </li>
+
+                        <li class="" id="i508">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.pds_gdp">pds_gdp</a></span>
+            </li>
+
+                        <li class="" id="i509">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.pds_gdp_per_capita">pds_gdp_per_capita</a></span>
+            </li>
+
+                        <li class="" id="i510">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.pds_tam_per_capita">pds_tam_per_capita</a></span>
+            </li>
+
+                        <li class="" id="i511">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.pds_tam_per_gdp_per_capita">pds_tam_per_gdp_per_capita</a></span>
+            </li>
+
+                        <li class="" id="i512">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.pds_tam_growth">pds_tam_growth</a></span>
+            </li>
+
+                        <li class="" id="i513">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.cumulative_reduction_in_total_degraded_land">cumulative_reduction_in_total_degraded_land</a></span>
+            </li>
+
+                        <li class="" id="i514">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.annual_reduction_in_total_degraded_land">annual_reduction_in_total_degraded_land</a></span>
+            </li>
+
+                        <li class="" id="i515">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.pds_cumulative_degraded_land_unprotected">pds_cumulative_degraded_land_unprotected</a></span>
+            </li>
+
+                        <li class="" id="i516">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.pds_cumulative_degraded_land_protected">pds_cumulative_degraded_land_protected</a></span>
+            </li>
+
+                        <li class="" id="i517">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.pds_total_undegraded_land">pds_total_undegraded_land</a></span>
+            </li>
+
+                        <li class="" id="i518">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.ref_cumulative_degraded_land_unprotected">ref_cumulative_degraded_land_unprotected</a></span>
+            </li>
+
+                        <li class="" id="i519">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.ref_cumulative_degraded_land_protected">ref_cumulative_degraded_land_protected</a></span>
+            </li>
+
+                        <li class="" id="i520">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.ref_total_undegraded_land">ref_total_undegraded_land</a></span>
+            </li>
+
+                        <li class="" id="i521">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_pds_cumulative_funits">soln_pds_cumulative_funits</a></span>
+            </li>
+
+                        <li class="" id="i522">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_pds_tot_iunits_reqd">soln_pds_tot_iunits_reqd</a></span>
+            </li>
+
+                        <li class="" id="i523">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_pds_new_iunits_reqd">soln_pds_new_iunits_reqd</a></span>
+            </li>
+
+                        <li class="" id="i524">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_pds_big4_iunits_reqd">soln_pds_big4_iunits_reqd</a></span>
+            </li>
+
+                        <li class="" id="i525">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_ref_cumulative_funits">soln_ref_cumulative_funits</a></span>
+            </li>
+
+                        <li class="" id="i526">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_ref_tot_iunits_reqd">soln_ref_tot_iunits_reqd</a></span>
+            </li>
+
+                        <li class="" id="i527">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_ref_new_iunits_reqd_RRS">soln_ref_new_iunits_reqd_RRS</a></span>
+            </li>
+
+                        <li class="" id="i528">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_ref_new_iunits_reqd_LAND">soln_ref_new_iunits_reqd_LAND</a></span>
+            </li>
+
+                        <li class="" id="i529">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_ref_new_iunits_reqd">soln_ref_new_iunits_reqd</a></span>
+            </li>
+
+                        <li class="" id="i530">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_net_annual_funits_adopted">soln_net_annual_funits_adopted</a></span>
+            </li>
+
+                        <li class="" id="i531">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.net_annual_land_units_adopted">net_annual_land_units_adopted</a></span>
+            </li>
+
+                        <li class="" id="i532">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.conv_ref_tot_iunits">conv_ref_tot_iunits</a></span>
+            </li>
+
+                        <li class="" id="i533">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.conv_ref_annual_tot_iunits">conv_ref_annual_tot_iunits</a></span>
+            </li>
+
+                        <li class="" id="i534">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.conv_ref_new_iunits">conv_ref_new_iunits</a></span>
+            </li>
+
+                        <li class="" id="i535">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_pds_net_grid_electricity_units_saved">soln_pds_net_grid_electricity_units_saved</a></span>
+            </li>
+
+                        <li class="" id="i536">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_pds_net_grid_electricity_units_used">soln_pds_net_grid_electricity_units_used</a></span>
+            </li>
+
+                        <li class="" id="i537">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_pds_fuel_units_avoided">soln_pds_fuel_units_avoided</a></span>
+            </li>
+
+                        <li class="" id="i538">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_pds_direct_co2_emissions_saved">soln_pds_direct_co2_emissions_saved</a></span>
+            </li>
+
+                        <li class="" id="i539">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_pds_direct_ch4_co2_emissions_saved">soln_pds_direct_ch4_co2_emissions_saved</a></span>
+            </li>
+
+                        <li class="" id="i540">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_pds_direct_n2o_co2_emissions_saved">soln_pds_direct_n2o_co2_emissions_saved</a></span>
+            </li>
+
+                        <li class="" id="i541">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.net_land_units_after_emissions_lifetime">net_land_units_after_emissions_lifetime</a></span>
+            </li>
+
+                        <li class="" id="i542">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.soln_pds_annual_land_area_harvested">soln_pds_annual_land_area_harvested</a></span>
+            </li>
+
+                        <li class="" id="i543">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.direct_co2eq_emissions_saved_land">direct_co2eq_emissions_saved_land</a></span>
+            </li>
+
+                        <li class="" id="i544">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.direct_co2_emissions_saved_land">direct_co2_emissions_saved_land</a></span>
+            </li>
+
+                        <li class="" id="i545">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.direct_n2o_co2_emissions_saved_land">direct_n2o_co2_emissions_saved_land</a></span>
+            </li>
+
+                        <li class="" id="i546">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="unitadoption.html#UnitAdoption.direct_ch4_co2_emissions_saved_land">direct_ch4_co2_emissions_saved_land</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i547">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="">model.units</a></span>
+            <ul>
+                    <li class="" id="i548">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="#map_to_unit">map_to_unit</a></span>
+        </li>
+
+                    <li class="" id="i549">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="#set_unit">set_unit</a></span>
+        </li>
+
+                    <li class="" id="i550">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="#get_unit">get_unit</a></span>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i551">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="vma.html">model.vma</a></span>
+            <ul>
+                    <li class="" id="i552">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="vma.html#convert_percentages">convert_percentages</a></span>
+        </li>
+
+                    <li class="" id="i553">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="vma.html#convert_NaN">convert_NaN</a></span>
+        </li>
+
+                    <li class="" id="i554">
+                <span class="spacer"></span>
+                <span class="navitem function"><a href="vma.html#normalize_units">normalize_units</a></span>
+        </li>
+
+                    <li class="closable" id="i555">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="vma.html#VMA">VMA</a></span>
+                <ul>
+                        <li class="" id="i556">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="vma.html#VMA.title">title</a></span>
+            </li>
+
+                        <li class="" id="i557">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="vma.html#VMA.filename">filename</a></span>
+            </li>
+
+                        <li class="" id="i558">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="vma.html#VMA.df">df</a></span>
+            </li>
+
+                        <li class="" id="i559">
+                    <span class="spacer"></span>
+                    <span class="navitem variable"><a href="vma.html#VMA.units">units</a></span>
+            </li>
+
+                        <li class="" id="i560">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="vma.html#VMA.avg_high_low">avg_high_low</a></span>
+            </li>
+
+                        <li class="" id="i561">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="vma.html#VMA.write_to_file">write_to_file</a></span>
+            </li>
+
+                        <li class="" id="i562">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="vma.html#VMA.reload_from_file">reload_from_file</a></span>
+            </li>
+
+                        <li class="" id="i563">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="vma.html#VMA.essential_parameters">essential_parameters</a></span>
+            </li>
+
+                        <li class="" id="i564">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="vma.html#VMA.load_vma_directory">load_vma_directory</a></span>
+            </li>
+
+                        <li class="" id="i565">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="vma.html#VMA.write_vma_directory">write_vma_directory</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+                <li class="closable" id="i566">
+            <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+            <span class="navitem module"><a href="world_land.html">model.world_land</a></span>
+            <ul>
+                    <li class="" id="i567">
+                <span class="spacer"></span>
+                <span class="navitem variable"><a href="world_land.html#AEZ_ALLOCATION_MAP">AEZ_ALLOCATION_MAP</a></span>
+        </li>
+
+                    <li class="closable" id="i568">
+                <span class="spacer closebutton" onclick="toggleClose(this)"></span>
+                <span class="navitem class"><a href="world_land.html#World_TMR_AEZ_Map">World_TMR_AEZ_Map</a></span>
+                <ul>
+                        <li class="" id="i569">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="world_land.html#World_TMR_AEZ_Map.map">map</a></span>
+            </li>
+
+                        <li class="" id="i570">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="world_land.html#World_TMR_AEZ_Map.store_map">store_map</a></span>
+            </li>
+
+                        <li class="" id="i571">
+                    <span class="spacer"></span>
+                    <span class="navitem function"><a href="world_land.html#World_TMR_AEZ_Map.reduce_columns">reduce_columns</a></span>
+            </li>
+
+                </ul>
+        </li>
+
+            </ul>
+    </li>
+
+        </ul>
+
+
+            <div class="attribution">
+                built with <a href="https://pdoc.dev">pdoc</a>
+            </div>
+    </div>
+    <script>
+function closestAncestor(elem, selec) {
+    p = elem.parentNode;
+    if (!p || ! p.matches ) { return null; }
+    if (p.matches(selec)) { return p; }
+    return closestAncestor(p, selec);
+}
+function toggleClose(elem) {
+    closestAncestor(elem, '.closable').toggleAttribute('closed');
+    rememberOpenClose();
+}
+function openAll() {
+    items = document.querySelectorAll('nav .memberlist > .closable');
+    [...items].map(n => n.removeAttribute('closed'));
+    rememberOpenClose();
+}
+function closeAll() {
+    items = document.querySelectorAll('nav .memberlist > .closable');
+    [...items].map(n => n.setAttribute('closed',true));
+    rememberOpenClose();
+}
+function ensureVisible(elem,save=true) {
+    elem.removeAttribute('closed');
+    p = closestAncestor(elem,'.closable');
+    if (p) { ensureVisible(p,false); }
+    if (save) { rememberOpenClose(); }
+}
+function rememberOpenClose() {
+    items = document.querySelectorAll('nav .closable[closed]');
+    window.localStorage['closeditems'] = [...items].map(n=>n.id).join();
+}
+function restoreNav() {
+    ids = window.localStorage['closeditems'];
+    if (ids) {
+        ids.split(',').map(n=>document.getElementById(n).setAttribute('closed',true));
+    }
+    if (window.location.hash) {
+        mainelem = document.querySelector(window.location.hash);
+        navitem = document.querySelector('nav a[href="'+window.location.hash+'"]');
+        if (navitem) {
+            ensureVisible(navitem);
+            setTimeout(() => { /* give the DOM time to settle */
+                navitem.scrollIntoView();
+                /* the nav scroll ^^^ can interfere with the main scroll,
+                   so repeat the main scroll vvv */
+                if (mainelem) { mainelem.scrollIntoView(); }},
+                100);
+        }
+    }
+}
+function addClickOpen() {
+    /* Add a handler to the actual navigable items so that clicking on them directly also opens them */
+    items = document.querySelectorAll('nav .closable > .navitem a');
+    [...items].map(n => n.addEventListener('click', ()=>{ ensureVisible(n);} ));
+}
+if (document.readyState === 'loading') {  // Loading hasn't finished yet
+    document.addEventListener('DOMContentLoaded', () => {restoreNav(); addClickOpen();});
+} else {  // `DOMContentLoaded` has already fired
+    restoreNav();
+    addClickOpen();
+}
+    </script>
+
+</div>
+    </nav>
+    <main class="pdoc">
+            <section class="module-info">
+                    <h1 class="modulename">
+model<wbr>.units    </h1>
+
+                        <div class="docstring"><p>Units of measure that are used in solutions</p>
+
+<p>Dimensions of SI units are re-used.</p>
+</div>
+
+                
+                
+                
+            </section>
+                <section id="map_to_unit">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">map_to_unit</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">unit</span><span class="p">:</span> <span class="n">unitsofmeasure</span><span class="o">.</span><span class="n">Unit</span>,</span><span class="param">	<span class="nb">map</span><span class="p">:</span> <span class="n">unitsofmeasure</span><span class="o">.</span><span class="n">UnitMap</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">unitsofmeasure</span><span class="o">.</span><span class="n">UnitMap</span> <span class="nb">object</span><span class="o">&gt;</span></span><span class="return-annotation">):</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#map_to_unit"></a>
+    
+            <div class="docstring"><p>Decorate functions or classes with units.</p>
+</div>
+
+
+                </section>
+                <section id="set_unit">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">set_unit</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">o</span><span class="p">:</span> <span class="nb">object</span>,</span><span class="param">	<span class="n">unit</span><span class="p">:</span> <span class="n">unitsofmeasure</span><span class="o">.</span><span class="n">Unit</span>,</span><span class="param">	<span class="nb">map</span><span class="p">:</span> <span class="n">unitsofmeasure</span><span class="o">.</span><span class="n">UnitMap</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">unitsofmeasure</span><span class="o">.</span><span class="n">UnitMap</span> <span class="nb">object</span><span class="o">&gt;</span></span><span class="return-annotation">) -> <span class="kc">None</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#set_unit"></a>
+    
+            <div class="docstring"><p>Set unit of object in map.</p>
+</div>
+
+
+                </section>
+                <section id="get_unit">
+                    <div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">get_unit</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">o</span><span class="p">:</span> <span class="nb">object</span>,</span><span class="param">	<span class="nb">map</span><span class="p">:</span> <span class="n">unitsofmeasure</span><span class="o">.</span><span class="n">UnitMap</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">unitsofmeasure</span><span class="o">.</span><span class="n">UnitMap</span> <span class="nb">object</span><span class="o">&gt;</span></span><span class="return-annotation">) -> <span class="n">unitsofmeasure</span><span class="o">.</span><span class="n">Unit</span>:</span></span>
+
+        
+    </div>
+    <a class="headerlink" href="#get_unit"></a>
+    
+            <div class="docstring"><p>Get unit of object from map.</p>
+</div>
+
+
+                </section>
+    </main>
+<script>
+    function escapeHTML(html) {
+        return document.createElement('div').appendChild(document.createTextNode(html)).parentNode.innerHTML;
+    }
+
+    const originalContent = document.querySelector("main.pdoc");
+    let currentContent = originalContent;
+
+    function setContent(innerHTML) {
+        let elem;
+        if (innerHTML) {
+            elem = document.createElement("main");
+            elem.classList.add("pdoc");
+            elem.innerHTML = innerHTML;
+        } else {
+            elem = originalContent;
+        }
+        if (currentContent !== elem) {
+            currentContent.replaceWith(elem);
+            currentContent = elem;
+        }
+    }
+
+    function getSearchTerm() {
+        return (new URL(window.location)).searchParams.get("search");
+    }
+
+    const searchBox = document.querySelector(".pdoc input[type=search]");
+    searchBox.addEventListener("input", function () {
+        let url = new URL(window.location);
+        if (searchBox.value.trim()) {
+            url.hash = "";
+            url.searchParams.set("search", searchBox.value);
+        } else {
+            url.searchParams.delete("search");
+        }
+        history.replaceState("", "", url.toString());
+        onInput();
+    });
+    window.addEventListener("popstate", onInput);
+
+
+    let search, searchErr;
+
+    async function initialize() {
+        try {
+            search = await new Promise((resolve, reject) => {
+                const script = document.createElement("script");
+                script.type = "text/javascript";
+                script.async = true;
+                script.onload = () => resolve(window.pdocSearch);
+                script.onerror = (e) => reject(e);
+                script.src = "../search.js";
+                document.getElementsByTagName("head")[0].appendChild(script);
+            });
+        } catch (e) {
+            console.error("Cannot fetch pdoc search index");
+            searchErr = "Cannot fetch search index.";
+        }
+        onInput();
+
+        document.querySelector("nav.pdoc").addEventListener("click", e => {
+            if (e.target.hash) {
+                searchBox.value = "";
+                searchBox.dispatchEvent(new Event("input"));
+            }
+        });
+    }
+
+    function onInput() {
+        setContent((() => {
+            const term = getSearchTerm();
+            if (!term) {
+                return null
+            }
+            if (searchErr) {
+                return `<h3>Error: ${searchErr}</h3>`
+            }
+            if (!search) {
+                return "<h3>Searching...</h3>"
+            }
+
+            window.scrollTo({top: 0, left: 0, behavior: 'auto'});
+
+            const results = search(term);
+
+            let html;
+            if (results.length === 0) {
+                html = `No search results for '${escapeHTML(term)}'.`
+            } else {
+                html = `<h4>${results.length} search result${results.length > 1 ? "s" : ""} for '${escapeHTML(term)}'.</h4>`;
+            }
+            for (let result of results.slice(0, 10)) {
+                let doc = result.doc;
+                let url = `../${doc.modulename.replaceAll(".", "/")}.html`;
+                if (doc.qualname) {
+                    url += `#${doc.qualname}`;
+                }
+
+                let heading;
+                switch (result.doc.type) {
+                    case "function":
+                        if (doc.fullname.endsWith(".__init__")) {
+                            heading = `<span class="name">${doc.fullname.replace(/\.__init__$/, "")}</span>${doc.signature}`;
+                        } else {
+                            heading = `<span class="def">${doc.funcdef}</span> <span class="name">${doc.fullname}</span>${doc.signature}`;
+                        }
+                        break;
+                    case "class":
+                        heading = `<span class="def">class</span> <span class="name">${doc.fullname}</span>`;
+                        if (doc.bases)
+                            heading += `<wbr>(<span class="base">${doc.bases}</span>)`;
+                        heading += `:`;
+                        break;
+                    case "variable":
+                        heading = `<span class="name">${doc.fullname}</span>`;
+                        if (doc.annotation)
+                            heading += `<span class="annotation">${doc.annotation}</span>`;
+                        if (doc.default_value)
+                            heading += `<span class="default_value">${doc.default_value}</span>`;
+                        break;
+                    default:
+                        heading = `<span class="name">${doc.fullname}</span>`;
+                        break;
+                }
+                html += `
+                        <section class="search-result">
+                        <a href="${url}" class="attr ${doc.type}">${heading}</a>
+                        <div class="docstring">${doc.doc}</div>
+                        </section>
+                    `;
+
+            }
+            return html;
+        })());
+    }
+
+    if (getSearchTerm()) {
+        initialize();
+        searchBox.value = getSearchTerm();
+        onInput();
+    } else {
+        searchBox.addEventListener("focus", initialize, {once: true});
+    }
+
+    searchBox.addEventListener("keydown", e => {
+        if (["ArrowDown", "ArrowUp", "Enter"].includes(e.key)) {
+            let focused = currentContent.querySelector(".search-result.focused");
+            if (!focused) {
+                currentContent.querySelector(".search-result").classList.add("focused");
+            } else if (
+                e.key === "ArrowDown"
+                && focused.nextElementSibling
+                && focused.nextElementSibling.classList.contains("search-result")
+            ) {
+                focused.classList.remove("focused");
+                focused.nextElementSibling.classList.add("focused");
+                focused.nextElementSibling.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    inline: "nearest"
+                });
+            } else if (
+                e.key === "ArrowUp"
+                && focused.previousElementSibling
+                && focused.previousElementSibling.classList.contains("search-result")
+            ) {
+                focused.classList.remove("focused");
+                focused.previousElementSibling.classList.add("focused");
+                focused.previousElementSibling.scrollIntoView({
+                    behavior: "smooth",
+                    block: "nearest",
+                    inline: "nearest"
+                });
+            } else if (
+                e.key === "Enter"
+            ) {
+                focused.querySelector("a").click();
+            }
+        }
+    });
+</script></body>
+</html>
